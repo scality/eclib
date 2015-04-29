@@ -1,0 +1,20 @@
+{
+  "name" : "Node EClib"
+  , "version" : "v0.0.1"
+  , "description" : "Native Node.js C++ extension for liberasurecode"
+  , "homepage" : "http://www.scality.com/"
+  , "author" : { 
+      "name" : "Giorgio Regni"
+      , "email" : "giorgio.regni@scality.com"
+      , "url" : "http://www.scality.com/"
+    }
+  , "repository" : { 
+      "type" : "git"
+      , "url" : "https://github.com/scality/node-ECLib.git"
+    }
+  , "scripts" : {
+      "preinstall" : "node-gyp configure && node-gyp build"
+      , "preuninstall" : "rm -rf build/*"
+    }
+  , "main" : "build/release/node-eclib.node"
+}
