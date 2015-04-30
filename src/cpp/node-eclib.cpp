@@ -13,6 +13,9 @@ void InitAll(Handle<Object> exports) {
 
   exports->Set(NanNew<String>("create"),
     NanNew<FunctionTemplate>(Create)->GetFunction());
+
+  exports->Set(NanNew<String>("destroy"),
+    NanNew<FunctionTemplate>(Destroy)->GetFunction());
 }
 
 NODE_MODULE(hello, InitAll)

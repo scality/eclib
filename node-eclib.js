@@ -23,6 +23,7 @@ ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args
 ECLib.prototype.destroy = function(instance_descriptor_id,callback){
 	
 	console.log("from destroy method");
+	console.log(addon.destroy());
 	//callback.call(resultcode,err)
 };
 
