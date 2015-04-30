@@ -3,6 +3,8 @@
 // We will not require anything right now.
 //
 
+var addon = require('bindings')('Release/node-eclib.node')
+
 function ECLib(){
 
 	console.log("Blank function");
@@ -14,6 +16,7 @@ ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args
 	var instance_descriptor_id = -1;
 
 	console.log("from create method");
+	console.log(addon.hello());
 	//callback.call(instance_descriptor_id,err)
 };
 
