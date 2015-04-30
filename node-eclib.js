@@ -38,8 +38,8 @@ ECLib.prototype.encodeCleanup = function(instance_descriptor_id, encoded_data,en
 	//callback.call(resultcode,err)
 };
 
-ECLib.prototype.decode = function(instance_descriptor_id, ,available_fragments,
-							 num_fragments,fragment_len,callback){
+ECLib.prototype.decode = function(instance_descriptor_id, available_fragments
+							 , num_fragments, fragment_len, callback){
 
 	console.log("from decode method");
 	//result.resultcode = 1//2/3/4/5
@@ -54,8 +54,8 @@ ECLib.prototype.decodeCleanup = function(instance_descriptor_id, data,callback){
 };
 
 
-ECLib.prototype.reconstructFragment(instance_descriptor_id,available_fragments,
-						num_fragments,fragment_len,destination_idx,callback){
+ECLib.prototype.reconstructFragment = function(instance_descriptor_id, available_fragments
+	, num_fragments, fragment_len,destination_idx, callback) {
 
 	console.log("from reconstructFragment method");
 	//result.resultcode = 1//2/3/4/5
@@ -64,46 +64,46 @@ ECLib.prototype.reconstructFragment(instance_descriptor_id,available_fragments,
 
 };
 
-ECLib.prototype.fragmentsNeeded(instance_descriptor_id,fragments_to_reconstruct
+ECLib.prototype.fragmentsNeeded = function (instance_descriptor_id,fragments_to_reconstruct
 					,fragments_to_exclude,fragments_needed,callback){
 	
 	console.log("from fragmentsNeeded method");
 	//callback.call(resultcode,err)
 }
 
-ECLib.prototype.getFragmentMetadata(fragment, fragment_metadata, callback){
+ECLib.prototype.getFragmentMetadata = function(fragment, fragment_metadata, callback){
 
 	console.log("from getFragmentMetadata method");
 	//callback.call(resultcode,err)
 
 };
 
-ECLib.prototype.isInvalidFragment(instance_descriptor_id, fragment, callback){
+ECLib.prototype.isInvalidFragment = function(instance_descriptor_id, fragment, callback){
 
 	console.log("from isInvalidFragment method");
 	//callback.call(resultcode,err)
 };
 
-ECLib.prototype.verifyStripeMetadata(instance_descriptor_id, fragments
+ECLib.prototype.verifyStripeMetadata = function (instance_descriptor_id, fragments
 					, num_fragments, callback){
 
 	console.log("from verifyStripeMetadata method");
 	//callback.call(resultcode,err)
 };
 
-ECLib.prototype.getAlignedDataSize(instance_descriptor_id, data_len, callback){
+ECLib.prototype.getAlignedDataSize = function(instance_descriptor_id, data_len, callback){
 
 	console.log("from getAlignedDataSize method");
 	//callback.call(resultlength, err)
 };
 
-ECLib.prototype.getMinimumEncodeSize(instance_descriptor_id, callback){
+ECLib.prototype.getMinimumEncodeSize = function (instance_descriptor_id, callback){
 
 	console.log("from getMinimumEncodeSize method");
 	//callback.call(resultminimumlength, err)
 };
 
-ECLib.prototype.getFragmentSize(instance_descriptor_id, data_len ,callback){
+ECLib.prototype.getFragmentSize = function(instance_descriptor_id, data_len ,callback){
 
 	console.log("from getFragmentSize method");
 	//callback.call(resultfragmentsize, err)
