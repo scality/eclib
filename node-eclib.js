@@ -47,7 +47,8 @@ ECLib.prototype.encodeCleanup = function(instance_descriptor_id, encoded_data,en
 ECLib.prototype.decode = function(instance_descriptor_id, available_fragments
 							 , num_fragments, fragment_len, callback){
 
-	console.log("from decode method");
+	console.log("JS decode #");
+	console.log(addon.decode());
 	//result.resultcode = 1//2/3/4/5
 	//result.out_data = "" ,result.out_data_len =""
 	//callback.call(result,err)
@@ -55,7 +56,8 @@ ECLib.prototype.decode = function(instance_descriptor_id, available_fragments
 
 ECLib.prototype.decodeCleanup = function(instance_descriptor_id, data,callback){
 
-	console.log("from decode_cleanup method");
+	console.log("JS decode_cleanup #");
+	console.log(addon.decodeCleanup());
 	//callback.call(resultcode,err)
 };
 
