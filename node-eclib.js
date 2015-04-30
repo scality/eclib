@@ -15,8 +15,8 @@ ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args
 	
 	var instance_descriptor_id = -1;
 
-	console.log("from create method");
-	console.log(addon.hello());
+	console.log("JS create#");
+	console.log(addon.create());
 	//callback.call(instance_descriptor_id,err)
 };
 
