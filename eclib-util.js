@@ -7,5 +7,4 @@ function ECLibUtil(){
 	console.log("ECLibUtil function");
 }
 
-
 module.exports = ECLibUtil;
