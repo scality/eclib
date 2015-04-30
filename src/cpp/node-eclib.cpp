@@ -3,6 +3,7 @@
 #include <erasurecode_helpers.h>
 #include "libmain.h"
 #include "asyncencode.h"
+#include "asyncdecode.h"
 
 
 using v8::FunctionTemplate;
@@ -22,10 +23,15 @@ void InitAll(Handle<Object> exports) {
   exports->Set(NanNew<String>("encode"),
     NanNew<FunctionTemplate>(eclEncode)->GetFunction());
 
-
-
   exports->Set(NanNew<String>("encodeCleanup"),
     NanNew<FunctionTemplate>(eclEncodeCleanup)->GetFunction());
+
+
+  exports->Set(NanNew<String>("decode"),
+    NanNew<FunctionTemplate>(eclDecode)->GetFunction());
+
+  exports->Set(NanNew<String>("decodeCleanup"),
+    NanNew<FunctionTemplate>(eclDecodeCleanup)->GetFunction());
 
 
 }
