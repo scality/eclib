@@ -10,3 +10,10 @@ NAN_METHOD(Create) {
 
   NanReturnValue(NanNew("C++ create "));
 }
+
+NAN_METHOD(Destroy) {
+  NanScope();
+
+
+  NanReturnValue(NanNew("C++ destroy "));
+}
