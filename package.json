@@ -1,5 +1,5 @@
 {
-  "name" : "Node EClib"
+  "name" : "eclib"
   , "version" : "v0.0.1"
   , "description" : "Native Node.js C++ extension for liberasurecode"
   , "homepage" : "http://www.scality.com/"
