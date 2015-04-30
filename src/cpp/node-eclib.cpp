@@ -1,14 +1,19 @@
 #include <nan.h>
+#include <erasurecode.h>
+#include <erasurecode_helpers.h>
+#include "libmain.h"
 
-using namespace v8;
+using v8::FunctionTemplate;
+using v8::Handle;
+using v8::Object;
+using v8::String;
 
-NAN_METHOD(Method) {
-  NanScope();
-  NanReturnValue(NanNew("world"));
+
+void InitAll(Handle<Object> exports) {
+
+  exports->Set(NanNew<String>("create"),
+    NanNew<FunctionTemplate>(Create)->GetFunction());
 }
 
-void Init(Handle<Object> exports) {
-  exports->Set(NanNew("hello"), NanNew<FunctionTemplate>(Method)->GetFunction());
-}
+NODE_MODULE(hello, InitAll)
 
-NODE_MODULE(hello, Init)
