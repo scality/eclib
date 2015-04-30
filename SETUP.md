@@ -29,3 +29,21 @@ top-level directory:
 ```
 
 ----
+
+Requireed NPM's
+===============
+Install the following npms 
+
+``` sh
+ $ npm install nan
+ $ sudo npm install node-gyp -g
+ $ 
+ $ 
+ $ 
+```
+
+
+
+
+
+----
