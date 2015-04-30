@@ -22,14 +22,15 @@ ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args
 
 ECLib.prototype.destroy = function(instance_descriptor_id,callback){
 	
-	console.log("from destroy method");
+	console.log("JS destroy#");
 	console.log(addon.destroy());
 	//callback.call(resultcode,err)
 };
 
 ECLib.prototype.encode = function(instance_descriptor_id, orig_data,orig_data_size,callback){
 
-	console.log("from encode method");
+	console.log("JS encode ");
+	console.log(addon.encode());
 
 	//result.resultcode = 1//2/3/4/5
 	//result.encoded_data = "" ,result.encoded_parity ="", result.fragment_len =12312312312312;
@@ -37,8 +38,9 @@ ECLib.prototype.encode = function(instance_descriptor_id, orig_data,orig_data_si
 };
 
 ECLib.prototype.encodeCleanup = function(instance_descriptor_id, encoded_data,encoded_parity,callback){
-
-	console.log("from encode_cleanup method");
+	
+	console.log("JS encodeCleanup ");
+	console.log(addon.encodeCleanup());
 	//callback.call(resultcode,err)
 };
 
