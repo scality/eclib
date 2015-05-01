@@ -1,6 +1,5 @@
 #include <nan.h>
-#include <erasurecode.h>
-#include <erasurecode_helpers.h>
+
 #include "libmain.h"
 #include "asyncencode.h"
 #include "asyncdecode.h"

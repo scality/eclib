@@ -1,14 +1,31 @@
 #include <node.h>
 #include <nan.h>
-#include <erasurecode.h>
-#include <erasurecode_helpers.h>
 
 #include "libmain.h"
+
+using namespace v8;
+
+struct ec_args null_args = {
+    .m = 4
+};
+
+struct ec_args *null_test_args[] = { &null_args, NULL };
 
 
 NAN_METHOD(EclCreate) {
   NanScope();
-  NanReturnValue(NanNew("C++ create "));
+
+  Local<String> strvalue = NanNew<String>("All is ok");
+
+  int desc = liberasurecode_instance_create(EC_BACKENDS_MAX, &null_args);
+
+  if(desc > -2){
+	strvalue = NanNew<String>("Error occured in the file");
+  }
+
+  Local<Number> errorcode = NanNew(desc);
+
+  NanReturnValue(errorcode);
 }
 
 NAN_METHOD(EclDestroy) {

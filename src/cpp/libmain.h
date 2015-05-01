@@ -3,6 +3,7 @@
 #include <erasurecode.h>
 #include <erasurecode_helpers.h>
 
+
 NAN_METHOD(EclCreate);
 NAN_METHOD(EclDestroy);
 NAN_METHOD(EclFragmentsNeeded);
