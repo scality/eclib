@@ -16,10 +16,10 @@ using v8::String;
 void InitAll(Handle<Object> exports) {
 
   exports->Set(NanNew<String>("create"),
-    NanNew<FunctionTemplate>(Create)->GetFunction());
+    NanNew<FunctionTemplate>(EclCreate)->GetFunction());
 
   exports->Set(NanNew<String>("destroy"),
-    NanNew<FunctionTemplate>(Destroy)->GetFunction());
+    NanNew<FunctionTemplate>(EclDestroy)->GetFunction());
 
   exports->Set(NanNew<String>("encode"),
     NanNew<FunctionTemplate>(eclEncode)->GetFunction());
@@ -37,6 +37,26 @@ void InitAll(Handle<Object> exports) {
    exports->Set(NanNew<String>("reconstructFragment"),
     NanNew<FunctionTemplate>(EclReconstructFragment)->GetFunction());
 
+  exports->Set(NanNew<String>("fragmentsNeeded"),
+    NanNew<FunctionTemplate>(EclFragmentsNeeded)->GetFunction());
+
+  exports->Set(NanNew<String>("getFragmentMetadata"),
+    NanNew<FunctionTemplate>(EclGetFragmentMetadata)->GetFunction());
+
+   exports->Set(NanNew<String>("isInvalidFragment"),
+    NanNew<FunctionTemplate>(EclIsInvalidFragment)->GetFunction());
+
+   exports->Set(NanNew<String>("verifyStripeMetadata"),
+    NanNew<FunctionTemplate>(EclVerifyStripeMetadata)->GetFunction());
+
+  exports->Set(NanNew<String>("getAlignedDataSize"),
+    NanNew<FunctionTemplate>(EclGetAlignedDataSize)->GetFunction());
+
+  exports->Set(NanNew<String>("getMinimumEncodeSize"),
+    NanNew<FunctionTemplate>(EclGetMinimumEncodeSize)->GetFunction());
+
+   exports->Set(NanNew<String>("getFragmentSize"),
+    NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
 
 }
 
