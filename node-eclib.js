@@ -65,7 +65,9 @@ ECLib.prototype.decodeCleanup = function(instance_descriptor_id, data,callback){
 ECLib.prototype.reconstructFragment = function(instance_descriptor_id, available_fragments
 	, num_fragments, fragment_len,destination_idx, callback) {
 
-	console.log("from reconstructFragment method");
+	console.log("JS reconstructFragment #");
+	console.log(addon.reconstructFragment());
+
 	//result.resultcode = 1//2/3/4/5
 	//result.out_fragment = ""
 	//callback.call(result,err)

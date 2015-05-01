@@ -4,6 +4,7 @@
 #include "libmain.h"
 #include "asyncencode.h"
 #include "asyncdecode.h"
+#include "asyncreconstruction.h"
 
 
 using v8::FunctionTemplate;
@@ -32,6 +33,9 @@ void InitAll(Handle<Object> exports) {
 
   exports->Set(NanNew<String>("decodeCleanup"),
     NanNew<FunctionTemplate>(eclDecodeCleanup)->GetFunction());
+
+   exports->Set(NanNew<String>("reconstructFragment"),
+    NanNew<FunctionTemplate>(EclReconstructFragment)->GetFunction());
 
 
 }
