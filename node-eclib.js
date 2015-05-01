@@ -46,9 +46,29 @@ ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args
 
 ECLib.prototype.destroy = function(instance_descriptor_id,callback){
 	
-	console.log("JS destroy#");
-	console.log(addon.destroy());
-	//callback.call(resultcode,err)
+	var resultcode = enums.ErrorCode.EBACKENDNOTSUPP; 
+	var err = {};
+
+	if (!instance_descriptor_id){
+
+		resultcode = addon.destroy(instance_descriptor_id);
+		if ( instance_descriptor_id !== 0){
+			err.errorcode = resultcode;
+			err.message = this.eclibUtil.getErrorMessage(resultcode);
+		}
+
+	} else {
+	
+		err.errorcode = resultcode;
+		err.message = this.eclibUtil.getErrorMessage(resultcode);
+	
+	}
+
+	if (!callback){
+		return resultcode;
+	}
+
+	callback.call(resultcode,err);
 };
 
 ECLib.prototype.encode = function(instance_descriptor_id, orig_data,orig_data_size,callback){

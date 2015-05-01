@@ -3,6 +3,8 @@
 // and can add the mocha test files.
 
 var ECLib = require('../node-eclib.js');
+var enums = require('../eclib-enum.js');
+var ECLibUtil = require('../eclib-util.js');
 
 (function() {
 
@@ -11,8 +13,15 @@ var ECLib = require('../node-eclib.js');
 	var eclib = new ECLib();
 
 	eclib.create();
-
 	
+	var ecutils = new ECLibUtil();
+
+	console.log(ecutils.getErrorMessage(200));
+	console.log(ecutils.getErrorMessage(400));
+	console.log(ecutils.getErrorMessage(203));
+
+	console.log(enums.BackendId.EC_BACKENDS_MAX);
+
 
 	/*
 	eclib.destroy();
