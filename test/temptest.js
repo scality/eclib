@@ -11,6 +11,10 @@ var ECLib = require('../node-eclib.js');
 	var eclib = new ECLib();
 
 	eclib.create();
+
+	
+
+	/*
 	eclib.destroy();
 	eclib.encode();
 	eclib.encodeCleanup();
@@ -24,7 +28,7 @@ var ECLib = require('../node-eclib.js');
 	eclib.verifyStripeMetadata();
 	eclib.getAlignedDataSize();
 	eclib.getMinimumEncodeSize();
-	eclib.getFragmentSize();
+	eclib.getFragmentSize();*/
 
 	console.log("ALL the methods are OK.");
 

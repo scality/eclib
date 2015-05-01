@@ -9,8 +9,10 @@
             ,"src/cpp/asyncreconstruction.cpp"
       			],
       "include_dirs" : [
-        "<!(node -e \"require('nan')\")"
-      ]
+          "<!(node -e \"require('nan')\")"
+          ],
+      "libraries": [ "/usr/local/lib/liberasurecode.a" ]
+      
     }
   ]
 }
