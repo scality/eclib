@@ -59,4 +59,17 @@ ECLibUtil.prototype.getErrorMessage = function(errorcode){
 	return message;
 }; 
 
+ECLibUtil.prototype.validateInstanceCreateParams = function( ec_backend_id, k, m, w, hd, ct){
+
+	//if everything is defined and ok then we will send true other wise we will send it another way
+
+
+	return true;
+};
+
+
+
+
+
+
 module.exports = ECLibUtil;
