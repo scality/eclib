@@ -15,6 +15,7 @@ struct ec_args *null_test_args[] = { &null_args, NULL };
 NAN_METHOD(EclCreate) {
   NanScope();
 
+
   Local<String> strvalue = NanNew<String>("All is ok");
 
   int desc = liberasurecode_instance_create(EC_BACKENDS_MAX, &null_args);
@@ -29,8 +30,15 @@ NAN_METHOD(EclCreate) {
 }
 
 NAN_METHOD(EclDestroy) {
+  
   NanScope();
-  NanReturnValue(NanNew("C++ destroy "));
+
+  int arg0 = args[0]->NumberValue();
+  int desc = liberasurecode_instance_destroy(arg0);
+
+  Local<Number> resultcode = NanNew(desc);
+
+  NanReturnValue(errorcode);
 }
 
 
