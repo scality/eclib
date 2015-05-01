@@ -4,8 +4,11 @@
 //
 
 var addon = require('bindings')('Release/node-eclib.node')
+var ECLibUtil = require("./eclib-util.js");
+var enums = require("./eclib-enum.js");
 
 function ECLib(){
+	this.eclibUtil = new ECLibUtil();
 
 	console.log("Blank function");
 }
@@ -14,10 +17,31 @@ function ECLib(){
 ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args ,callback) {
 	
 	var instance_descriptor_id = -1;
+	var err = {};
 
-	console.log("JS create#");
-	console.log(addon.create());
-	//callback.call(instance_descriptor_id,err)
+
+	if ( this.eclibUtil.validateInstanceCreateParams(ec_backend_id, k, m, w, hd, ct)  ){
+		
+		instance_descriptor_id = addon.create();
+		
+		if (instance_descriptor_id <=0 ){
+			err.errorcode =  instance_descriptor_id ;
+			err.message = this.eclibUtil.getErrorMessage(instance_descriptor_id);
+		}
+
+	} else {
+
+		err.errorcode =  enums.ErrorCode.EBACKENDNOTAVAIL ;
+		err.message = this.eclibUtil.getErrorMessage(err.errorcode);
+		instance_descriptor_id = err.errorcode ;
+	}
+
+	if (!callback){
+		return instance_descriptor_id;
+	}
+
+	callback.call(instance_descriptor_id, err);
+
 };
 
 ECLib.prototype.destroy = function(instance_descriptor_id,callback){
