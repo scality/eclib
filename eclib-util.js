@@ -15,39 +15,39 @@ ECLibUtil.prototype.getErrorMessage = function(errorcode){
  	var message = null;
 
 	switch(errorcode){
-		case errornumber.EBACKENDNOTSUPP :
+		case -errornumber.EBACKENDNOTSUPP :
 			message = "Backend not supported"; 
 			break;
 		
-		case errornumber.EECMETHODNOTIMPL :
+		case -errornumber.EECMETHODNOTIMPL :
 			message = "No method implemented"; 
 			break;
 		
-		case errornumber.EBACKENDINITERR :
+		case -errornumber.EBACKENDINITERR :
 			message = "Backend instance is terminated"; 
 			break;
 		
-		case errornumber.EBACKENDINUSE :
+		case -errornumber.EBACKENDINUSE :
 			message = "Backend instance is in use"; 
 			break;
 		
-		case errornumber.EBACKENDNOTAVAIL :
+		case -errornumber.EBACKENDNOTAVAIL :
 			message = "Backend instance not found"; 
 			break;
 		
-		case errornumber.EBADCHKSUM :
+		case -errornumber.EBADCHKSUM :
 			message = "Fragment integrity check failed"; 
 			break;
 		
-		case errornumber.EINVALIDPARAMS :
+		case -errornumber.EINVALIDPARAMS :
 			message = "Invalid arguments"; 
 			break;
 		
-		case errornumber.EBADHEADER :
+		case -errornumber.EBADHEADER :
 			message =  "Fragment integrity check failed"; 
 			break;
 		
-		case errornumber.EINSUFFFRAGS :
+		case -errornumber.EINSUFFFRAGS :
 			message = "Insufficient number of fragments"; 
 			break;
 			
