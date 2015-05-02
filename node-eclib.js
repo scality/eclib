@@ -68,7 +68,7 @@ ECLib.prototype.destroy = function(instance_descriptor_id,callback){
 	callback.call(this,resultcode,err);
 };
 
-ECLib.prototype.encode = function(instance_descriptor_id, orig_data,orig_data_size,callback){
+ECLib.prototype.encode = function(instance_descriptor_id, orig_data, orig_data_size,callback){
 
 	console.log("JS encode ");
 	console.log(addon.encode());

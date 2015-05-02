@@ -77,4 +77,21 @@ ECLibUtil.prototype.validateInstanceCreateParams = function( ec_backend_id, k, m
 	return retvalue;
 };
 
+ECLibUtil.prototype.validateEncodeParams = function( ec_id, orig_data, deta_length ){
+
+	var retvalue = true;
+	var argslength = arguments.length;
+
+	retvalue = (argslength == 3);
+	retvalue = retvalue && this.isInt( arguments[0]);
+	retvalue = retvalue && this.isInt( arguments[2]);
+	retvalue = retvalue && Array.isArray(orig_data);
+
+
+	return retvalue;
+};
+
+
+
+
 module.exports = ECLibUtil;
