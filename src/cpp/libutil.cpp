@@ -1,6 +1,22 @@
 #include "libutil.h"
 
 
+
+ec_args *create_ec_args(ec_backend_id_t be, ec_checksum_type_t ct, int backend_test_idx){
+
+    ec_args *result;
+
+    result = (ec_args*)malloc( sizeof( ec_args ) );
+   
+
+    return result;
+}
+
+
+
+
+
+
 ec_backend_id_t get_ec_backend_id(int id){
 
 	switch(id){
@@ -37,7 +53,7 @@ ec_checksum_type_t get_ec_checksum_type(int ct){
 	// main logics will be implemented here
 
 
-    switch(id){
+    switch(ct){
         case 0:
             return CHKSUM_NONE;
             break;
