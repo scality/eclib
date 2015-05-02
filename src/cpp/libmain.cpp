@@ -2,30 +2,57 @@
 #include <nan.h>
 
 #include "libmain.h"
+#include "libutil.h"
 
 using namespace v8;
 
-struct ec_args null_args = {
-    .m = 4
-};
-
-struct ec_args *null_test_args[] = { &null_args, NULL };
-
+// we are now discarding the 
+//ec_backend_id, k, m, w, hd, ct,
 
 NAN_METHOD(EclCreate) {
   NanScope();
 
+  ec_args *result;
+  ec_backend_id_t ec_backend_id;
+  ec_checksum_type_t ct;
 
-  Local<String> strvalue = NanNew<String>("All is ok");
-
-  int desc = liberasurecode_instance_create(EC_BACKENDS_MAX, &null_args);
-
-  if(desc > -2){
-	strvalue = NanNew<String>("Error occured in the file");
+  if (args.Length() < 6) {
+    NanThrowTypeError("Wrong number of arguments");
+    NanReturnUndefined();
   }
 
-  //Local<Number> errorcode = NanNew(desc);
+  int _id = args[0]->NumberValue();
+  int k = args[1]->NumberValue();
+  int m = args[2]->NumberValue();
+  int w = args[3]->NumberValue();
+  int hd = args[4]->NumberValue();
+  int _ct = args[5]->NumberValue();
 
+  ec_backend_id = get_ec_backend_id(_id);
+  ct  = get_ec_checksum_type(_ct);
+
+
+  // TODO: Have to rewrite this code block 
+  result = (ec_args*)malloc( sizeof( ec_args ) );
+  
+  if(!result){
+
+      result->k = k;
+      result->m = m;
+
+      if (w > 0){
+        result->w = w;
+      }
+
+      if (hd > 0){
+        result->hd = hd;
+      }
+
+      result->ct = ct;
+  }
+
+ int desc = liberasurecode_instance_create(ec_backend_id, result);
+  
   NanReturnValue( NanNew(desc));
 }
 
