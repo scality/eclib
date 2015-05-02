@@ -24,9 +24,9 @@ NAN_METHOD(EclCreate) {
 	strvalue = NanNew<String>("Error occured in the file");
   }
 
-  Local<Number> errorcode = NanNew(desc);
+  //Local<Number> errorcode = NanNew(desc);
 
-  NanReturnValue(errorcode);
+  NanReturnValue( NanNew(desc));
 }
 
 NAN_METHOD(EclDestroy) {
@@ -36,9 +36,9 @@ NAN_METHOD(EclDestroy) {
   int arg0 = args[0]->NumberValue();
   int desc = liberasurecode_instance_destroy(arg0);
 
-  Local<Number> resultcode = NanNew(desc);
+  //Local<Number> resultcode = NanNew(desc);
 
-  NanReturnValue(errorcode);
+  NanReturnValue(NanNew(desc));
 }
 
 

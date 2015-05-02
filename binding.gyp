@@ -7,6 +7,7 @@
       			,"src/cpp/asyncencode.cpp"
       			,"src/cpp/asyncdecode.cpp"
             ,"src/cpp/asyncreconstruction.cpp"
+            ,"src/cpp/libutil.cpp" 
       			],
       "include_dirs" : [
           "<!(node -e \"require('nan')\")"
