@@ -9,20 +9,17 @@ var enums = require("./eclib-enum.js");
 
 function ECLib(){
 	this.eclibUtil = new ECLibUtil();
-
-	console.log("Blank function");
 }
 
 
-ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args ,callback) {
+ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args,callback) {
 	
 	var instance_descriptor_id = -1;
 	var err = {};
 
-
 	if ( this.eclibUtil.validateInstanceCreateParams(ec_backend_id, k, m, w, hd, ct)  ){
-		
-		instance_descriptor_id = addon.create();
+
+		instance_descriptor_id = addon.create(ec_backend_id, k, m, w, hd, ct);
 		
 		if (instance_descriptor_id <=0 ){
 			err.errorcode =  instance_descriptor_id ;
@@ -30,17 +27,17 @@ ECLib.prototype.create = function ( ec_backend_id, k, m, w, hd, ct, backend_args
 		}
 
 	} else {
-
 		err.errorcode =  enums.ErrorCode.EBACKENDNOTAVAIL ;
 		err.message = this.eclibUtil.getErrorMessage(err.errorcode);
 		instance_descriptor_id = err.errorcode ;
 	}
 
 	if (!callback){
+
 		return instance_descriptor_id;
 	}
 
-	callback.call(instance_descriptor_id, err);
+	callback.call(this,instance_descriptor_id, err);
 
 };
 

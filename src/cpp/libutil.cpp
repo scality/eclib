@@ -1,20 +1,23 @@
 #include "libutil.h"
 
 
-
-ec_args *create_ec_args(ec_backend_id_t be, ec_checksum_type_t ct, int backend_test_idx){
+// Have to rewrite the method to support more parameters
+ec_args * el_create_ec_args(int k, int m, int w, int hd, ec_checksum_type_t ct){
 
     ec_args *result;
-
     result = (ec_args*)malloc( sizeof( ec_args ) );
-   
+    
+    if(!result){
+
+        result->k = k;
+        result->m = m;
+        result->w = w;
+        result->hd = hd;
+        result->ct;
+    }
 
     return result;
 }
-
-
-
-
 
 
 ec_backend_id_t get_ec_backend_id(int id){
