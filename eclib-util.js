@@ -6,7 +6,9 @@ var enums = require("./eclib-enum.js");
 
 function ECLibUtil(){
 
-	console.log("ECLibUtil function");
+	this.isInt = function(n){
+		return typeof n === 'number' && n % 1 == 0;
+	}
 }
 
 ECLibUtil.prototype.getErrorMessage = function(errorcode){
@@ -61,14 +63,18 @@ ECLibUtil.prototype.getErrorMessage = function(errorcode){
 
 ECLibUtil.prototype.validateInstanceCreateParams = function( ec_backend_id, k, m, w, hd, ct){
 
-	//if everything is defined and ok then we will send true other wise we will send it another way
+	var retvalue = true;
+	var argslength = arguments.length;
 
+	retvalue = (argslength == 6);
 
-	return true;
+	while ( retvalue && (argslength> 0) ){
+		retvalue = retvalue && this.isInt( arguments[argslength]);
+		argslength--;
+	}
+
+	return retvalue;
 };
-
-
-
 
 
 
