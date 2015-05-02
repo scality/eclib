@@ -65,7 +65,7 @@ ECLib.prototype.destroy = function(instance_descriptor_id,callback){
 		return resultcode;
 	}
 
-	callback.call(resultcode,err);
+	callback.call(this,resultcode,err);
 };
 
 ECLib.prototype.encode = function(instance_descriptor_id, orig_data,orig_data_size,callback){
