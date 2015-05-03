@@ -77,15 +77,17 @@ ECLibUtil.prototype.validateInstanceCreateParams = function( ec_backend_id, k, m
 	return retvalue;
 };
 
-ECLibUtil.prototype.validateEncodeParams = function( ec_id, orig_data, deta_length ){
+ECLibUtil.prototype.validateEncodeParams = function( ec_id, orig_data, deta_length,callback ){
 
 	var retvalue = true;
 	var argslength = arguments.length;
 
-	retvalue = (argslength == 3);
+	retvalue = (argslength == 4);
 	retvalue = retvalue && this.isInt( arguments[0]);
 	retvalue = retvalue && this.isInt( arguments[2]);
-	retvalue = retvalue && Array.isArray(orig_data);
+	retvalue = retvalue && (orig_data !== undefined) && Buffer.isBuffer(orig_data);
+	// Will check whether the callback is a method or not
+	//retvalue = retvalue && Buffer.isBuffer(orig_data);
 
 
 	return retvalue;

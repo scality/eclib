@@ -10,6 +10,7 @@ using namespace v8;
 NAN_METHOD(eclEncode) {
   	NanScope();
 
+	
 	if (args.Length() < 4) {
 	    NanThrowTypeError("Wrong number of arguments");
 	    NanReturnUndefined();
@@ -17,8 +18,10 @@ NAN_METHOD(eclEncode) {
 
  	int instance_descriptor_id = args[0]->NumberValue();
 	int orig_data_size = args[2]->NumberValue();
-	char* orig_data = node::Buffer::Data(args[1]);
+	
 
+	char* orig_data = node::Buffer::Data(args[1]);
+	
 
 	Local<Function> callbackHandle = args[3].As<Function>();
 	NanCallback *callback = new NanCallback(callbackHandle);
@@ -27,10 +30,15 @@ NAN_METHOD(eclEncode) {
 	char **encoded_data = NULL, **encoded_parity = NULL;
     uint64_t encoded_fragment_len = 0;
 
+	
+    char* s = "h";
 
-	int desc = liberasurecode_encode(instance_descriptor_id, orig_data, orig_data_size,
+	int desc = liberasurecode_encode(instance_descriptor_id, s, 1,
             &encoded_data, &encoded_parity, &encoded_fragment_len);
 
+
+	NanThrowTypeError("passed the buffer test");
+	NanReturnUndefined();
 
 	// now send the data back to the server
 
