@@ -116,9 +116,15 @@ ECLib.prototype = {
 
 
 	}, 
-	
+
 	setOptions: function(opts){
 		__.extend(this.opt,opts);
+	},
+
+	testpad:function(){
+		//Use this method to do anything you want
+		
+
 	}
 }
 

@@ -57,6 +57,10 @@ void InitAll(Handle<Object> exports) {
    exports->Set(NanNew<String>("getFragmentSize"),
     NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
 
+
+   exports->Set(NanNew<String>("testpad"),
+    NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
+
 }
 
 NODE_MODULE(addon, InitAll)

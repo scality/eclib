@@ -13,4 +13,5 @@ NAN_METHOD(EclVerifyStripeMetadata);
 NAN_METHOD(EclGetAlignedDataSize);
 NAN_METHOD(EclGetMinimumEncodeSize);
 NAN_METHOD(EclGetFragmentSize);
+NAN_METHOD(testpad);
 

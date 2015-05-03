@@ -6,8 +6,18 @@
 
 using namespace v8;
 
-// we are now discarding the 
-//ec_backend_id, k, m, w, hd, ct,
+
+//We will add any implementation here then move it to the accurate palce/class
+NAN_METHOD(testpad){
+  NanScope();
+
+
+
+  NanReturnUndefined();
+}
+
+
+
 
 NAN_METHOD(EclCreate) {
   NanScope();
