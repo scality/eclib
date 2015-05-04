@@ -47,6 +47,10 @@ Here is the details
 
 ---------
 
+### Failure reasons
+* My development environment is OSX and i think liberasurecode's code is not well tested for OSX. 
 
+* I have basic/intermediate skills on c/c++ but to work in hard deadline you have to be really skilled on that thing. So if you have enough c/c++ experience then it is a easy job for you.
 
+* You gonna face lots of DYLD linking issues if you are developing in OSX, so either you know how to solve those or choose linux based development environments.
 
