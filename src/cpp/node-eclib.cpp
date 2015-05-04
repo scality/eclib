@@ -59,7 +59,7 @@ void InitAll(Handle<Object> exports) {
 
 
    exports->Set(NanNew<String>("testpad"),
-    NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
+    NanNew<FunctionTemplate>(testpad)->GetFunction());
 
 }
 

@@ -7,13 +7,44 @@
 using namespace v8;
 
 
+struct ec_args flat_xor_hd_args = {
+    .k = 3,
+    .m = 3,
+    .hd = 3,
+    .ct = CHKSUM_NONE,
+};
+
+
+
 //We will add any implementation here then move it to the accurate palce/class
 NAN_METHOD(testpad){
   NanScope();
 
+  ec_args *result;
+
+  size_t ec_args_size = sizeof(struct ec_args);
+  result = (ec_args*)malloc( sizeof( ec_args ) );
 
 
-  NanReturnUndefined();
+  if(!result){
+
+      result->k = 3;
+      result->m = 3;
+      result->hd = 3;
+      result->ct = CHKSUM_NONE;
+  }
+
+
+
+  int desc = liberasurecode_instance_create(EC_BACKEND_FLAT_XOR_HD, result);
+
+
+  
+  NanReturnValue( NanNew(desc));
+
+
+
+//  NanReturnUndefined();
 }
 
 
@@ -62,6 +93,10 @@ NAN_METHOD(EclCreate) {
   }
 
  int desc = liberasurecode_instance_create(ec_backend_id, result);
+
+
+
+ int desc2 = liberasurecode_instance_destroy(desc);
   
   NanReturnValue( NanNew(desc));
 }
