@@ -12,7 +12,7 @@
       "include_dirs" : [
           "<!(node -e \"require('nan')\")"
           ],
-      "libraries": [ "/usr/local/lib/liberasurecode.a" ]
+      "libraries": [ "/usr/local/lib/liberasurecode.so" ]
       
     }
   ]

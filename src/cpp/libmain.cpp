@@ -6,14 +6,14 @@
 
 using namespace v8;
 
-
+#if 0
 struct ec_args flat_xor_hd_args = {
     .k = 3,
     .m = 3,
     .hd = 3,
     .ct = CHKSUM_NONE,
 };
-
+#endif
 
 
 //We will add any implementation here then move it to the accurate palce/class
