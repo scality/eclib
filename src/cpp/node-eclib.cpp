@@ -63,5 +63,5 @@ void InitAll(Handle<Object> exports) {
 
 }
 
-NODE_MODULE(addon, InitAll)
+NODE_MODULE(node_eclib, InitAll)
 
