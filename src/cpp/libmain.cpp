@@ -6,54 +6,19 @@
 
 using namespace v8;
 
-#if 0
-struct ec_args flat_xor_hd_args = {
-    .k = 3,
-    .m = 3,
-    .hd = 3,
-    .ct = CHKSUM_NONE,
-};
-#endif
-
-
 //We will add any implementation here then move it to the accurate palce/class
 NAN_METHOD(testpad){
   NanScope();
 
-  ec_args *result;
-
-  size_t ec_args_size = sizeof(struct ec_args);
-  result = (ec_args*)malloc( sizeof( ec_args ) );
-
-
-  if(!result){
-
-      result->k = 3;
-      result->m = 3;
-      result->hd = 3;
-      result->ct = CHKSUM_NONE;
-  }
-
-
-
-  int desc = liberasurecode_instance_create(EC_BACKEND_FLAT_XOR_HD, result);
-
-
-  
-  NanReturnValue( NanNew(desc));
-
-
+  NanReturnValue( NanNew(0));
 
 //  NanReturnUndefined();
 }
 
-
-
-
 NAN_METHOD(EclCreate) {
   NanScope();
 
-  ec_args *result;
+  ec_args ec_args;
   ec_backend_id_t ec_backend_id;
   ec_checksum_type_t ct;
 
@@ -69,34 +34,24 @@ NAN_METHOD(EclCreate) {
   int hd = args[4]->NumberValue();
   int _ct = args[5]->NumberValue();
 
+  //printf("id=%d k=%d m=%d w=%d hd=%d ct=%d\n", _id, k, m, w, hd, _ct);
+
   ec_backend_id = get_ec_backend_id(_id);
   ct  = get_ec_checksum_type(_ct);
-
-
-  // TODO: Have to rewrite this code block 
-  result = (ec_args*)malloc( sizeof( ec_args ) );
   
-  if(!result){
+  memset(&ec_args, 0, sizeof (ec_args));
+  ec_args.k = k;
+  ec_args.m = m;
+  ec_args.w = w;
+  ec_args.hd = hd;
+  ec_args.ct = ct;
 
-      result->k = k;
-      result->m = m;
+  int desc = liberasurecode_instance_create(ec_backend_id, &ec_args);
 
-      if (w > 0){
-        result->w = w;
-      }
-
-      if (hd > 0){
-        result->hd = hd;
-      }
-
-      result->ct = ct;
+  if (desc <= 0) {
+    NanThrowTypeError("Liberasurecode initialization failed");
+    NanReturnUndefined();
   }
-
- int desc = liberasurecode_instance_create(ec_backend_id, result);
-
-
-
- int desc2 = liberasurecode_instance_destroy(desc);
   
   NanReturnValue( NanNew(desc));
 }
@@ -113,12 +68,10 @@ NAN_METHOD(EclDestroy) {
   NanReturnValue(NanNew(desc));
 }
 
-
 NAN_METHOD(EclFragmentsNeeded) {
   NanScope();
   NanReturnValue(NanNew("C++ FragmentsNeeded "));
 }
-
 
 NAN_METHOD(EclGetFragmentMetadata) {
   NanScope();
