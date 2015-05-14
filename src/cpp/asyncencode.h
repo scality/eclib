@@ -6,6 +6,6 @@
 #include <erasurecode_helpers.h>
 
 
-NAN_METHOD(eclEncode);
+NAN_METHOD(EclEncode);
 
-NAN_METHOD(eclEncodeCleanup);
+NAN_METHOD(EclEncodeCleanup);

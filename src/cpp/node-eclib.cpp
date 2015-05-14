@@ -21,17 +21,16 @@ void InitAll(Handle<Object> exports) {
     NanNew<FunctionTemplate>(EclDestroy)->GetFunction());
 
   exports->Set(NanNew<String>("encode"),
-    NanNew<FunctionTemplate>(eclEncode)->GetFunction());
+    NanNew<FunctionTemplate>(EclEncode)->GetFunction());
 
   exports->Set(NanNew<String>("encodeCleanup"),
-    NanNew<FunctionTemplate>(eclEncodeCleanup)->GetFunction());
-
+    NanNew<FunctionTemplate>(EclEncodeCleanup)->GetFunction());
 
   exports->Set(NanNew<String>("decode"),
-    NanNew<FunctionTemplate>(eclDecode)->GetFunction());
+    NanNew<FunctionTemplate>(EclDecode)->GetFunction());
 
   exports->Set(NanNew<String>("decodeCleanup"),
-    NanNew<FunctionTemplate>(eclDecodeCleanup)->GetFunction());
+    NanNew<FunctionTemplate>(EclDecodeCleanup)->GetFunction());
 
    exports->Set(NanNew<String>("reconstructFragment"),
     NanNew<FunctionTemplate>(EclReconstructFragment)->GetFunction());

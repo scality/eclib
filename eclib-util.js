@@ -69,7 +69,6 @@ ECLibUtil.prototype.validateInstanceCreateParams = function( ec_backend_id, k, m
 	retvalue = (argslength == 6);
 
 	while ( retvalue && (argslength> 0) ){
-		
 		retvalue = retvalue && this.isInt( arguments[argslength - 1]);
 		argslength--;
 	}

@@ -1,6 +1,9 @@
 #include <node.h>
 #include <nan.h>
 
-NAN_METHOD(eclDecode);
+#include <erasurecode.h>
+#include <erasurecode_helpers.h>
 
-NAN_METHOD(eclDecodeCleanup);
+NAN_METHOD(EclDecode);
+
+NAN_METHOD(EclDecodeCleanup);

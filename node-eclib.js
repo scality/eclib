@@ -9,12 +9,17 @@ var enums = require("./eclib-enum.js");
 var __ = require('underscore');
 
 function ECLib(opts){
-	var d_options = {"bc_id":0,"k":8,"m":4,"w":0,"hd":0,"ct":0 };
+	var d_options = {"bc_id":0,  //backend ID
+			 "k":8,      //number of data fragments
+			 "m":4,      //number of parity fragments
+			 "w":0,      //word size, in bits
+			 "hd":0,     //hamming distance (=m for Reed-Solomon)
+			 "ct":0 };   //fragment checksum type
 
 	this.opt = {};
 	__.extend(this.opt,d_options);
 
-	if (__.size(opts) > 1){
+	if (__.size(opts) > 0){
 		__.extend(this.opt, opts );
 	}
 
@@ -39,10 +44,9 @@ ECLib.prototype = {
 		var instance_descriptor_id = -1;
 		var err = {};
 		var o= this.opt;
+		if ( this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k, o.m, o.w, o.hd, o.ct)  ){
 
-		if ( this.eclibUtil.validateInstanceCreateParams(o.ec_id, o.k, o.m, o.w, o.hd, o.ct)  ){
-
-			instance_descriptor_id = addon.create(o.ec_id, o.k, o.m, o.w, o.hd, o.ct);
+			instance_descriptor_id = addon.create(o.bc_id, o.k, o.m, o.w, o.hd, o.ct);
 			
 			if (instance_descriptor_id <=0 ){
 				err.errorcode =  instance_descriptor_id ;
@@ -74,7 +78,7 @@ ECLib.prototype = {
 		var err = {};
 
 		if (this.isValidInstance()){
-			resultcode = addon.destroy(instance_descriptor_id);
+			resultcode = addon.destroy(this.ins_id);
 			if ( resultcode !== 0){
 				err.errorcode = resultcode;
 				err.message = this.eclibUtil.getErrorMessage(resultcode);
@@ -96,16 +100,18 @@ ECLib.prototype = {
 	},
 
 	encode: function(o_data,callback){
+	    var o = this.opt;
 
-
+	    addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
+
 	encodeCleanup: function(callback){
 
 
 	},
 
-	decode:function(d_data,callback){
-
+	decode:function(d_data,n_frags,frag_len,force_metadata_check,callback){
+	    addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
 	},
 
 	decodeCleanup:function(callback){
