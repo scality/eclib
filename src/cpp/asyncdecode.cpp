@@ -5,6 +5,18 @@
 
 using namespace v8;
 
+static void free_decode(char *out_data, void *hint) {
+  int instance_descriptor_id = (int) (int64_t) hint;
+  //printf("out_data_after=%p\n", out_data);
+
+  int status = liberasurecode_decode_cleanup(instance_descriptor_id, 
+					     out_data);
+  
+  if (status != 0) {
+    NanThrowTypeError("Decode cleanup failed");
+  }
+}
+
 NAN_METHOD(EclDecode) {
   NanScope();
 
@@ -40,10 +52,11 @@ NAN_METHOD(EclDecode) {
   }
   
   if (status == 0) {
-    
+    //printf("out_data=%p\n", out_data);
+  
     Handle<Value> argv[] = {
       NanNew<Number>(status),
-      NanNewBufferHandle(out_data, out_data_len),
+      NanNewBufferHandle(out_data, out_data_len, free_decode, (void *) (int64_t) instance_descriptor_id),
       NanNew<Number>(out_data_len)
     };
     
@@ -64,5 +77,5 @@ NAN_METHOD(EclDecode) {
 
 NAN_METHOD(EclDecodeCleanup) {
   NanScope();
-  NanReturnValue(NanNew("C++ DecodeCleanUp #### not implemented"));
+  NanReturnValue(NanNew("C++ EclDecodeCleanup "));
 }
