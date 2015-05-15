@@ -115,7 +115,6 @@ ECLib.prototype = {
 	},
 
 	decodeCleanup:function(callback){
-
 	},
 
 	getFragmentMetadata: function(fragment, fragment_metadata, callback){
@@ -129,10 +128,8 @@ ECLib.prototype = {
 
 	testpad:function(){
 		//Use this method to do anything you want
-		 console.log("-------------- from the test pad---");
-		console.log( addon.testpad());
-
-
+	    console.log("-------------- from the test pad---");
+	    console.log( addon.testpad());
 	}
 }
 

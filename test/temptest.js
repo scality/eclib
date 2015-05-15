@@ -7,31 +7,31 @@ var enums = require('../eclib-enum.js');
 var ECLibUtil = require('../eclib-util.js');
 var buffertools = require("buffertools");
 
-(function() {
+console.log("ECLib testing");
 
-    console.log("ECLib testing");
-    
-    var eclib = new ECLib({
-	"bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_CAUCHY"],
-	"k": 9,
-	"m": 3
-    });
-    
-    desc = eclib.init();
-    console.log("lib descriptor: " + desc);
-    
+var eclib = new ECLib({
+    "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_CAUCHY"],
+    "k": 9,
+    "m": 3
+});
+
+desc = eclib.init();
+
+//eclib.testpad();
+
+function test_one() {
     ref_buf = new Buffer("foo");
-
+    
     eclib.encode(ref_buf,
 		 function(status, encoded_data, encoded_parity, encoded_fragment_length) {
 		     console.log("Encode Done status=" + status + " fragment_length=" + encoded_fragment_length);
-
+		     
 		     k = eclib.opt.k;
 		     m = eclib.opt.m;
 		     
 		     x = k-m; //available data fragments
 		     y = m;   //available parity fragments
-
+		     
 		     var fragments = [];
 		     var i, j;
 		     j = 0;
@@ -41,40 +41,26 @@ var buffertools = require("buffertools");
 		     for (i = 0;i < y;i++) {
 			 fragments[j++] = encoded_parity[i];
 		     }
-
+		     
 		     eclib.decode(fragments, x+y, encoded_fragment_length, 0,
 				  function(status, out_data, out_data_length) {
 				      console.log("Decode Done status=" + status + " data_length=" + out_data_length);
 				      
-				      var buffer = new Buffer(out_data.length);
-				      out_data.copy(buffer);
-
-				      if (buffertools.compare(buffer, ref_buf) == 0)
+				      if (buffertools.compare(out_data, ref_buf) == 0)
 					  console.log("OK Buffers are identical");
 				      else
 					  console.log("Nok buffers differ");
-				      
 				  }
 				 );
 		     
 		 }
 		);
+}
 
-    /*
-      eclib.destroy();
-      eclib.encode();
-      eclib.encodeCleanup();
-      eclib.decode();
-      eclib.decodeCleanup();
-      eclib.reconstructFragment(); 
-      eclib.fragmentsNeeded();
-      
-      eclib.getFragmentMetadata();
-      eclib.isInvalidFragment();
-      eclib.verifyStripeMetadata();
-      eclib.getAlignedDataSize();
-      eclib.getMinimumEncodeSize();
-      eclib.getFragmentSize();*/
-    
+test_one();
+//test_one();
+//test_one();
 
-})();
+eclib.destroy();
+
+global.gc(); //requires --expose-gc

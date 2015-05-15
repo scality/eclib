@@ -9,10 +9,8 @@ using namespace v8;
 //We will add any implementation here then move it to the accurate palce/class
 NAN_METHOD(testpad){
   NanScope();
-
-  NanReturnValue( NanNew(0));
-
-//  NanReturnUndefined();
+  //NanReturnValue( NanNew(0));
+  NanReturnUndefined();
 }
 
 NAN_METHOD(EclCreate) {
@@ -61,11 +59,14 @@ NAN_METHOD(EclDestroy) {
   NanScope();
 
   int arg0 = args[0]->NumberValue();
-  int desc = liberasurecode_instance_destroy(arg0);
+  int status = liberasurecode_instance_destroy(arg0);
 
-  //Local<Number> resultcode = NanNew(desc);
+  if (status <= 0) {
+    NanThrowTypeError("Liberasurecode instance destroy failed");
+    NanReturnUndefined();
+  }
 
-  NanReturnValue(NanNew(desc));
+  NanReturnValue(NanNew(status));
 }
 
 NAN_METHOD(EclFragmentsNeeded) {
