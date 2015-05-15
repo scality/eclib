@@ -57,9 +57,10 @@ function test_one() {
 		);
 }
 
-eclib.destroy();
-
 test_one();
 //test_one();
 //test_one();
+
+eclib.destroy();
+
 global.gc(); //requires --expose-gc
