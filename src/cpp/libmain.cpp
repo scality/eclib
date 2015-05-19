@@ -5,10 +5,51 @@
 #include "libutil.h"
 
 using namespace v8;
+using namespace std;
+
+#include <vector>
+
+struct AsyncSortData {
+  vector<double> v;
+  NanCallback * callback;
+};
+
+void sort(uv_work_t* req) {
+  //AsyncSortData *data = reinterpret_cast<AsyncSortData*>(req->data);
+  printf("WORK\n");
+};
+
+void afterSort(uv_work_t* req, int foo) {
+  HandleScope scope;
+  AsyncSortData *data = reinterpret_cast<AsyncSortData*>(req->data);
+
+  printf("after sort\n");
+
+  Handle<Value> argv[] = {
+    NanNew<Number>(43)
+  };
+  
+  data->callback->Call(1, argv);
+
+  delete data;
+  delete req;
+}
+ 
 
 //We will add any implementation here then move it to the accurate palce/class
 NAN_METHOD(testpad){
   NanScope();
+  uv_work_t* req = new uv_work_t;
+  AsyncSortData* data = new AsyncSortData;
+  req->data = data;
+
+  int num = args[0]->NumberValue();
+  printf("num %d\n", num);
+  Local<Function> callbackHandle = args[1].As<Function>();
+  data->callback = new NanCallback(callbackHandle);
+
+  uv_queue_work(uv_default_loop(), req, sort, afterSort);
+
   //NanReturnValue( NanNew(0));
   NanReturnUndefined();
 }
