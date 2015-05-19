@@ -17,6 +17,8 @@ struct AsyncSortData {
 void sort(uv_work_t* req) {
   //AsyncSortData *data = reinterpret_cast<AsyncSortData*>(req->data);
   printf("WORK\n");
+  sleep(10);
+  printf("end of sleep\n");
 };
 
 void afterSort(uv_work_t* req, int foo) {
