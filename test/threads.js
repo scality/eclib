@@ -15,7 +15,7 @@ console.log("ECLib testing");
 function decode_result(status, out_data, out_data_length) {
     console.log("Decode Done status=" + status + " data_length=" + out_data_length);
     
-    console.log(hexdump(out_data));
+    //console.log(hexdump(out_data));
     
     if (buffertools.compare(out_data, ref_buf) == 0)
 	console.log("OK Buffers are identical");
@@ -35,14 +35,14 @@ function encode_result(status, encoded_data, encoded_parity, encoded_fragment_le
     var fragments = [];
     var i, j;
     j = 0;
-    console.log('data:');
+    //console.log('data:');
     for (i = 0;i < x;i++) {
-	console.log(hexdump(encoded_data[i]));
+	//console.log(hexdump(encoded_data[i]));
 	fragments[j++] = encoded_data[i];
     }
-    console.log('codings:');
+    //console.log('codings:');
     for (i = 0;i < y;i++) {
-	console.log(hexdump(encoded_parity[i]));
+	//console.log(hexdump(encoded_parity[i]));
 	fragments[j++] = encoded_parity[i];
     }
     
@@ -53,13 +53,9 @@ function test_one() {
 
     //ref_buf = new Buffer(10000);
     //buffertools.fill(ref_buf, 'z');
-    ref_buf = crypto.randomBytes(100);
-    
-    console.log(hexdump(ref_buf));
+    //console.log(hexdump(ref_buf));
 
     eclib.encode(ref_buf, encode_result);
-
-    delete ref_buf;
 }
 
 //EC_BACKEND_NULL
@@ -81,8 +77,10 @@ eclib.init()
 //eclib.testpad();
 
 threadPool = threads.createPool(10);
-    
-threadPool.any.eval('test_one', function cb(err, data) {
+
+ref_buf = crypto.randomBytes(100000000);
+
+threadPool.all.eval('test_one', function cb(err, data) {
     process.stdout.write(" [" + this.id + "]");
     test_one();
 });
