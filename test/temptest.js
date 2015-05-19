@@ -31,7 +31,7 @@ function test_one(opts) {
 		     k = eclib.opt.k;
 		     m = eclib.opt.m;
 		     
-		     x = k-m; //available data fragments
+		     x = k-1; //available data fragments
 		     y = m;   //available parity fragments
 		     
 		     var fragments = [];
@@ -60,6 +60,7 @@ function test_one(opts) {
 					  console.log("Nok buffers differ");
 				  }
 				 );
+         console.log("Right after decode called");
 		     
 		 }
 		);
@@ -75,11 +76,13 @@ function test_one(opts) {
 //EC_BACKEND_FLAT_XOR_HD
 //EC_BACKEND_ISA_L_RS_VAND
 //EC_BACKEND_SHSS
+//EC_BACKEND_ISA_L_RS_CAUCHY
 
 test_one({
-    "bc_id": enums.BackendId["EC_BACKEND_ISA_L_RS_CAUCHY"],
-    "k": 9,
-    "m": 3
+    "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
+    "k": 3,
+    "m": 3,
+    "hd": 3
 });
 
 global.gc(); //requires --expose-gc
