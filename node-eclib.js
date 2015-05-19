@@ -126,10 +126,10 @@ ECLib.prototype = {
 		__.extend(this.opt,opts);
 	},
 
-	testpad:function(){
+	testpad:function(num,callback){
 		//Use this method to do anything you want
 	    console.log("-------------- from the test pad---");
-	    console.log( addon.testpad());
+	    console.log( addon.testpad(num,callback));
 	}
 }
 
