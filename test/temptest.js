@@ -20,7 +20,8 @@ desc = eclib.init();
 //eclib.testpad();
 
 function test_one() {
-    ref_buf = new Buffer("foo");
+    ref_buf = new Buffer(100000);
+    buffertools.fill(ref_buf, 'z');
     
     eclib.encode(ref_buf,
 		 function(status, encoded_data, encoded_parity, encoded_fragment_length) {
@@ -55,6 +56,8 @@ function test_one() {
 		     
 		 }
 		);
+
+    delete ref_buf;
 }
 
 test_one();
