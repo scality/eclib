@@ -6,22 +6,23 @@ var ECLib = require('../node-eclib.js');
 var enums = require('../eclib-enum.js');
 var ECLibUtil = require('../eclib-util.js');
 var buffertools = require("buffertools");
+var crypto = require('crypto');
+var hexdump = require('hexdump-nodejs');
 
 console.log("ECLib testing");
 
-var eclib = new ECLib({
-    "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_CAUCHY"],
-    "k": 9,
-    "m": 3
-});
+function test_one(opts) {
+    var eclib = new ECLib(opts);
+    
+    desc = eclib.init();
+    
+    //eclib.testpad();
 
-desc = eclib.init();
-
-//eclib.testpad();
-
-function test_one() {
-    ref_buf = new Buffer(100000);
-    buffertools.fill(ref_buf, 'z');
+    //ref_buf = new Buffer(10000);
+    //buffertools.fill(ref_buf, 'z');
+    ref_buf = crypto.randomBytes(1000);
+    
+    console.log(hexdump(ref_buf));
     
     eclib.encode(ref_buf,
 		 function(status, encoded_data, encoded_parity, encoded_fragment_length) {
@@ -36,16 +37,22 @@ function test_one() {
 		     var fragments = [];
 		     var i, j;
 		     j = 0;
+		     console.log('data:');
 		     for (i = 0;i < x;i++) {
+			 console.log(hexdump(encoded_data[i]));
 			 fragments[j++] = encoded_data[i];
 		     }
+		     console.log('codings:');
 		     for (i = 0;i < y;i++) {
+			 console.log(hexdump(encoded_parity[i]));
 			 fragments[j++] = encoded_parity[i];
 		     }
 		     
 		     eclib.decode(fragments, x+y, encoded_fragment_length, 0,
 				  function(status, out_data, out_data_length) {
 				      console.log("Decode Done status=" + status + " data_length=" + out_data_length);
+
+				      console.log(hexdump(out_data));
 				      
 				      if (buffertools.compare(out_data, ref_buf) == 0)
 					  console.log("OK Buffers are identical");
@@ -58,12 +65,21 @@ function test_one() {
 		);
 
     delete ref_buf;
+
+    eclib.destroy();
 }
 
-test_one();
-//test_one();
-//test_one();
+//EC_BACKEND_NULL
+//EC_BACKEND_JERASURE_RS_VAND
+//EC_BACKEND_JERASURE_RS_CAUCHY
+//EC_BACKEND_FLAT_XOR_HD
+//EC_BACKEND_ISA_L_RS_VAND
+//EC_BACKEND_SHSS
 
-eclib.destroy();
+test_one({
+    "bc_id": enums.BackendId["EC_BACKEND_ISA_L_RS_CAUCHY"],
+    "k": 9,
+    "m": 3
+});
 
 global.gc(); //requires --expose-gc
