@@ -89,6 +89,6 @@ threadPool.any.eval('test_one', function cb(err, data) {
 
 console.log("encode/decode started in bg");
 
-eclib.destroy();
+//eclib.destroy();
 
 //global.gc(); //requires --expose-gc
