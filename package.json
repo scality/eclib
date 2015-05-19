@@ -1,26 +1,29 @@
 {
-  "name" : "eclib"
-  , "version" : "v0.0.1"
-  , "description" : "Native Node.js C++ extension for liberasurecode"
-  , "homepage" : "http://www.scality.com/"
-  , "author" : { 
-      "name" : "Giorgio Regni"
-      , "email" : "giorgio.regni@scality.com"
-      , "url" : "http://www.scality.com/"
-    }
-  , "repository" : { 
-      "type" : "git"
-      , "url" : "https://github.com/scality/node-ECLib.git"
-    }
-  , "scripts" : {
-      "preinstall" : "node-gyp configure && node-gyp build"
-      , "preuninstall" : "rm -rf build/*"
-    }
-  , "main" : "node-eclib.js"
-  , "dependencies" : {
-      "bindings": "~1.2.1"
-      ,"nan": "~1.8.0"
-      ,"underscore": "*"
-    }
-  , "gypfile" : true
+  "name": "eclib",
+  "version": "v0.0.1",
+  "description": "Native Node.js C++ extension for liberasurecode",
+  "homepage": "http://www.scality.com/",
+  "author": {
+    "name": "Giorgio Regni",
+    "email": "giorgio.regni@scality.com",
+    "url": "http://www.scality.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scality/node-ECLib.git"
+  },
+  "scripts": {
+    "preinstall": "node-gyp configure && node-gyp build",
+    "preuninstall": "rm -rf build/*"
+  },
+  "main": "node-eclib.js",
+  "dependencies": {
+    "bindings": "~1.2.1",
+    "buffertools": "^2.1.2",
+    "hexdump": "^0.1.0",
+    "hexdump-nodejs": "^0.1.0",
+    "nan": "~1.8.0",
+    "underscore": "*"
+  },
+  "gypfile": true
 }
