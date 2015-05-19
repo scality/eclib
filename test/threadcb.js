@@ -20,6 +20,7 @@ function test_one(opts) {
 	console.log("CALLBACK! " + param);
     });
 
+    console.log("out\n");
 }
 
 //EC_BACKEND_NULL
