@@ -22,7 +22,7 @@ void sort(uv_work_t* req) {
 };
 
 void afterSort(uv_work_t* req, int foo) {
-  HandleScope scope;
+  NanScope();
   AsyncSortData *data = reinterpret_cast<AsyncSortData*>(req->data);
 
   printf("after sort\n");
