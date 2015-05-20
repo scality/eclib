@@ -12,7 +12,8 @@ struct EncodeData {
   int m;
   char *orig_data;
   int orig_data_size;
-  NanCallback *callback;
+  //NanCallback *callback;
+  Persistent<Function> callback;
   //result
   int status;
   char **encoded_data;
@@ -70,7 +71,13 @@ static void EncodeAfterWork(uv_work_t* req, int foo) {
       NanNew<Number>(data->encoded_fragment_len)
     };
     
-    data->callback->Call(4, argv);
+    //data->callback->Call(4, argv);
+    node::MakeCallback(Context::GetCurrent()->Global(),
+		       data->callback,
+		       4,
+		       argv);
+    data->callback.Dispose();
+    data->callback.Clear();
 
     delete req;
     
@@ -80,7 +87,13 @@ static void EncodeAfterWork(uv_work_t* req, int foo) {
       NanNew<Number>(data->status)
     };
     
-    data->callback->Call(1, argv);
+    //data->callback->Call(1, argv);
+    node::MakeCallback(Context::GetCurrent()->Global(),
+		       data->callback,
+		       1,
+		       argv);
+    data->callback.Dispose();
+    data->callback.Clear();
   
     delete data;
     delete req;
@@ -103,8 +116,9 @@ NAN_METHOD(EclEncode) {
   data->m = args[2]->NumberValue();
   data->orig_data = node::Buffer::Data(args[3]);
   data->orig_data_size = args[4]->NumberValue();
-  Local<Function> callbackHandle = args[5].As<Function>();
-  data->callback = new NanCallback(callbackHandle);
+  //Local<Function> callbackHandle = args[5].As<Function>();
+  //data->callback = new NanCallback(callbackHandle);
+  data->callback = Persistent<Function>::New(args[5].As<Function>());
 
   req->data = data;
     

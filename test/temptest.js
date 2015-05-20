@@ -20,7 +20,7 @@ function test_one(opts) {
 
     //ref_buf = new Buffer(10000);
     //buffertools.fill(ref_buf, 'z');
-    ref_buf = crypto.randomBytes(1000);
+    var ref_buf = crypto.randomBytes(1000);
     
     console.log(hexdump(ref_buf));
     

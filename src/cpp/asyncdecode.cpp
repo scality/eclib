@@ -12,7 +12,8 @@ struct DecodeData {
   int n_frag;
   int frag_len;
   int force_metadata_check;
-  NanCallback *callback;
+  //NanCallback *callback;
+  Persistent<Function> callback;
   //result
   int status;
   char *out_data;
@@ -50,7 +51,13 @@ static void DecodeAfterWork(uv_work_t* req, int foo) {
       NanNew<Number>(data->out_data_len)
     };
     
-    data->callback->Call(3, argv);
+    //data->callback->Call(3, argv);
+    node::MakeCallback(Context::GetCurrent()->Global(),
+		       data->callback,
+		       3,
+		       argv);
+    data->callback.Dispose();
+    data->callback.Clear();
 
     delete req;
     
@@ -60,7 +67,13 @@ static void DecodeAfterWork(uv_work_t* req, int foo) {
       NanNew<Number>(data->status)
     };
     
-    data->callback->Call(1, argv);
+    //data->callback->Call(1, argv);
+    node::MakeCallback(Context::GetCurrent()->Global(),
+		       data->callback,
+		       1,
+		       argv);
+    data->callback.Dispose();
+    data->callback.Clear();
   
     delete data;
     delete req;
@@ -87,8 +100,9 @@ NAN_METHOD(EclDecode) {
   }
   data->frag_len = args[3]->NumberValue();
   data->force_metadata_check = args[4]->NumberValue();
-  Local<Function> callbackHandle = args[5].As<Function>();
-  data->callback = new NanCallback(callbackHandle);
+  //Local<Function> callbackHandle = args[5].As<Function>();
+  //data->callback = new NanCallback(callbackHandle);
+  data->callback = Persistent<Function>::New(args[5].As<Function>());
 
   req->data = data;
 

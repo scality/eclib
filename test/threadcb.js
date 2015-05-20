@@ -15,21 +15,24 @@ function test_one(opts) {
     var eclib = new ECLib(opts);
     var done = false;
     desc = eclib.init();
-    
+    var foo = 42;
+
     eclib.testpad(42, function (param) {
+	console.log("foo=" + foo);
         console.log(done); // Should not be undefined, should be false
         done = true;
 	   console.log("CALLBACK! " + param);
     });
     var i = 0;
     
-    //var work = function(dosomestuff) {
-    //    console.log("dosomestuff in JS "+ (i++));
-    //    if (!done)
-    //        	process.nextTick(work);
-    //}
-    //work();
-    console.log("out\n");
+    var work = function(dosomestuff) {
+        console.log("dosomestuff in JS "+ (i++));
+        if (!done)
+            	process.nextTick(work);
+    }
+    work();
+    console.log("out " + done);
+    console.log("END");
 }
 
 //EC_BACKEND_NULL

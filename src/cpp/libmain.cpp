@@ -9,13 +9,14 @@ using namespace std;
 
 struct TestpadData {
   int ival;
-  NanCallback * callback;
+  //NanCallback * callback;
+  Persistent<Function> callback;
 };
 
 void testpad_work(uv_work_t* req) {
   //TestpadData *data = reinterpret_cast<TestpadData*>(req->data);
   printf("WORK\n");
-  sleep(10);
+  sleep(4);
   printf("end of sleep\n");
 };
 
@@ -29,7 +30,14 @@ void testpad_afterwork(uv_work_t* req, int foo) {
     NanNew<Number>(43)
   };
   
-  data->callback->Call(1, argv);
+  node::MakeCallback(Context::GetCurrent()->Global(),
+                     data->callback,
+                     1,
+                     argv);
+  //data->callback->Call(1, argv);
+
+  data->callback.Dispose();
+  data->callback.Clear();
 
   delete data;
   delete req;
@@ -43,8 +51,9 @@ NAN_METHOD(testpad){
   TestpadData* data = new TestpadData;
   req->data = data;
 
-  Local<Function> callbackHandle = args[1].As<Function>();
-  data->callback = new NanCallback(callbackHandle);
+  //Local<Function> callbackHandle = args[1].As<Function>();
+  //data->callback = new NanCallback(callbackHandle);
+  data->callback = Persistent<Function>::New(args[1].As<Function>());
   data->ival = args[0]->NumberValue();
   printf("ival %d\n", data->ival);
 
