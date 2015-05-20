@@ -7,25 +7,23 @@
 using namespace v8;
 using namespace std;
 
-#include <vector>
-
-struct AsyncSortData {
-  vector<double> v;
+struct TestpadData {
+  int ival;
   NanCallback * callback;
 };
 
-void sort(uv_work_t* req) {
-  //AsyncSortData *data = reinterpret_cast<AsyncSortData*>(req->data);
+void testpad_work(uv_work_t* req) {
+  //TestpadData *data = reinterpret_cast<TestpadData*>(req->data);
   printf("WORK\n");
   sleep(10);
   printf("end of sleep\n");
 };
 
-void afterSort(uv_work_t* req, int foo) {
+void testpad_afterwork(uv_work_t* req, int foo) {
   NanScope();
-  AsyncSortData *data = reinterpret_cast<AsyncSortData*>(req->data);
+  TestpadData *data = reinterpret_cast<TestpadData*>(req->data);
 
-  printf("after sort\n");
+  printf("after work\n");
 
   Handle<Value> argv[] = {
     NanNew<Number>(43)
@@ -42,15 +40,15 @@ void afterSort(uv_work_t* req, int foo) {
 NAN_METHOD(testpad){
   NanScope();
   uv_work_t* req = new uv_work_t;
-  AsyncSortData* data = new AsyncSortData;
+  TestpadData* data = new TestpadData;
   req->data = data;
 
-  int num = args[0]->NumberValue();
-  printf("num %d\n", num);
   Local<Function> callbackHandle = args[1].As<Function>();
   data->callback = new NanCallback(callbackHandle);
+  data->ival = args[0]->NumberValue();
+  printf("ival %d\n", data->ival);
 
-  uv_queue_work(uv_default_loop(), req, sort, afterSort);
+  uv_queue_work(uv_default_loop(), req, testpad_work, testpad_afterwork);
 
   //NanReturnValue( NanNew(0));
   NanReturnUndefined();

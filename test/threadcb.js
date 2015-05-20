@@ -23,12 +23,12 @@ function test_one(opts) {
     });
     var i = 0;
     
-    var work = function(dosomestuff) {
-        console.log("dosomestuff in JS "+ (i++));
-        if (!done)
-            	process.nextTick(work);
-    }
-    work();
+    //var work = function(dosomestuff) {
+    //    console.log("dosomestuff in JS "+ (i++));
+    //    if (!done)
+    //        	process.nextTick(work);
+    //}
+    //work();
     console.log("out\n");
 }
 
