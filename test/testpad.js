@@ -40,5 +40,3 @@ test_one({
     "m": 3,
     "hd": 3
 });
-
-global.gc(); //requires --expose-gc
