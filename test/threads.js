@@ -11,15 +11,20 @@ var hexdump = require('hexdump-nodejs');
 
 console.log("ECLib testing");
 
+var done = false;
+
 function decode_result(status, out_data, out_data_length) {
     console.log("Decode Done status=" + status + " data_length=" + out_data_length);
     
     //console.log(hexdump(out_data));
 
+    console.log("comparing");
     if (buffertools.compare(out_data, ref_buf) == 0)
 	console.log("OK Buffers are identical");
     else
 	console.log("Nok buffers differ");
+
+    done = true;
 }
 
 function encode_result(status, encoded_data, encoded_parity, encoded_fragment_length) {
@@ -85,6 +90,18 @@ ref_buf = crypto.randomBytes(100000);
 
 test_one();
 
-//eclib.destroy();
+var i = 0;
+var work = function(dosomestuff) {
+    console.log("dosomestuff in JS "+ (i++));
+    if (!done) {
+        process.nextTick(work);
+    } else {
+	console.log("DONE");
+	delete ref_buf;
+    }
+}
+work();
+
+eclib.destroy();
 
 global.gc(); //requires --expose-gc

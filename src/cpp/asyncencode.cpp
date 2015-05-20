@@ -25,7 +25,7 @@ struct EncodeData {
 
 static void EncodeFree(char *out_data, void *hint) {
     EncodeData *data = reinterpret_cast<EncodeData*>(hint);
-
+    //printf("FREE ENCODE TMP\n");
     data->count--;
     
     if (0 == data->count) {
@@ -124,7 +124,7 @@ NAN_METHOD(EclEncode) {
     
   uv_queue_work(uv_default_loop(), req, EncodeWork, EncodeAfterWork);
 
-  NanReturnValue( NanNew(0));
+  NanReturnUndefined();
 }
 
 NAN_METHOD(EclEncodeCleanup) {
