@@ -5,5 +5,3 @@
 #include <erasurecode_helpers.h>
 
 NAN_METHOD(EclDecode);
-
-NAN_METHOD(EclDecodeCleanup);
