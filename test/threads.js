@@ -8,7 +8,6 @@ var ECLibUtil = require('../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
-var threads = require('threads_a_gogo');
 
 console.log("ECLib testing");
 
@@ -16,7 +15,7 @@ function decode_result(status, out_data, out_data_length) {
     console.log("Decode Done status=" + status + " data_length=" + out_data_length);
     
     //console.log(hexdump(out_data));
-    
+
     if (buffertools.compare(out_data, ref_buf) == 0)
 	console.log("OK Buffers are identical");
     else
@@ -46,7 +45,9 @@ function encode_result(status, encoded_data, encoded_parity, encoded_fragment_le
 	fragments[j++] = encoded_parity[i];
     }
     
+    console.log("decode");
     eclib.decode(fragments, x+y, encoded_fragment_length, 0, decode_result);
+    console.log("decode started in bg");
 }
 
 function test_one() {
@@ -55,7 +56,9 @@ function test_one() {
     //buffertools.fill(ref_buf, 'z');
     //console.log(hexdump(ref_buf));
 
+    console.log("encode");
     eclib.encode(ref_buf, encode_result);
+    console.log("encode started in bg");
 }
 
 //EC_BACKEND_NULL
@@ -76,17 +79,12 @@ eclib.init()
 
 //eclib.testpad();
 
-threadPool = threads.createPool(10);
+//ref_buf = new Buffer(1000000000);
+//buffertools.fill(ref_buf, 'z');
+ref_buf = crypto.randomBytes(100000);
 
-ref_buf = crypto.randomBytes(100000000);
-
-threadPool.all.eval('test_one', function cb(err, data) {
-    process.stdout.write(" [" + this.id + "]");
-    test_one();
-});
-
-console.log("encode/decode started in bg");
+test_one();
 
 //eclib.destroy();
 
-//global.gc(); //requires --expose-gc
+global.gc(); //requires --expose-gc
