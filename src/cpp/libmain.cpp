@@ -44,12 +44,19 @@ void testpad_afterwork(uv_work_t* req, int foo) {
 }
  
 
+static void testpad_free(char *out_data, void *hint) {
+  printf("testpad free\n");
+}
+
 //We will add any implementation here then move it to the accurate palce/class
 NAN_METHOD(testpad){
   NanScope();
   uv_work_t* req = new uv_work_t;
   TestpadData* data = new TestpadData;
   req->data = data;
+
+  static string foo = "foo";
+  NanNewBufferHandle((char *) foo.c_str(), 3, testpad_free, NULL);
 
   //Local<Function> callbackHandle = args[1].As<Function>();
   //data->callback = new NanCallback(callbackHandle);
@@ -59,7 +66,6 @@ NAN_METHOD(testpad){
 
   uv_queue_work(uv_default_loop(), req, testpad_work, testpad_afterwork);
 
-  //NanReturnValue( NanNew(0));
   NanReturnUndefined();
 }
 
@@ -116,7 +122,7 @@ NAN_METHOD(EclDestroy) {
     NanReturnUndefined();
   }
 
-  NanReturnValue(NanNew(status));
+  NanReturnUndefined();
 }
 
 NAN_METHOD(EclFragmentsNeeded) {
@@ -153,5 +159,3 @@ NAN_METHOD(EclGetFragmentSize) {
   NanScope();
   NanReturnValue(NanNew("C++ GetFragmentSize"));
 }
-
-

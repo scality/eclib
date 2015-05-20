@@ -129,7 +129,7 @@ ECLib.prototype = {
 	testpad:function(num,callback){
 		//Use this method to do anything you want
 	    console.log("-------------- from the test pad---");
-	    console.log( addon.testpad(num,callback));
+	    addon.testpad(num,callback);
 	}
 }
 

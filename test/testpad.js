@@ -23,15 +23,6 @@ function test_one(opts) {
         done = true;
 	   console.log("CALLBACK! " + param);
     });
-    var i = 0;
-    
-    var work = function(dosomestuff) {
-        console.log("dosomestuff in JS "+ (i++));
-        if (!done)
-            	process.nextTick(work);
-    }
-    work();
-    console.log("out " + done);
     console.log("END");
 }
 
@@ -50,4 +41,4 @@ test_one({
     "hd": 3
 });
 
-//global.gc(); //requires --expose-gc
+global.gc(); //requires --expose-gc

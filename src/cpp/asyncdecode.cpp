@@ -42,6 +42,8 @@ static void DecodeWork(uv_work_t* req) {
 static void DecodeAfterWork(uv_work_t* req, int foo) {
   NanScope();
   DecodeData *data = reinterpret_cast<DecodeData*>(req->data);
+
+  //printf("decode after work\n");
   
   if (0 == data->status) {
 
@@ -50,7 +52,6 @@ static void DecodeAfterWork(uv_work_t* req, int foo) {
       NanNewBufferHandle(data->out_data, data->out_data_len, DecodeFree, data),
       NanNew<Number>(data->out_data_len)
     };
-    
     //data->callback->Call(3, argv);
     node::MakeCallback(Context::GetCurrent()->Global(),
 		       data->callback,
@@ -108,7 +109,7 @@ NAN_METHOD(EclDecode) {
 
   uv_queue_work(uv_default_loop(), req, DecodeWork, DecodeAfterWork);
     
-  NanReturnValue( NanNew(0));
+  NanReturnUndefined();
 }
 
 
