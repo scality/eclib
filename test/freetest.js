@@ -1,6 +1,4 @@
-// Just trying to do the manual checking of the method existenance 
-// Will remove the file when we can communicate with the real libarary 
-// and can add the mocha test files.
+// test that liberasure code buffers are cleaned up
 
 var ECLib = require('../node-eclib.js');
 var enums = require('../eclib-enum.js');
@@ -13,6 +11,10 @@ console.log("ECLib testing");
 
 var done = false;
 
+function set_done_true() {
+    done = true;
+}
+
 function decode_result(status, out_data, out_data_length) {
     console.log("Decode Done status=" + status + " data_length=" + out_data_length);
     
@@ -24,7 +26,7 @@ function decode_result(status, out_data, out_data_length) {
     else
 	console.log("Nok buffers differ");
 
-    done = true;
+    setTimeout(set_done_true, 500);
 }
 
 function encode_result(status, encoded_data, encoded_parity, encoded_fragment_length) {

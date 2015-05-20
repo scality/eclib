@@ -1,6 +1,4 @@
-// Just trying to do the manual checking of the method existenance 
-// Will remove the file when we can communicate with the real libarary 
-// and can add the mocha test files.
+// launch multiple encodes/decodes in parallel
 
 var ECLib = require('../node-eclib.js');
 var enums = require('../eclib-enum.js');
