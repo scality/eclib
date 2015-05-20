@@ -43,10 +43,10 @@ static void DecodeAfterWork(uv_work_t* req, int foo) {
   NanScope();
   DecodeData *data = reinterpret_cast<DecodeData*>(req->data);
 
-  //printf("decode after work\n");
-  
   if (0 == data->status) {
 
+    //printf("decode after work\n");
+    
     Handle<Value> argv[] = {
       NanNew<Number>(data->status),
       NanNewBufferHandle(data->out_data, data->out_data_len, DecodeFree, data),

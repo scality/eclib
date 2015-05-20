@@ -98,10 +98,8 @@ var work = function(dosomestuff) {
     } else {
 	console.log("DONE");
 	delete ref_buf;
+	eclib.destroy();
+	global.gc(); //requires --expose-gc
     }
 }
 work();
-
-eclib.destroy();
-
-global.gc(); //requires --expose-gc
