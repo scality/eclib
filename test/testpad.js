@@ -24,14 +24,6 @@ function test_one(opts) {
     console.log("END");
 }
 
-//EC_BACKEND_NULL
-//EC_BACKEND_JERASURE_RS_VAND
-//EC_BACKEND_JERASURE_RS_CAUCHY
-//EC_BACKEND_FLAT_XOR_HD
-//EC_BACKEND_ISA_L_RS_VAND
-//EC_BACKEND_SHSS
-//EC_BACKEND_ISA_L_RS_CAUCHY
-
 test_one({
     "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
     "k": 3,
