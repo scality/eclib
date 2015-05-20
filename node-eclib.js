@@ -124,3 +124,5 @@ ECLib.prototype = {
 	    addon.testpad(num,callback);
 	}
 }
+
+module.exports = ECLib;
