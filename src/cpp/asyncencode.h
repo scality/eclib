@@ -7,5 +7,3 @@
 
 
 NAN_METHOD(EclEncode);
-
-NAN_METHOD(EclEncodeCleanup);

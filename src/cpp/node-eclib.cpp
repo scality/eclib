@@ -23,14 +23,8 @@ void InitAll(Handle<Object> exports) {
   exports->Set(NanNew<String>("encode"),
     NanNew<FunctionTemplate>(EclEncode)->GetFunction());
 
-  exports->Set(NanNew<String>("encodeCleanup"),
-    NanNew<FunctionTemplate>(EclEncodeCleanup)->GetFunction());
-
   exports->Set(NanNew<String>("decode"),
     NanNew<FunctionTemplate>(EclDecode)->GetFunction());
-
-  exports->Set(NanNew<String>("decodeCleanup"),
-    NanNew<FunctionTemplate>(EclDecodeCleanup)->GetFunction());
 
    exports->Set(NanNew<String>("reconstructFragment"),
     NanNew<FunctionTemplate>(EclReconstructFragment)->GetFunction());

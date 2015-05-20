@@ -111,9 +111,3 @@ NAN_METHOD(EclDecode) {
     
   NanReturnUndefined();
 }
-
-
-NAN_METHOD(EclDecodeCleanup) {
-  NanScope();
-  NanReturnValue(NanNew("C++ EclDecodeCleanup "));
-}

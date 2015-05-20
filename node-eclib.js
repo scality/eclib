@@ -105,16 +105,8 @@ ECLib.prototype = {
 	    addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
 
-	encodeCleanup: function(callback){
-
-
-	},
-
 	decode:function(d_data,n_frags,frag_len,force_metadata_check,callback){
 	    addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
-	},
-
-	decodeCleanup:function(callback){
 	},
 
 	getFragmentMetadata: function(fragment, fragment_metadata, callback){
