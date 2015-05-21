@@ -7,68 +7,6 @@
 using namespace v8;
 using namespace std;
 
-struct TestpadData {
-  int ival;
-  //NanCallback * callback;
-  Persistent<Function> callback;
-};
-
-void testpad_work(uv_work_t* req) {
-  //TestpadData *data = reinterpret_cast<TestpadData*>(req->data);
-  printf("WORK\n");
-  sleep(4);
-  printf("end of sleep\n");
-};
-
-void testpad_afterwork(uv_work_t* req, int foo) {
-  NanScope();
-  TestpadData *data = reinterpret_cast<TestpadData*>(req->data);
-
-  printf("after work\n");
-
-  Handle<Value> argv[] = {
-    NanNew<Number>(43)
-  };
-  
-  node::MakeCallback(Context::GetCurrent()->Global(),
-                     data->callback,
-                     1,
-                     argv);
-  //data->callback->Call(1, argv);
-
-  data->callback.Dispose();
-  data->callback.Clear();
-
-  delete data;
-  delete req;
-}
- 
-
-static void testpad_free(char *out_data, void *hint) {
-  printf("testpad free\n");
-}
-
-//We will add any implementation here then move it to the accurate palce/class
-NAN_METHOD(testpad){
-  NanScope();
-  uv_work_t* req = new uv_work_t;
-  TestpadData* data = new TestpadData;
-  req->data = data;
-
-  static string foo = "foo";
-  NanNewBufferHandle((char *) foo.c_str(), 3, testpad_free, NULL);
-
-  //Local<Function> callbackHandle = args[1].As<Function>();
-  //data->callback = new NanCallback(callbackHandle);
-  data->callback = Persistent<Function>::New(args[1].As<Function>());
-  data->ival = args[0]->NumberValue();
-  printf("ival %d\n", data->ival);
-
-  uv_queue_work(uv_default_loop(), req, testpad_work, testpad_afterwork);
-
-  NanReturnUndefined();
-}
-
 NAN_METHOD(EclCreate) {
   NanScope();
 

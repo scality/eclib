@@ -12,8 +12,6 @@ struct DecodeData {
   int n_frag;
   int frag_len;
   int force_metadata_check;
-  //NanCallback *callback;
-  Persistent<Function> callback;
   //result
   int status;
   char *out_data;
@@ -30,20 +28,30 @@ static void DecodeFree(char *out_data, void *hint) {
   delete data;
 }
 
-static void DecodeWork(uv_work_t* req) {
-  DecodeData *data = reinterpret_cast<DecodeData*>(req->data);
+class DecodeWorker : public NanAsyncWorker {
+ public:
+  DecodeWorker(NanCallback *callback, DecodeData *data)
+    : NanAsyncWorker(callback), data(data) {}
+  ~DecodeWorker() {}
 
-  data->status = liberasurecode_decode(data->instance_descriptor_id, 
+  // Executed inside the worker-thread.
+  // It is not safe to access V8, or V8 data structures
+  // here, so everything we need for input and output
+  // should go on `this`.
+  void Execute () {
+    data->status = liberasurecode_decode(data->instance_descriptor_id, 
 				       data->fragments, data->n_frag, data->frag_len, 
 				       data->force_metadata_check,
 				       &data->out_data, &data->out_data_len);
-}
+  }
 
-static void DecodeAfterWork(uv_work_t* req, int foo) {
-  NanScope();
-  DecodeData *data = reinterpret_cast<DecodeData*>(req->data);
+  // Executed when the async work is complete
+  // this function will be run inside the main event loop
+  // so it is safe to use V8 again
+  void HandleOKCallback () {
+    NanScope();
 
-  if (0 == data->status) {
+    if (0 == data->status) {
 
     //printf("decode after work\n");
     
@@ -52,34 +60,21 @@ static void DecodeAfterWork(uv_work_t* req, int foo) {
       NanNewBufferHandle(data->out_data, data->out_data_len, DecodeFree, data),
       NanNew<Number>(data->out_data_len)
     };
-    //data->callback->Call(3, argv);
-    node::MakeCallback(Context::GetCurrent()->Global(),
-		       data->callback,
-		       3,
-		       argv);
-    data->callback.Dispose();
-    data->callback.Clear();
-
-    delete req;
     
+    callback->Call(3, argv);
   } else {
     
     Handle<Value> argv[] = {
       NanNew<Number>(data->status)
     };
     
-    //data->callback->Call(1, argv);
-    node::MakeCallback(Context::GetCurrent()->Global(),
-		       data->callback,
-		       1,
-		       argv);
-    data->callback.Dispose();
-    data->callback.Clear();
-  
-    delete data;
-    delete req;
+     callback->Call(1, argv);
   }
-}
+  }
+
+ private:
+  DecodeData *data;
+};
 
 NAN_METHOD(EclDecode) {
   NanScope();
@@ -89,7 +84,6 @@ NAN_METHOD(EclDecode) {
     NanReturnUndefined();
   }
 
-  uv_work_t* req = new uv_work_t;
   DecodeData *data = new DecodeData;
   
   data->instance_descriptor_id = args[0]->NumberValue();
@@ -101,13 +95,9 @@ NAN_METHOD(EclDecode) {
   }
   data->frag_len = args[3]->NumberValue();
   data->force_metadata_check = args[4]->NumberValue();
-  //Local<Function> callbackHandle = args[5].As<Function>();
-  //data->callback = new NanCallback(callbackHandle);
-  data->callback = Persistent<Function>::New(args[5].As<Function>());
-
-  req->data = data;
-
-  uv_queue_work(uv_default_loop(), req, DecodeWork, DecodeAfterWork);
+  
+  NanCallback *callback = new NanCallback(args[5].As<Function>());
+  NanAsyncQueueWorker(new DecodeWorker(callback, data));
     
   NanReturnUndefined();
 }
