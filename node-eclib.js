@@ -105,6 +105,12 @@ ECLib.prototype = {
 	    addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
 
+	encodev: function(n_buf,buf_array,total_size,callback){
+	    var o = this.opt;
+
+	    addon.encodev(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
+	},
+
 	decode:function(d_data,n_frags,frag_len,force_metadata_check,callback){
 	    addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
 	},
