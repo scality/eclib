@@ -13,8 +13,7 @@
     "url": "https://github.com/scality/node-ECLib.git"
   },
   "scripts": {
-    "preinstall": "node-gyp configure && node-gyp build",
-    "preuninstall": "rm -rf build/*"
+    "install": "node-gyp configure && node-gyp build"
   },
   "main": "node-eclib.js",
   "dependencies": {
