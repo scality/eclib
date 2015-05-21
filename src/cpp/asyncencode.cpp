@@ -116,7 +116,7 @@ NAN_METHOD(EclEncode) {
   NanScope();
 
   if (args.Length() < 6) {
-    NanThrowTypeError("Wrong number of arguments");
+    NanThrowTypeError("Wrong number of arguments desc_id k m buf size cb");
     NanReturnUndefined();
   }
 
@@ -132,6 +132,40 @@ NAN_METHOD(EclEncode) {
   memcpy(data->orig_data, orig_data, data->orig_data_size);
 
   NanCallback *callback = new NanCallback(args[5].As<Function>());
+
+  NanAsyncQueueWorker(new EncodeWorker(callback, data));
+  NanReturnUndefined();
+}
+
+NAN_METHOD(EclEncodeV) {
+  NanScope();
+
+  if (args.Length() < 7) {
+    NanThrowTypeError("Wrong number of arguments desc_id k m n_buf buf_array total_size cb");
+    NanReturnUndefined();
+  }
+
+  EncodeData *data = new EncodeData;
+  DPRINTF("Enc data %p\n", data);
+
+  data->instance_descriptor_id = args[0]->NumberValue();
+  data->k = args[1]->NumberValue();
+  data->m = args[2]->NumberValue();
+
+  data->orig_data_size = args[5]->NumberValue();
+  data->orig_data = new char[data->orig_data_size];
+
+  Local<Object>buf_array = args[4]->ToObject();
+  int n_buf = args[3]->NumberValue();
+  int off = 0;
+  for (int i = 0;i < n_buf;i++) {
+    char *buf = node::Buffer::Data(buf_array->Get(i));
+    int buf_len = node::Buffer::Length(buf_array->Get(i));
+    memcpy(data->orig_data + off, buf, buf_len);
+    off += buf_len;
+  }
+
+  NanCallback *callback = new NanCallback(args[6].As<Function>());
 
   NanAsyncQueueWorker(new EncodeWorker(callback, data));
   NanReturnUndefined();
