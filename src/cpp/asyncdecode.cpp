@@ -5,6 +5,9 @@
 
 using namespace v8;
 
+//#define DPRINTF(fmt,...) do { fprintf(stderr, fmt, ##__VA_ARGS__); } while (0)
+#define DPRINTF(fmt,...)
+
 struct DecodeData {
   //input
   int instance_descriptor_id;
@@ -22,9 +25,9 @@ struct DecodeData {
 static void DecodeFree(char *out_data, void *hint) {
   DecodeData *data = reinterpret_cast<DecodeData*>(hint);
 
-  printf("FREE DECODE %p\n", data);
+  DPRINTF("FREE DECODE %p\n", data);
   liberasurecode_decode_cleanup(data->instance_descriptor_id, data->out_data);
-
+  
   delete data;
 }
 
@@ -39,12 +42,12 @@ class DecodeWorker : public NanAsyncWorker {
   // here, so everything we need for input and output
   // should go on `this`.
   void Execute () {
-    printf("execute decode %p\n", data);
-     data->status = liberasurecode_decode(data->instance_descriptor_id, 
-					  data->fragments, data->n_frag, data->frag_len, 
-					  data->force_metadata_check,
-					  &data->out_data, &data->out_data_len);
-     printf("execute decode done %p\n", data);
+    DPRINTF("execute decode %p\n", data);
+    data->status = liberasurecode_decode(data->instance_descriptor_id, 
+					 data->fragments, data->n_frag, data->frag_len, 
+					 data->force_metadata_check,
+					 &data->out_data, &data->out_data_len);
+    DPRINTF("execute decode done %p\n", data);
   }
 
   // Executed when the async work is complete
@@ -53,7 +56,7 @@ class DecodeWorker : public NanAsyncWorker {
   void HandleOKCallback () {
     NanScope();
 
-    printf("DECODE Callback %p\n", data);
+    DPRINTF("DECODE Callback %p\n", data);
 
     if (0 == data->status) {
     
@@ -87,7 +90,7 @@ NAN_METHOD(EclDecode) {
   }
 
   DecodeData *data = new DecodeData;
-  printf("Dec data %p\n", data);
+  DPRINTF("Dec data %p\n", data);
   
   data->instance_descriptor_id = args[0]->NumberValue();
   Local<Object>fragments_array = args[1]->ToObject();
