@@ -116,12 +116,6 @@ ECLib.prototype = {
 
 	setOptions: function(opts){
 		__.extend(this.opt,opts);
-	},
-
-	testpad:function(num,callback){
-		//Use this method to do anything you want
-	    console.log("-------------- from the test pad---");
-	    addon.testpad(num,callback);
 	}
 }
 

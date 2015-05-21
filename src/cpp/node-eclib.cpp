@@ -49,11 +49,6 @@ void InitAll(Handle<Object> exports) {
 
    exports->Set(NanNew<String>("getFragmentSize"),
     NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
-
-
-   exports->Set(NanNew<String>("testpad"),
-    NanNew<FunctionTemplate>(testpad)->GetFunction());
-
 }
 
 NODE_MODULE(node_eclib, InitAll)
