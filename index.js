@@ -1,5 +1,5 @@
 module.exports = {
 	enums : require('./eclib-enum.js'),
-	utils : require('./eclib-utils.js'),
+	utils : require('./eclib-util.js'),
 	ECLib : require('./node-eclib.js'),
 };
