@@ -13,8 +13,8 @@ var COUNT = 100; //per batch
 var N_BATCHES = 10;
 
 //var eclib = new ECLib({"bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"], "k": 3, "m": 3, "hd": 3});
-//var eclib = new ECLib({"bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_CAUCHY"], "k": 10, "m": 4, "w": 4, "hd": 5});
-var eclib = new ECLib({"bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"], "k": 10, "m": 4, "w": 16, "hd": 5});
+var eclib = new ECLib({"bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_CAUCHY"], "k": 10, "m": 4, "w": 4, "hd": 5});
+//var eclib = new ECLib({"bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"], "k": 10, "m": 4, "w": 16, "hd": 5});
 
 eclib.init();
 

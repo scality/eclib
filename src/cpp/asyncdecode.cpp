@@ -22,6 +22,7 @@ struct DecodeData {
   //free
 };
 
+#if 0
 static void DecodeFree(char *out_data, void *hint) {
   DecodeData *data = reinterpret_cast<DecodeData*>(hint);
 
@@ -30,12 +31,19 @@ static void DecodeFree(char *out_data, void *hint) {
   
   delete data;
 }
+#endif
 
 class DecodeWorker : public NanAsyncWorker {
  public:
   DecodeWorker(NanCallback *callback, DecodeData *data)
     : NanAsyncWorker(callback), data(data) {}
-  ~DecodeWorker() {}
+  ~DecodeWorker() {
+    for (int i = 0;i < data->n_frag;i++) {
+      delete data->fragments[i];
+    }
+    delete data->fragments;
+    delete data;
+  }
 
   // Executed inside the worker-thread.
   // It is not safe to access V8, or V8 data structures
@@ -62,9 +70,12 @@ class DecodeWorker : public NanAsyncWorker {
     
     Handle<Value> argv[] = {
       NanNew<Number>(data->status),
-      NanNewBufferHandle(data->out_data, data->out_data_len, DecodeFree, data),
+      NanNewBufferHandle(data->out_data, data->out_data_len),//, DecodeFree, data),
       NanNew<Number>(data->out_data_len)
     };
+
+    liberasurecode_decode_cleanup(data->instance_descriptor_id, data->out_data);
+    data->out_data = NULL;
     
     callback->Call(3, argv);
   } else {
@@ -96,10 +107,12 @@ NAN_METHOD(EclDecode) {
   Local<Object>fragments_array = args[1]->ToObject();
   data->n_frag = args[2]->NumberValue();
   data->fragments = new char*[data->n_frag];
-  for (int i = 0;i < data->n_frag;i++) {
-    data->fragments[i] = node::Buffer::Data(fragments_array->Get(i));
-  }
   data->frag_len = args[3]->NumberValue();
+  for (int i = 0;i < data->n_frag;i++) {
+    char *fragment = node::Buffer::Data(fragments_array->Get(i));
+    data->fragments[i] = new char[data->frag_len];
+    memcpy(data->fragments[i], fragment, data->frag_len);
+  }
   data->force_metadata_check = args[4]->NumberValue();
   
   NanCallback *callback = new NanCallback(args[5].As<Function>());
