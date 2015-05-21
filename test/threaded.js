@@ -34,6 +34,7 @@ function test_one() {
 			 fragments[j++] = encoded_parity[i];
 		     }
 		     
+			 console.log("Calling decode");
 		     eclib.decode(fragments, x+y, encoded_fragment_length, 0,
 				  function(status, out_data, out_data_length) {
 				      console.log("Decode Done status=" + status + " data_length=" + out_data_length);
@@ -67,8 +68,7 @@ buffertools.fill(ref_buf, 'z');
 //console.log(hexdump(ref_buf));
 
 console.log("starting");    
-test_one();
-test_one();
+test_one();  
 test_one();
 
 //eclib.destroy();

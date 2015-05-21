@@ -23,11 +23,11 @@ struct EncodeData {
 
 static void EncodeFree(char *out_data, void *hint) {
     EncodeData *data = reinterpret_cast<EncodeData*>(hint);
-    //printf("FREE ENCODE TMP\n");
+    printf("FREE ENCODE TMP %d %p\n", data->count, data);
     data->count--;
     
     if (0 == data->count) {
-      //printf("FREE ENCODE\n");
+      printf("FREE ENCODE %p\n", data);
       liberasurecode_encode_cleanup(data->instance_descriptor_id,
 				    data->encoded_data,
 				    data->encoded_parity);
@@ -46,11 +46,13 @@ class EncodeWorker : public NanAsyncWorker {
   // here, so everything we need for input and output
   // should go on `this`.
   void Execute () {
+    printf("Encoding %p\n", data);
     data->status = liberasurecode_encode(data->instance_descriptor_id,
 					 data->orig_data, data->orig_data_size,
 					 &data->encoded_data, 
 					 &data->encoded_parity, 
 					 &data->encoded_fragment_len);
+    printf("Encoding Done %p\n", data);
   }
 
   // Executed when the async work is complete
@@ -60,6 +62,7 @@ class EncodeWorker : public NanAsyncWorker {
     NanScope();
 
     if (0 == data->status) {
+      printf("Encoding OK CB %p\n", data);
       data->count = data->k + data->m;
 
       Handle<Array> encoded_data_array = NanNew<Array>(data->k);
@@ -79,7 +82,6 @@ class EncodeWorker : public NanAsyncWorker {
 	NanNew<Number>(data->encoded_fragment_len)
       };
     
-    //data->callback->Call(4, argv);
       callback->Call(4, argv);
   } else {
     
@@ -105,6 +107,7 @@ NAN_METHOD(EclEncode) {
   }
 
   EncodeData *data = new EncodeData;
+  printf("Enc data %p\n", data);
 
   data->instance_descriptor_id = args[0]->NumberValue();
   data->k = args[1]->NumberValue();
