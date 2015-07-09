@@ -23,6 +23,9 @@ void InitAll(Handle<Object> exports) {
   exports->Set(NanNew<String>("encode"),
     NanNew<FunctionTemplate>(EclEncode)->GetFunction());
 
+  exports->Set(NanNew<String>("encodev"),
+    NanNew<FunctionTemplate>(EclEncodeV)->GetFunction());
+
   exports->Set(NanNew<String>("decode"),
     NanNew<FunctionTemplate>(EclDecode)->GetFunction());
 
