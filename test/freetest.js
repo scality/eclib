@@ -1,70 +1,49 @@
 // test that liberasure code buffers are cleaned up
 
+'use strict';
+
 var ECLib = require('../node-eclib.js');
 var enums = require('../eclib-enum.js');
 var ECLibUtil = require('../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
-
-console.log("ECLib testing");
+var assert = require('assert');
 
 function decode_result(status, out_data, out_data_length) {
-  console.log("Decode Done status=" + status + " data_length=" +
-    out_data_length);
+  // Buffers must be equal, or else something bad happened.
+  assert.equal(buffertools.compare(out_data, ref_buf), 0);
 
-  //console.log(hexdump(out_data));
-
-  console.log("comparing");
-  if (buffertools.compare(out_data, ref_buf) == 0)
-    console.log("OK Buffers are identical");
-  else
-    console.log("Nok buffers differ");
-
-  delete ref_buf;
+  // Free memory used by ECLib.
   eclib.destroy();
-  global.gc(); //requires --expose-gc
 }
 
 function encode_result(status, encoded_data, encoded_parity,
   encoded_fragment_length) {
-  console.log("Encode Done status=" + status + " fragment_length=" +
-    encoded_fragment_length);
 
-  k = eclib.opt.k;
-  m = eclib.opt.m;
+  var k = eclib.opt.k;
+  var m = eclib.opt.m;
 
-  x = k - 1; //available data fragments
-  y = m; //available parity fragments
+  var x = k - 1; //available data fragments
+  var y = m; //available parity fragments
 
   var fragments = [];
   var i, j;
   j = 0;
-  //console.log('data:');
   for (i = 0; i < x; i++) {
-    //console.log(hexdump(encoded_data[i]));
     fragments[j++] = encoded_data[i];
   }
   //console.log('codings:');
   for (i = 0; i < y; i++) {
-    //console.log(hexdump(encoded_parity[i]));
     fragments[j++] = encoded_parity[i];
   }
 
-  console.log("decode");
   eclib.decode(fragments, x + y, encoded_fragment_length, 0, decode_result);
-  console.log("decode started in bg");
 }
 
 function test_one() {
-
-  //ref_buf = new Buffer(10000);
-  //buffertools.fill(ref_buf, 'z');
-  //console.log(hexdump(ref_buf));
-
-  console.log("encode");
+  eclib.init();
   eclib.encode(ref_buf, encode_result);
-  console.log("encode started in bg");
 }
 
 //EC_BACKEND_NULL
@@ -81,12 +60,6 @@ var eclib = new ECLib({
   "hd": 3
 });
 
-eclib.init()
-
-//eclib.testpad();
-
-//ref_buf = new Buffer(1000000000);
-//buffertools.fill(ref_buf, 'z');
-ref_buf = crypto.randomBytes(100000);
+var ref_buf = crypto.randomBytes(100000);
 
 test_one();
