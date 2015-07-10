@@ -1,87 +1,83 @@
-// Basic structures of the ECLib library
-
-// We will not require anything right now.
-//
-
 var addon = require('bindings')('Release/node-eclib.node')
 var ECLibUtil = require("./eclib-util.js");
 var enums = require("./eclib-enum.js");
 var __ = require('underscore');
 
-function ECLib(opts){
+function ECLib(opts) {
 	var d_options = {
-		"bc_id":0,  //backend ID
-		"k":8,      //number of data fragments
-		"m":4,      //number of parity fragments
-		"w":0,      //word size, in bits
-		"hd":0,     //hamming distance (=m for Reed-Solomon)
-		"ct":0 };   //fragment checksum type
+		"bc_id": 0, //backend ID
+		"k": 8, //number of data fragments
+		"m": 4, //number of parity fragments
+		"w": 0, //word size, in bits
+		"hd": 0, //hamming distance (=m for Reed-Solomon)
+		"ct": 0
+	}; //fragment checksum type
 
 	this.opt = {};
-	__.extend(this.opt,d_options);
+	__.extend(this.opt, d_options);
 
-	if (__.size(opts) > 0){
-		__.extend(this.opt, opts );
+	if (__.size(opts) > 0) {
+		__.extend(this.opt, opts);
 	}
 
 	this.ins_id = null;
 	this.eclibUtil = new ECLibUtil();
-	this.isValidInstance = function(){
+	this.isValidInstance = function() {
 
-		return ( __.isUndefined(this.ins_id));
+		return (__.isUndefined(this.ins_id));
 
 	};
 
-	this.resetOptions = function(){
+	this.resetOptions = function() {
 		this.opt = null;
-		__.extend(this.opt,d_options);
+		__.extend(this.opt, d_options);
 	};
 }
 
 ECLib.prototype = {
 
-	init: function(callback){
+	init: function(callback) {
 		//This will be the  create method of the ECLIB
 		var instance_descriptor_id = -1;
 		var err = {};
-		var o= this.opt;
-		if ( this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k, o.m, o.w, o.hd, o.ct)  ){
+		var o = this.opt;
+		if (this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k, o.m, o.w, o.hd,
+				o.ct)) {
 
 			instance_descriptor_id = addon.create(o.bc_id, o.k, o.m, o.w, o.hd, o.ct);
 
-			if (instance_descriptor_id <=0 ){
-				err.errorcode =  instance_descriptor_id ;
+			if (instance_descriptor_id <= 0) {
+				err.errorcode = instance_descriptor_id;
 				err.message = this.eclibUtil.getErrorMessage(instance_descriptor_id);
-			}else {
-				this.ins_id =instance_descriptor_id;
-				console.log("ins id is OK:" + this.ins_id);
+			} else {
+				this.ins_id = instance_descriptor_id;
 			}
 
 		} else {
-			err.errorcode =  enums.ErrorCode.EINVALIDPARAMS ;
+			err.errorcode = enums.ErrorCode.EINVALIDPARAMS;
 			err.message = this.eclibUtil.getErrorMessage(err.errorcode);
-			instance_descriptor_id = err.errorcode ;
+			instance_descriptor_id = err.errorcode;
 		}
 
 
-		if (!callback){
+		if (!callback) {
 
 			return instance_descriptor_id;
 		}
 
-		callback.call(this,instance_descriptor_id, err);
+		callback.call(this, instance_descriptor_id, err);
 
 
 
 	},
-	destroy: function(callback){
+	destroy: function(callback) {
 
 		var resultcode = enums.ErrorCode.EBACKENDNOTAVAIL;
 		var err = {};
 
-		if (this.isValidInstance()){
+		if (this.isValidInstance()) {
 			resultcode = addon.destroy(this.ins_id);
-			if ( resultcode !== 0){
+			if (resultcode !== 0) {
 				err.errorcode = resultcode;
 				err.message = this.eclibUtil.getErrorMessage(resultcode);
 			}
@@ -93,18 +89,18 @@ ECLib.prototype = {
 
 		}
 
-		if (!callback){
+		if (!callback) {
 			return resultcode;
 		}
 
-		callback.call(this,resultcode,err);
+		callback.call(this, resultcode, err);
 
 	},
 
-	encode: function(o_data,callback){
-	    var o = this.opt;
+	encode: function(o_data, callback) {
+		var o = this.opt;
 
-	    addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
+		addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
 
 	encodev: function(n_buf, buf_array, total_size, callback){
@@ -117,7 +113,7 @@ ECLib.prototype = {
 	    addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
 	},
 
-	getFragmentMetadata: function(fragment, fragment_metadata, callback){
+	getFragmentMetadata: function(fragment, fragment_metadata, callback) {
 
 
 	},

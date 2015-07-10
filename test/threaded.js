@@ -1,4 +1,6 @@
-// launch multiple encodes/decodes in parallel
+// launch multiple encodes/decodes in parallel, to test for race conditions
+
+'use strict';
 
 var ECLib = require('../node-eclib.js');
 var enums = require('../eclib-enum.js');
@@ -15,23 +17,19 @@ function test_one() {
       console.log("Encode Done status=" + status + " fragment_length=" +
         encoded_fragment_length);
 
-      k = eclib.opt.k;
-      m = eclib.opt.m;
+      var k = eclib.opt.k;
+      var m = eclib.opt.m;
 
-      x = k - 1; //available data fragments
-      y = m; //available parity fragments
+      var x = k - 1; //available data fragments
+      var y = m; //available parity fragments
 
       var fragments = [];
       var i, j;
       j = 0;
-      //console.log('data:');
       for (i = 0; i < x; i++) {
-        //console.log(hexdump(encoded_data[i]));
         fragments[j++] = encoded_data[i];
       }
-      //console.log('codings:');
       for (i = 0; i < y; i++) {
-        //console.log(hexdump(encoded_parity[i]));
         fragments[j++] = encoded_parity[i];
       }
 
@@ -66,13 +64,9 @@ var ref_buf = new Buffer(500000000);
 buffertools.fill(ref_buf, 'z');
 //var ref_buf = crypto.randomBytes(100000);
 
-//console.log(hexdump(ref_buf));
-
 console.log("starting");
 test_one();
 test_one();
 test_one();
 
 //eclib.destroy();
-
-//global.gc(); //requires --expose-gc
