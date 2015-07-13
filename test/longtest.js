@@ -82,7 +82,7 @@ function do_batches(num, done) {
   if (num >= N_BATCHES) {
     done();
   } else {
-    console.log('batch #' + num + '/' + N_BATCHES);
+    process.stdout.write('.');
     // Not all batches have been ran. We'll call one and when its done,
     // call the next one, etc, etc.
     do_one_batch(num, function() {
@@ -105,8 +105,32 @@ var eclib = new ECLib({
 });
 eclib.init();
 
-// Do all batches, starting with the batch 0.
-console.log('memleak test: start!');
+// Returns heap usage in MiB
+function getHeapUsage() {
+  return process.memoryUsage().heapUsed / 1024 / 1024;
+}
+
+// Monitor heap usage to make sure there are no mem leaks
+function monitorHeapUsage(initialHeapUsage) {
+  // We'll allow memory to increase a bit (1.5) but if it increases more, we'll consider
+  // that to be a memory leak.
+  assert.equal(getHeapUsage() <= initialHeapUsage * 1.5, true,
+    'heap usage has increased too much, it looks like there is a memory leak');
+
+  // If the batches are not done yet done, we'll continue monitoring.
+  if (!done) {
+    setImmediate(function() {
+      monitorHeapUsage(initialHeapUsage);
+    });
+  }
+}
+
+monitorHeapUsage(getHeapUsage());
+
+// Do all batches, starting with the 1st batch.
+var done = false;
+process.stdout.write('memleaks: ');
 do_batches(0, function() {
-  console.log('memleak test: done!');
+  console.log(' done');
+  done = true;
 });
