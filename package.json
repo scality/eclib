@@ -13,7 +13,7 @@
     "url": "https://github.com/scality/node-ECLib.git"
   },
   "scripts": {
-    "install": "node-gyp configure && node-gyp build"
+    "preinstall": "make"
   },
   "main": "index.js",
   "dependencies": {
@@ -22,6 +22,7 @@
     "hexdump": "^0.1.0",
     "hexdump-nodejs": "^0.1.0",
     "nan": "~1.8.0",
+    "node-gyp": "",
     "underscore": "*"
   },
   "gypfile": true
