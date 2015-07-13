@@ -12,7 +12,6 @@ all: $(TARGET)
 
 $(TARGET): $(DEPS)
 	sudo npm install -g node-gyp
-	node-gyp configure && node-gyp build
 
 $(GF):
 	git clone http://lab.jerasure.org/jerasure/gf-complete.git $@
