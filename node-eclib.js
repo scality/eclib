@@ -23,9 +23,7 @@ function ECLib(opts) {
 	this.ins_id = null;
 	this.eclibUtil = new ECLibUtil();
 	this.isValidInstance = function() {
-
 		return (__.isUndefined(this.ins_id));
-
 	};
 
 	this.resetOptions = function() {
@@ -59,16 +57,11 @@ ECLib.prototype = {
 			instance_descriptor_id = err.errorcode;
 		}
 
-
 		if (!callback) {
-
 			return instance_descriptor_id;
 		}
 
 		callback.call(this, instance_descriptor_id, err);
-
-
-
 	},
 	destroy: function(callback) {
 
@@ -81,12 +74,9 @@ ECLib.prototype = {
 				err.errorcode = resultcode;
 				err.message = this.eclibUtil.getErrorMessage(resultcode);
 			}
-
 		} else {
-
 			err.errorcode = resultcode;
 			err.message = this.eclibUtil.getErrorMessage(resultcode);
-
 		}
 
 		if (!callback) {
@@ -103,19 +93,18 @@ ECLib.prototype = {
 		addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
 
-	encodev: function(n_buf, buf_array, total_size, callback){
-	    var o = this.opt;
+	encodev: function(n_buf, buf_array, total_size, callback) {
+		var o = this.opt;
 
-	    addon.encodev(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
+		addon.encodev(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
 	},
 
-	decode:function(d_data,n_frags,frag_len,force_metadata_check,callback){
-	    addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
+	decode: function(d_data, n_frags, frag_len, force_metadata_check, callback) {
+		addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
 	},
 
 	getFragmentMetadata: function(fragment, fragment_metadata, callback) {
-
-
+		// TODO: what is this function supposed to do ?
 	},
 
 	setOptions: function(opts){

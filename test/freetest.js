@@ -16,6 +16,8 @@ function decode_result(status, out_data, out_data_length) {
 
   // Free memory used by ECLib.
   eclib.destroy();
+
+  console.log(' done');
 }
 
 function encode_result(status, encoded_data, encoded_parity,
@@ -38,11 +40,13 @@ function encode_result(status, encoded_data, encoded_parity,
     fragments[j++] = encoded_parity[i];
   }
 
+  process.stdout.write('.');
+
   eclib.decode(fragments, x + y, encoded_fragment_length, 0, decode_result);
 }
 
 function test_one() {
-  eclib.init();
+  process.stdout.write('.');
   eclib.encode(ref_buf, encode_result);
 }
 
@@ -59,7 +63,9 @@ var eclib = new ECLib({
   "m": 3,
   "hd": 3
 });
+eclib.init();
 
 var ref_buf = crypto.randomBytes(100000);
 
+process.stdout.write('free: ');
 test_one();
