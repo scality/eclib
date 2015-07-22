@@ -14,7 +14,14 @@
         "/usr/local/include/liberasurecode",
         "<!(node -e \"require('nan')\")"
       ],
-      "libraries": [ "/usr/local/lib/liberasurecode.so" ]
+      "conditions": [
+        ['OS=="mac"', {
+          "libraries": [ "/usr/local/lib/liberasurecode.dylib" ]
+        }],
+        ['OS=="linux"', {
+          "libraries": [ "/usr/local/lib/liberasurecode.so" ]
+        }]
+      ]
     }
   ]
 }
