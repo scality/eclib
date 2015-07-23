@@ -19,7 +19,9 @@
           "libraries": [ "/usr/local/lib/liberasurecode.dylib" ]
         }],
         ['OS=="linux"', {
-          "libraries": [ "/usr/local/lib/liberasurecode.so" ]
+          "libraries": [
+            "$(shell out=`ldconfig -p | grep liberasurecode.so` && ldconfig -p | grep liberasurecode.so | rev | cut -d' ' -f1 | rev | sed 's/[^\/]\+$$//g' | sed -n '1p' | tr -d '\\n' && echo 'liberasurecode.so' || echo /usr/local/lib/liberasurecode.so)"
+          ]
         }]
       ]
     }

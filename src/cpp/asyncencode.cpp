@@ -5,135 +5,112 @@
 
 using namespace v8;
 
-//#define DPRINTF(fmt,...) do { fprintf(stderr, fmt, ##__VA_ARGS__); } while (0)
-#define DPRINTF(fmt,...)
+class AsyncEncodeWorker : public NanAsyncWorker {
+public:
+  AsyncEncodeWorker(NanCallback *callback, int instance_descriptor_id, int k, int m, char *orig_data, int orig_data_size) :
+    NanAsyncWorker(callback),
+    _instance_descriptor_id(instance_descriptor_id),
+    _k(k),
+    _m(m),
+    _orig_data(orig_data),
+    _orig_data_size(orig_data_size) {}
 
-struct EncodeData {
-  //input
-  int instance_descriptor_id;
-  int k;
-  int m;
-  char *orig_data;
-  int orig_data_size;
-  //result
-  int status;
-  char **encoded_data;
-  char **encoded_parity;
-  uint64_t encoded_fragment_len;
-  //free
-  int count;
-};
+  ~AsyncEncodeWorker() {
+    delete _orig_data;
+  }
 
-#if 0
-static void EncodeFree(char *out_data, void *hint) {
-    EncodeData *data = reinterpret_cast<EncodeData*>(hint);
-    DPRINTF("FREE ENCODE TMP %d %p\n", data->count, data);
-    data->count--;
+  void Execute() {
+    _status = liberasurecode_encode(_instance_descriptor_id,
+                 _orig_data, _orig_data_size,
+                 &_encoded_data,
+                 &_encoded_parity,
+                 &_encoded_fragment_len);
 
-    if (0 == data->count) {
-      DPRINTF("FREE ENCODE %p\n", data);
-      liberasurecode_encode_cleanup(data->instance_descriptor_id,
-				    data->encoded_data,
-				    data->encoded_parity);
-      delete data;
+    if (_status != 0) {
+      SetErrorMessage("an error occured while encoding");
     }
-}
-#endif
-
-class EncodeWorker : public NanAsyncWorker {
- public:
-  EncodeWorker(NanCallback *callback, EncodeData *data)
-    : NanAsyncWorker(callback), data(data) {}
-  ~EncodeWorker() {
-    delete data->orig_data;
-    delete data;
   }
 
-  // Executed inside the worker-thread.
-  // It is not safe to access V8, or V8 data structures
-  // here, so everything we need for input and output
-  // should go on `this`.
-  void Execute () {
-    DPRINTF("Encoding %p\n", data);
-    data->status = liberasurecode_encode(data->instance_descriptor_id,
-					 data->orig_data, data->orig_data_size,
-					 &data->encoded_data, 
-					 &data->encoded_parity, 
-					 &data->encoded_fragment_len);
-    DPRINTF("Encoding Done %p\n", data);
-  }
-
-  // Executed when the async work is complete
-  // this function will be run inside the main event loop
-  // so it is safe to use V8 again
-  void HandleOKCallback () {
+  void HandleOKCallback() {
     NanScope();
 
-    if (0 == data->status) {
-      DPRINTF("Encoding OK CB %p\n", data);
-      data->count = data->k + data->m;
-
-      Handle<Array> encoded_data_array = NanNew<Array>(data->k);
-      for (int i = 0; i < data->k;i++) {
-	encoded_data_array->Set(i, NanNewBufferHandle(data->encoded_data[i], data->encoded_fragment_len));//, EncodeFree, data));
-      }
-
-      Handle<Array> encoded_parity_array = NanNew<Array>(data->m);
-      for (int i = 0; i < data->m;i++) {
-	encoded_parity_array->Set(i, NanNewBufferHandle(data->encoded_parity[i], data->encoded_fragment_len));//, EncodeFree, data));
-      }
-
-      Handle<Value> argv[] = {
-	NanNew<Number>(data->status),
-	encoded_data_array,
-	encoded_parity_array,
-	NanNew<Number>(data->encoded_fragment_len)
-      };
-
-      liberasurecode_encode_cleanup(data->instance_descriptor_id,
-				    data->encoded_data,
-				    data->encoded_parity);
-      data->encoded_data = NULL;
-      data->encoded_parity = NULL;
-    
-      callback->Call(4, argv);
-  } else {
-    
-    Handle<Value> argv[] = {
-      NanNew<Number>(data->status)
-    };
-    
-    callback->Call(1, argv);
+    Handle<Array> encoded_data_array = NanNew<Array>(_k);
+    for (int i = 0; i < _k; i++) {
+      encoded_data_array->Set(i, NanNewBufferHandle(_encoded_data[i], _encoded_fragment_len));
     }
+
+    Handle<Array> encoded_parity_array = NanNew<Array>(_m);
+    for (int i = 0; i < _m; i++) {
+      encoded_parity_array->Set(i, NanNewBufferHandle(_encoded_parity[i], _encoded_fragment_len));
+    }
+
+    liberasurecode_encode_cleanup(_instance_descriptor_id,
+          _encoded_data,
+          _encoded_parity);
+
+    Handle<Value> argv[] = {
+      NanNew<Number>(_status),
+      encoded_data_array,
+      encoded_parity_array,
+      NanNew<Number>(_encoded_fragment_len)
+    };
+
+    callback->Call(4, argv);
   }
 
- private:
-  EncodeData *data;
-};
+  void HandleErrorCallback() {
+    NanScope();
 
+    Handle<Value> argv[] = {
+      NanNew<Number>(_status)
+    };
+
+    callback->Call(1, argv);
+  }
+
+private:
+  // Input data.
+  int _instance_descriptor_id;
+  int _k;
+  int _m;
+  char *_orig_data;
+  int _orig_data_size;
+  // Output data.
+  int _status;
+  char **_encoded_data;
+  char **_encoded_parity;
+  uint64_t _encoded_fragment_len;
+};
 
 NAN_METHOD(EclEncode) {
   NanScope();
 
   if (args.Length() < 6) {
-    NanThrowTypeError("Wrong number of arguments desc_id k m buf size cb");
+    char msg[1024];
+    sprintf(msg, "Wrong number of arguments (expected 6, got %d)", args.Length());
+    NanThrowTypeError(msg);
     NanReturnUndefined();
   }
 
-  EncodeData *data = new EncodeData;
-  DPRINTF("Enc data %p\n", data);
-
-  data->instance_descriptor_id = args[0]->NumberValue();
-  data->k = args[1]->NumberValue();
-  data->m = args[2]->NumberValue();
-  data->orig_data_size = args[4]->NumberValue();
+  int instance_descriptor_id = args[0]->NumberValue();
+  int k = args[1]->NumberValue();
+  int m = args[2]->NumberValue();
+  int orig_data_size = args[4]->NumberValue();
   char *orig_data = node::Buffer::Data(args[3]);
-  data->orig_data = new char[data->orig_data_size];
-  memcpy(data->orig_data, orig_data, data->orig_data_size);
+  char *pass_orig_data = new char[orig_data_size];
+  memcpy(pass_orig_data, orig_data, orig_data_size);
 
   NanCallback *callback = new NanCallback(args[5].As<Function>());
 
-  NanAsyncQueueWorker(new EncodeWorker(callback, data));
+  NanAsyncQueueWorker(new AsyncEncodeWorker(
+    callback,
+    instance_descriptor_id,
+    k,
+    m,
+    pass_orig_data,
+    orig_data_size
+  ));
+
   NanReturnUndefined();
 }
 
@@ -141,32 +118,38 @@ NAN_METHOD(EclEncodeV) {
   NanScope();
 
   if (args.Length() < 7) {
-    NanThrowTypeError("Wrong number of arguments desc_id k m n_buf buf_array total_size cb");
+    char msg[1024];
+    sprintf(msg, "Wrong number of arguments (expected 7, got %d)", args.Length());
+    NanThrowTypeError(msg);
     NanReturnUndefined();
   }
 
-  EncodeData *data = new EncodeData;
-  DPRINTF("Enc data %p\n", data);
+  int instance_descriptor_id = args[0]->NumberValue();
+  int k = args[1]->NumberValue();
+  int m = args[2]->NumberValue();
 
-  data->instance_descriptor_id = args[0]->NumberValue();
-  data->k = args[1]->NumberValue();
-  data->m = args[2]->NumberValue();
-
-  data->orig_data_size = args[5]->NumberValue();
-  data->orig_data = new char[data->orig_data_size];
+  int orig_data_size = args[5]->NumberValue();
+  char *orig_data = new char[orig_data_size];
 
   Local<Object>buf_array = args[4]->ToObject();
   int n_buf = args[3]->NumberValue();
   int off = 0;
-  for (int i = 0;i < n_buf;i++) {
+  for (int i = 0; i < n_buf; i++) {
     char *buf = node::Buffer::Data(buf_array->Get(i));
     int buf_len = node::Buffer::Length(buf_array->Get(i));
-    memcpy(data->orig_data + off, buf, buf_len);
+    memcpy(orig_data + off, buf, buf_len);
     off += buf_len;
   }
 
   NanCallback *callback = new NanCallback(args[6].As<Function>());
 
-  NanAsyncQueueWorker(new EncodeWorker(callback, data));
+  NanAsyncQueueWorker(new AsyncEncodeWorker(
+    callback,
+    instance_descriptor_id,
+    k,
+    m,
+    orig_data,
+    orig_data_size
+  ));
   NanReturnUndefined();
 }

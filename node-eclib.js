@@ -9,12 +9,13 @@ var enums = require("./eclib-enum.js");
 var __ = require('underscore');
 
 function ECLib(opts){
-	var d_options = {"bc_id":0,  //backend ID
-			 "k":8,      //number of data fragments
-			 "m":4,      //number of parity fragments
-			 "w":0,      //word size, in bits
-			 "hd":0,     //hamming distance (=m for Reed-Solomon)
-			 "ct":0 };   //fragment checksum type
+	var d_options = {
+		"bc_id":0,  //backend ID
+		"k":8,      //number of data fragments
+		"m":4,      //number of parity fragments
+		"w":0,      //word size, in bits
+		"hd":0,     //hamming distance (=m for Reed-Solomon)
+		"ct":0 };   //fragment checksum type
 
 	this.opt = {};
 	__.extend(this.opt,d_options);
@@ -38,7 +39,7 @@ function ECLib(opts){
 }
 
 ECLib.prototype = {
-	
+
 	init: function(callback){
 		//This will be the  create method of the ECLIB
 		var instance_descriptor_id = -1;
@@ -47,12 +48,13 @@ ECLib.prototype = {
 		if ( this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k, o.m, o.w, o.hd, o.ct)  ){
 
 			instance_descriptor_id = addon.create(o.bc_id, o.k, o.m, o.w, o.hd, o.ct);
-			
+
 			if (instance_descriptor_id <=0 ){
 				err.errorcode =  instance_descriptor_id ;
 				err.message = this.eclibUtil.getErrorMessage(instance_descriptor_id);
 			}else {
 				this.ins_id =instance_descriptor_id;
+				console.log("ins id is OK:" + this.ins_id);
 			}
 
 		} else {
@@ -74,7 +76,7 @@ ECLib.prototype = {
 	},
 	destroy: function(callback){
 
-		var resultcode = enums.ErrorCode.EBACKENDNOTAVAIL; 
+		var resultcode = enums.ErrorCode.EBACKENDNOTAVAIL;
 		var err = {};
 
 		if (this.isValidInstance()){
@@ -85,10 +87,10 @@ ECLib.prototype = {
 			}
 
 		} else {
-		
+
 			err.errorcode = resultcode;
 			err.message = this.eclibUtil.getErrorMessage(resultcode);
-		
+
 		}
 
 		if (!callback){
@@ -105,7 +107,7 @@ ECLib.prototype = {
 	    addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
 
-	encodev: function(n_buf,buf_array,total_size,callback){
+	encodev: function(n_buf, buf_array, total_size, callback){
 	    var o = this.opt;
 
 	    addon.encodev(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
@@ -118,7 +120,7 @@ ECLib.prototype = {
 	getFragmentMetadata: function(fragment, fragment_metadata, callback){
 
 
-	}, 
+	},
 
 	setOptions: function(opts){
 		__.extend(this.opt,opts);
