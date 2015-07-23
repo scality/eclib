@@ -55,4 +55,3 @@ void InitAll(Handle<Object> exports) {
 }
 
 NODE_MODULE(node_eclib, InitAll)
-

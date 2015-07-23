@@ -24,6 +24,11 @@ npm install
 The install process will need to install libraries and node-gyp, requiring
 sudo usage.
 
+Running the test is done via the usual:
+```sh
+npm test
+```
+
 
 ### Prestudy
 ===========
@@ -37,9 +42,9 @@ be really helpful to read this:
 Here are the details
 
 ## Js Files
-* eclib-enum.js # 
+* eclib-enum.js #
 	This file will contain all the enum values that was introduced in the c project to keep the simillarity among the projects.
-* eclib-util.js # 
+* eclib-util.js #
 	This contain all the util method that was required by the node-eclib.js file
 * node-eclib.js #
 	This file has some commented out code, please go through it. Initially it was a strait forward implementation. Currently the class has only the skeleton of the methods.
@@ -50,6 +55,6 @@ Here are the details
 * asyncencode.cpp # This class holds all the encode methods. Partially implemented .(Previous plan was to use NAN's asyn task for encoding)
 * asyncreconstruction.cpp # Just a dummy class for exposing fragment reconstruction
 * libmain.cpp # This class will have all the method except those 5 methods. Partially implemented.
-* Libutil.cpp # This class holds the util method for the all the classes. Just few methods are implemented here.
+* libutil.cpp # This class holds the util method for the all the classes. Just few methods are implemented here.
 
 ---------

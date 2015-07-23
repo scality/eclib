@@ -6,14 +6,14 @@ ec_args * el_create_ec_args(int k, int m, int w, int hd, ec_checksum_type_t ct){
 
     ec_args *result;
     result = (ec_args*)malloc( sizeof( ec_args ) );
-    
+
     if(!result){
 
         result->k = k;
         result->m = m;
         result->w = w;
         result->hd = hd;
-        result->ct;
+        result->ct = ct;
     }
 
     return result;
@@ -75,5 +75,3 @@ ec_checksum_type_t get_ec_checksum_type(int ct){
     }
 
 }
-
-
