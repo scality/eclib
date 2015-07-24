@@ -13,10 +13,7 @@ ifeq ($(shell uname -s), Darwin)
 endif
 LIB_GUARD := find /usr 2>/dev/null -name '*.$(LIB_EXT)' | grep
 
-all: $(TARGET)
-
-$(TARGET): $(DEPS)
-	sudo npm install -g node-gyp
+all: $(DEPS)
 
 $(GF):
 	$(LIB_GUARD) libgf_complete.$(LIB_EXT) || git clone http://lab.jerasure.org/jerasure/gf-complete.git $@
