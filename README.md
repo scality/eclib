@@ -19,6 +19,7 @@ https://bitbucket.org/tsg-/liberasurecode/src/e46c434e36566f6f0820923a9a184e27d7
 =========
 A simple command will take care of everything for you:
 ```sh
+npm install -g node-gyp # you might need to be root for this command
 npm install
 ```
 The install process will need to install libraries and node-gyp, requiring
