@@ -103,6 +103,21 @@ ECLib.prototype = {
 		addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
 	},
 
+	reconstructFragment: function(avail_fragments, missing_fragment_id, callback) {
+		if (!avail_fragments.length) {
+			callback(new Error('invalid number of available fragments (must be > 0)'), null);
+			return;
+		}
+		addon.reconstructFragment(
+			this.ins_id,
+			avail_fragments,
+			avail_fragments.length,
+			avail_fragments[0].length,
+			missing_fragment_id,
+			callback
+		);
+	},
+
 	getFragmentMetadata: function(fragment, fragment_metadata, callback) {
 		// TODO: what is this function supposed to do ?
 	},
