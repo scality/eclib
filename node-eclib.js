@@ -118,6 +118,47 @@ ECLib.prototype = {
 		);
 	},
 
+	reconstruct: function(avail_fragments, missing_fragment_ids, callback) {
+		var self = this;
+
+		// If we sort the missing indexes, than we can safely insert each
+		// recoevered fragment when we have it. Example: we have 10 fragments,
+		// but the 3rd, 6th and 8th are missing. If the `missing_fragment_ids`
+		// is unsorted, like [8,6,3], then we have the following
+		// `avail_fragments`: [1,2,4,5,7,9,10]. If we first recover the 8th
+		// fragment, we don't where to insert it. But if we first recover the
+		// 3rd fragment, we know we can insert it at index 3, so that we then
+		// have the `avail_fragments` set to [1,2,3,4,5,7,9,10] when we recover
+		// the 6th fragment.
+		missing_fragment_ids.sort();
+
+		// Reconstruct one fragment with a Promise (instead of a callback).
+		var recf = function(fragments, id) {
+			return new Promise(function(yes, no) {
+				self.reconstructFragment(fragments, id, function(err, fragment) {
+					if (err) return no(err);
+					yes(fragment);
+				});
+			});
+		};
+
+		// Recover all missing fragments one by one.
+		var done = new Promise(function(yes, no) { yes(); });
+		missing_fragment_ids.forEach(function(id) {
+			done = done.then(function() {
+				return recf(avail_fragments, id).then(function(frag) {
+					avail_fragments.splice(id, 0, frag);
+				});
+			});
+		});
+
+		done.then(function() {
+			callback(null, avail_fragments);
+		}, function(err) {
+			callback(err, null);
+		});
+	},
+
 	getFragmentMetadata: function(fragment, fragment_metadata, callback) {
 		// TODO: what is this function supposed to do ?
 	},
