@@ -13,6 +13,7 @@
     "url": "https://github.com/scality/node-ECLib.git"
   },
   "scripts": {
+    "preinstall": "make",
     "install": "node-gyp configure && node-gyp build"
   },
   "main": "index.js",

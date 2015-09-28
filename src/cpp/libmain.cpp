@@ -26,11 +26,9 @@ NAN_METHOD(EclCreate) {
   int hd = args[4]->NumberValue();
   int _ct = args[5]->NumberValue();
 
-  //printf("id=%d k=%d m=%d w=%d hd=%d ct=%d\n", _id, k, m, w, hd, _ct);
-
   ec_backend_id = get_ec_backend_id(_id);
   ct  = get_ec_checksum_type(_ct);
-  
+
   memset(&ec_args, 0, sizeof (ec_args));
   ec_args.k = k;
   ec_args.m = m;
@@ -44,12 +42,11 @@ NAN_METHOD(EclCreate) {
     NanThrowTypeError("Liberasurecode initialization failed");
     NanReturnUndefined();
   }
-  
-  NanReturnValue( NanNew(desc));
+
+  NanReturnValue(NanNew(desc));
 }
 
 NAN_METHOD(EclDestroy) {
-  
   NanScope();
 
   int arg0 = args[0]->NumberValue();

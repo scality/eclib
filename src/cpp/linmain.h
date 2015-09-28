@@ -1,0 +1,5 @@
+#ifndef SCALITY_EC_LIBMAIN_H
+
+#define SCALITY_EC_LIBMAIN_H
+
+#endif
