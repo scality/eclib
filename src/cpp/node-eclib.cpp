@@ -14,44 +14,44 @@ using v8::String;
 
 void InitAll(Handle<Object> exports) {
 
-  exports->Set(NanNew<String>("create"),
-    NanNew<FunctionTemplate>(EclCreate)->GetFunction());
+  exports->Set(Nan::New<String>("create").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclCreate)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("destroy"),
-    NanNew<FunctionTemplate>(EclDestroy)->GetFunction());
+  exports->Set(Nan::New<String>("destroy").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclDestroy)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("encode"),
-    NanNew<FunctionTemplate>(EclEncode)->GetFunction());
+  exports->Set(Nan::New<String>("encode").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclEncode)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("encodev"),
-    NanNew<FunctionTemplate>(EclEncodeV)->GetFunction());
+  exports->Set(Nan::New<String>("encodev").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclEncodeV)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("decode"),
-    NanNew<FunctionTemplate>(EclDecode)->GetFunction());
+  exports->Set(Nan::New<String>("decode").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclDecode)).ToLocalChecked());
 
-   exports->Set(NanNew<String>("reconstructFragment"),
-    NanNew<FunctionTemplate>(EclReconstructFragment)->GetFunction());
+   exports->Set(Nan::New<String>("reconstructFragment").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclReconstructFragment)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("fragmentsNeeded"),
-    NanNew<FunctionTemplate>(EclFragmentsNeeded)->GetFunction());
+  exports->Set(Nan::New<String>("fragmentsNeeded").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclFragmentsNeeded)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("getFragmentMetadata"),
-    NanNew<FunctionTemplate>(EclGetFragmentMetadata)->GetFunction());
+  exports->Set(Nan::New<String>("getFragmentMetadata").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclGetFragmentMetadata)).ToLocalChecked());
 
-   exports->Set(NanNew<String>("isInvalidFragment"),
-    NanNew<FunctionTemplate>(EclIsInvalidFragment)->GetFunction());
+   exports->Set(Nan::New<String>("isInvalidFragment").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclIsInvalidFragment)).ToLocalChecked());
 
-   exports->Set(NanNew<String>("verifyStripeMetadata"),
-    NanNew<FunctionTemplate>(EclVerifyStripeMetadata)->GetFunction());
+   exports->Set(Nan::New<String>("verifyStripeMetadata").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclVerifyStripeMetadata)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("getAlignedDataSize"),
-    NanNew<FunctionTemplate>(EclGetAlignedDataSize)->GetFunction());
+  exports->Set(Nan::New<String>("getAlignedDataSize").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclGetAlignedDataSize)).ToLocalChecked());
 
-  exports->Set(NanNew<String>("getMinimumEncodeSize"),
-    NanNew<FunctionTemplate>(EclGetMinimumEncodeSize)->GetFunction());
+  exports->Set(Nan::New<String>("getMinimumEncodeSize").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclGetMinimumEncodeSize)).ToLocalChecked());
 
-   exports->Set(NanNew<String>("getFragmentSize"),
-    NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
+   exports->Set(Nan::New<String>("getFragmentSize").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(EclGetFragmentSize)).ToLocalChecked());
 }
 
 NODE_MODULE(node_eclib, InitAll)

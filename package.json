@@ -22,7 +22,7 @@
     "buffertools": "^2.1.2",
     "hexdump": "^0.1.0",
     "hexdump-nodejs": "^0.1.0",
-    "nan": "~1.8.0",
+    "nan": "^2.0.9",
     "underscore": "*"
   },
   "gypfile": true
