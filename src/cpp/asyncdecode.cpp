@@ -1,14 +1,13 @@
-#include <node.h>
 #include <nan.h>
 
 #include "asyncdecode.h"
 
 using namespace v8;
 
-class AsyncDecodeWorker : public NanAsyncWorker {
+class AsyncDecodeWorker : public Nan::AsyncWorker {
 public:
-  AsyncDecodeWorker(NanCallback *callback, int instance_descriptor_id, char **fragments, int n_frag, int frag_len, int force_metadata_check) :
-    NanAsyncWorker(callback),
+  AsyncDecodeWorker(Nan::Callback *callback, int instance_descriptor_id, char **fragments, int n_frag, int frag_len, int force_metadata_check) :
+    Nan::AsyncWorker(callback),
     _instance_descriptor_id(instance_descriptor_id),
     _fragments(fragments),
     _n_frag(n_frag),
@@ -35,12 +34,12 @@ public:
   }
 
   void HandleOKCallback() {
-    NanScope();
+    Nan::HandleScope();
 
     Handle<Value> argv[] = {
-      NanNew<Number>(_status),
-      NanNewBufferHandle(_out_data, _out_data_len),
-      NanNew<Number>(_out_data_len)
+      Nan::New<Number>(_status),
+      Nan::NewBuffer(_out_data, _out_data_len).ToLocalChecked(),
+      Nan::New<Number>(_out_data_len)
     };
 
 
@@ -50,10 +49,10 @@ public:
   }
 
   void HandleErrorCallback() {
-    NanScope();
+    Nan::HandleScope();
 
     Handle<Value> argv[] = {
-      NanNew<Number>(_status)
+      Nan::New<Number>(_status)
     };
 
     callback->Call(1, argv);
@@ -73,31 +72,28 @@ private:
 };
 
 NAN_METHOD(EclDecode) {
-  NanScope();
+  Nan::HandleScope();
 
- if (args.Length() < 6) {
-    NanThrowTypeError("Wrong number of arguments");
-    NanReturnUndefined();
+ if (info.Length() < 6) {
+    Nan::ThrowTypeError("Wrong number of arguments");
   }
 
-  int n_frag = args[2]->NumberValue();
-  int frag_len = args[3]->NumberValue();
+  int n_frag = info[2]->NumberValue();
+  int frag_len = info[3]->NumberValue();
 
-  Local<Object> fragments_array = args[1]->ToObject();
+  Local<Object> fragments_array = info[1]->ToObject();
   char **fragments = new char*[n_frag];
   for (int i = 0; i < n_frag; i++) {
     fragments[i] = new char[frag_len];
     memcpy(fragments[i], node::Buffer::Data(fragments_array->Get(i)), frag_len);
   }
 
-  NanAsyncQueueWorker(new AsyncDecodeWorker(
-    new NanCallback(args[5].As<Function>()),
-    args[0]->NumberValue(),
+  Nan::AsyncQueueWorker(new AsyncDecodeWorker(
+    new Nan::Callback(info[5].As<Function>()),
+    info[0]->NumberValue(),
     fragments,
     n_frag,
     frag_len,
-    args[4]->NumberValue()
+    info[4]->NumberValue()
   ));
-
-  NanReturnUndefined();
 }
