@@ -45,7 +45,7 @@ public:
     }
 
     void HandleOKCallback() {
-        Nan::HandleScope();
+        Nan::HandleScope scope;
 
         Handle<Value> argv[] = {
             Nan::Null(),
@@ -57,7 +57,7 @@ public:
     }
 
     void HandleErrorCallback() {
-        Nan::HandleScope();
+        Nan::HandleScope scope;
 
         Handle<Value> argv[] = {
             Nan::Error("could not reconstruct fragment")
@@ -77,7 +77,7 @@ private:
 };
 
 NAN_METHOD(EclReconstructFragment) {
-    Nan::HandleScope();
+    Nan::HandleScope scope;
 
     int instance_descriptor_id = info[0]->NumberValue();
     int num_fragments = info[2]->NumberValue();
@@ -100,4 +100,5 @@ NAN_METHOD(EclReconstructFragment) {
         missing_fragment_id,
         callback
     ));
+    return ;
 }
