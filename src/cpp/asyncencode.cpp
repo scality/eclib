@@ -32,19 +32,19 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
         }
 
         void HandleOKCallback() {
-            Nan::HandleScope();
+            Nan::HandleScope scope;
 
             // FIXME: The uint64 to uint32 cast is anything but safe
             Handle<Array> encoded_data_array = Nan::New<Array>(_k);
             for (int i = 0; i < _k; i++) {
                 encoded_data_array->Set(i, Nan::NewBuffer(_encoded_data[i],
-                            (uint32_t)_encoded_fragment_len).ToLocalChecked());
+                            _encoded_fragment_len).ToLocalChecked());
             }
 
             Handle<Array> encoded_parity_array = Nan::New<Array>(_m);
             for (int i = 0; i < _m; i++) {
                 encoded_parity_array->Set(i, Nan::NewBuffer(_encoded_parity[i],
-                            (uint32_t)_encoded_fragment_len).ToLocalChecked());
+                            _encoded_fragment_len).ToLocalChecked());
             }
 
             liberasurecode_encode_cleanup(_instance_descriptor_id,
@@ -62,7 +62,7 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
         }
 
         void HandleErrorCallback() {
-            Nan::HandleScope();
+            Nan::HandleScope scope;
 
             Handle<Value> argv[] = {
                 Nan::New<Number>(_status)
@@ -86,12 +86,13 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
 };
 
 NAN_METHOD(EclEncode) {
-    Nan::HandleScope();
+    Nan::HandleScope scope;
 
     if (info.Length() < 6) {
         char msg[1024];
         sprintf(msg, "Wrong number of arguments (expected 6, got %d)", info.Length());
         Nan::ThrowTypeError(msg);
+        return ;
     }
 
     int instance_descriptor_id = info[0]->NumberValue();
@@ -112,15 +113,17 @@ NAN_METHOD(EclEncode) {
                 pass_orig_data,
                 orig_data_size
                 ));
+    return ;
 }
 
-NAN_METHOD(EclEncodeV) {
-    Nan::HandleScope();
+NAN_METHOD(encodev) {
+    Nan::HandleScope scope;
 
     if (info.Length() < 7) {
         char msg[1024];
         sprintf(msg, "Wrong number of arguments (expected 7, got %d)", info.Length());
         Nan::ThrowTypeError(msg);
+        return ;
     }
 
     int instance_descriptor_id = info[0]->NumberValue();
@@ -150,4 +153,5 @@ NAN_METHOD(EclEncodeV) {
                 orig_data,
                 orig_data_size
                 ));
+    return ;
 }

@@ -34,7 +34,7 @@ public:
   }
 
   void HandleOKCallback() {
-    Nan::HandleScope();
+    Nan::HandleScope scope;
 
     Handle<Value> argv[] = {
       Nan::New<Number>(_status),
@@ -49,7 +49,7 @@ public:
   }
 
   void HandleErrorCallback() {
-    Nan::HandleScope();
+    Nan::HandleScope scope;
 
     Handle<Value> argv[] = {
       Nan::New<Number>(_status)
@@ -71,19 +71,22 @@ private:
   uint64_t _out_data_len;
 };
 
-NAN_METHOD(EclDecode) {
-  Nan::HandleScope();
+NAN_METHOD(decode) {
+  Nan::HandleScope scope;
 
  if (info.Length() < 6) {
     Nan::ThrowTypeError("Wrong number of arguments");
+    return ;
   }
 
   int n_frag = info[2]->NumberValue();
   int frag_len = info[3]->NumberValue();
 
   Local<Object> fragments_array = info[1]->ToObject();
+  write(1, "A", 1);
   char **fragments = new char*[n_frag];
   for (int i = 0; i < n_frag; i++) {
+  write(1, "A", 1);
     fragments[i] = new char[frag_len];
     memcpy(fragments[i], node::Buffer::Data(fragments_array->Get(i)), frag_len);
   }
@@ -96,4 +99,6 @@ NAN_METHOD(EclDecode) {
     frag_len,
     info[4]->NumberValue()
   ));
+  write(1, "A", 1);
+  return ;
 }

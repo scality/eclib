@@ -1,4 +1,3 @@
-#include <node.h>
 #include <nan.h>
 
 #include "libmain.h"
@@ -7,8 +6,8 @@
 using namespace v8;
 using namespace std;
 
-NAN_METHOD(EclCreate) {
-  Nan::HandleScope();
+NAN_METHOD(create) {
+  Nan::HandleScope scope;
 
   ec_args ec_args;
   ec_backend_id_t ec_backend_id;
@@ -16,6 +15,7 @@ NAN_METHOD(EclCreate) {
 
   if (info.Length() < 6) {
       Nan::ThrowTypeError("Wrong number of arguments");
+      return ;
   }
 
   int _id = info[0]->NumberValue();
@@ -39,53 +39,54 @@ NAN_METHOD(EclCreate) {
 
   if (desc <= 0) {
       Nan::ThrowTypeError("Liberasurecode initialization failed");
+      return ;
   }
 
       info.GetReturnValue().Set(Nan::New(desc));
     }
 
-    NAN_METHOD(EclDestroy) {
-      Nan::HandleScope();
+    NAN_METHOD(destroy) {
+      Nan::HandleScope scope;
 
       int arg0 = info[0]->NumberValue();
       int status = liberasurecode_instance_destroy(arg0);
 
-      if (status <= 0) {
+      if (status <= 0)
           Nan::ThrowTypeError("Liberasurecode instance destroy failed");
-      }
+      return ;
     }
 
     NAN_METHOD(EclFragmentsNeeded) {
-      Nan::HandleScope();
+      Nan::HandleScope scope;
       info.GetReturnValue().Set(Nan::New("C++ FragmentsNeeded ").ToLocalChecked());
     }
 
     NAN_METHOD(EclGetFragmentMetadata) {
-      Nan::HandleScope();
+      Nan::HandleScope scope;
       info.GetReturnValue().Set(Nan::New("C++ GetFragmentMetadata ").ToLocalChecked());
     }
 
     NAN_METHOD(EclIsInvalidFragment) {
-      Nan::HandleScope();
+      Nan::HandleScope scope;
       info.GetReturnValue().Set(Nan::New("C++ IsInvalidFragment ").ToLocalChecked());
     }
 
     NAN_METHOD(EclVerifyStripeMetadata) {
-      Nan::HandleScope();
+      Nan::HandleScope scope;
       info.GetReturnValue().Set(Nan::New("C++ VerifyStripeMetadata ").ToLocalChecked());
     }
 
     NAN_METHOD(EclGetAlignedDataSize) {
-      Nan::HandleScope();
+      Nan::HandleScope scope;
       info.GetReturnValue().Set(Nan::New("C++ GetAlignedDataSize ").ToLocalChecked());
     }
 
     NAN_METHOD(EclGetMinimumEncodeSize) {
-      Nan::HandleScope();
+      Nan::HandleScope scope;
       info.GetReturnValue().Set(Nan::New("C++ GetMinimumEncodeSize ").ToLocalChecked());
     }
 
     NAN_METHOD(EclGetFragmentSize) {
-      Nan::HandleScope();
-  info.GetReturnValue().Set(Nan::New("C++ GetFragmentSize").ToLocalChecked());
+      Nan::HandleScope scope;
+      info.GetReturnValue().Set(Nan::New("C++ GetFragmentSize").ToLocalChecked());
 }
