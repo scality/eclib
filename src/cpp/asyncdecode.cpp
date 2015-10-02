@@ -38,7 +38,7 @@ public:
 
     Handle<Value> argv[] = {
       Nan::New<Number>(_status),
-      Nan::NewBuffer(_out_data, _out_data_len).ToLocalChecked(),
+      Nan::CopyBuffer(_out_data, _out_data_len).ToLocalChecked(),
       Nan::New<Number>(_out_data_len)
     };
 
@@ -71,7 +71,7 @@ private:
   uint64_t _out_data_len;
 };
 
-NAN_METHOD(decode) {
+NAN_METHOD(EclDecode) {
   Nan::HandleScope scope;
 
  if (info.Length() < 6) {
@@ -83,10 +83,9 @@ NAN_METHOD(decode) {
   int frag_len = info[3]->NumberValue();
 
   Local<Object> fragments_array = info[1]->ToObject();
-  write(1, "A", 1);
+
   char **fragments = new char*[n_frag];
   for (int i = 0; i < n_frag; i++) {
-  write(1, "A", 1);
     fragments[i] = new char[frag_len];
     memcpy(fragments[i], node::Buffer::Data(fragments_array->Get(i)), frag_len);
   }
@@ -99,6 +98,5 @@ NAN_METHOD(decode) {
     frag_len,
     info[4]->NumberValue()
   ));
-  write(1, "A", 1);
   return ;
 }

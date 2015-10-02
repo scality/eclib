@@ -12,11 +12,11 @@ using v8::Object;
 using v8::String;
 
 NAN_MODULE_INIT(Init) {
-  NAN_EXPORT(target, create);
-  NAN_EXPORT(target, destroy);
+  NAN_EXPORT(target, EclCreate);
+  NAN_EXPORT(target, EclDestroy);
   NAN_EXPORT(target, EclEncode);
-  NAN_EXPORT(target, encodev);
-  NAN_EXPORT(target, decode);
+  NAN_EXPORT(target, EclEncodeV);
+  NAN_EXPORT(target, EclDecode);
   NAN_EXPORT(target, EclReconstructFragment);
   NAN_EXPORT(target, EclFragmentsNeeded);
   NAN_EXPORT(target, EclGetFragmentMetadata);

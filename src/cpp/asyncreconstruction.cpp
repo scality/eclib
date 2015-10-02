@@ -49,7 +49,7 @@ public:
 
         Handle<Value> argv[] = {
             Nan::Null(),
-            Nan::NewBuffer(_reconstructed_fragment,
+            Nan::CopyBuffer(_reconstructed_fragment,
                     _fragment_length).ToLocalChecked()
         };
 
