@@ -19,7 +19,7 @@ ec.init();
 
 var data = new Buffer("Hello world of Rust ! This is some serious decoding !");
 
-process.stdout.write('reconstruct:');
+process.stdout.write('reconstruct multiple fragments:');
 
 ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength) {
     assert.equal(status, 0);
@@ -27,16 +27,27 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
     process.stdout.write('.');
 
     var allFragments = dataFragments.concat(parityFragments);
-
     // Lose 3 fragments, 2 of which are data. We should be able to still
     // recover the data.
-    allFragments.splice(1, 1); // index 1
-    allFragments.splice(1, 1); // index 2
-    allFragments.splice(2, 1); // index 4
+    var missing_frags_indx = [1, 0, 5];
+    // descending ordered
+    missing_frags_indx.sort(function(a, b){return b-a});
+    // backup missing fragments
+    var orig_missing_frags = [allFragments[missing_frags_indx[0]]];
+    for (var idx = 1; idx < missing_frags_indx.length; idx++){
+    	orig_missing_frags.push(allFragments[missing_frags_indx[idx]]);
+    }
+    // remove missing fragments
+    for (idx = 0; idx < missing_frags_indx.length; idx++){
+    	allFragments.splice(missing_frags_indx[idx], 1);
+    }
 
-    ec.reconstruct(allFragments, [1, 4, 2], function(err, newAllFragments) {
+    ec.reconstruct(allFragments, [0, 5, 1], function(err, newAllFragments) {
         assert.equal(err, null);
-
+        // check reconstructed fragments and original ones
+        for (idx = 0; idx < missing_frags_indx.length; idx++){
+            assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);        	
+        }
         process.stdout.write('.');
 
         ec.decode(newAllFragments, newAllFragments.length, fragmentLength, false, function(status, decoded_data) {
