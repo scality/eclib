@@ -6,7 +6,7 @@
 using namespace v8;
 using namespace std;
 
-NAN_METHOD(create) {
+NAN_METHOD(EclCreate) {
   Nan::HandleScope scope;
 
   ec_args ec_args;
@@ -45,7 +45,7 @@ NAN_METHOD(create) {
       info.GetReturnValue().Set(Nan::New(desc));
     }
 
-    NAN_METHOD(destroy) {
+    NAN_METHOD(EclDestroy) {
       Nan::HandleScope scope;
 
       int arg0 = info[0]->NumberValue();

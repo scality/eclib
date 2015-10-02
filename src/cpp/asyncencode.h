@@ -7,6 +7,6 @@
 #include <liberasurecode/erasurecode_helpers.h>
 
 NAN_METHOD(EclEncode);
-NAN_METHOD(encodev);
+NAN_METHOD(EclEncodeV);
 
 #endif

@@ -42,7 +42,7 @@ ECLib.prototype = {
 		if (this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k, o.m, o.w, o.hd,
 				o.ct)) {
 
-			instance_descriptor_id = addon.create(o.bc_id, o.k, o.m, o.w, o.hd, o.ct);
+			instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w, o.hd, o.ct);
 
 			if (instance_descriptor_id <= 0) {
 				err.errorcode = instance_descriptor_id;
@@ -69,7 +69,7 @@ ECLib.prototype = {
 		var err = {};
 
 		if (this.isValidInstance()) {
-			resultcode = addon.destroy(this.ins_id);
+			resultcode = addon.EclDestroy(this.ins_id);
 			if (resultcode !== 0) {
 				err.errorcode = resultcode;
 				err.message = this.eclibUtil.getErrorMessage(resultcode);
@@ -90,17 +90,17 @@ ECLib.prototype = {
 	encode: function(o_data, callback) {
 		var o = this.opt;
 
-		addon.encode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
+		addon.EclEncode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
 	},
 
 	encodev: function(n_buf, buf_array, total_size, callback) {
 		var o = this.opt;
 
-		addon.encodev(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
+		addon.EclEncodeV(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
 	},
 
 	decode: function(d_data, n_frags, frag_len, force_metadata_check, callback) {
-		addon.decode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
+		addon.EclDecode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
 	},
 
 	reconstructFragment: function(avail_fragments, missing_fragment_id, callback) {
@@ -108,7 +108,7 @@ ECLib.prototype = {
 			callback(new Error('invalid number of available fragments (must be > 0)'), null);
 			return;
 		}
-		addon.reconstructFragment(
+		addon.EclReconstructFragment(
 			this.ins_id,
 			avail_fragments,
 			avail_fragments.length,

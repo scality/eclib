@@ -37,13 +37,13 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
             // FIXME: The uint64 to uint32 cast is anything but safe
             Handle<Array> encoded_data_array = Nan::New<Array>(_k);
             for (int i = 0; i < _k; i++) {
-                encoded_data_array->Set(i, Nan::NewBuffer(_encoded_data[i],
+                encoded_data_array->Set(i, Nan::CopyBuffer(_encoded_data[i],
                             _encoded_fragment_len).ToLocalChecked());
             }
 
             Handle<Array> encoded_parity_array = Nan::New<Array>(_m);
             for (int i = 0; i < _m; i++) {
-                encoded_parity_array->Set(i, Nan::NewBuffer(_encoded_parity[i],
+                encoded_parity_array->Set(i, Nan::CopyBuffer(_encoded_parity[i],
                             _encoded_fragment_len).ToLocalChecked());
             }
 
@@ -116,7 +116,7 @@ NAN_METHOD(EclEncode) {
     return ;
 }
 
-NAN_METHOD(encodev) {
+NAN_METHOD(EclEncodeV) {
     Nan::HandleScope scope;
 
     if (info.Length() < 7) {

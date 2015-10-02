@@ -3,8 +3,8 @@
 #include <liberasurecode/erasurecode_helpers.h>
 
 
-NAN_METHOD(create);
-NAN_METHOD(destroy);
+NAN_METHOD(EclCreate);
+NAN_METHOD(EclDestroy);
 NAN_METHOD(EclFragmentsNeeded);
 NAN_METHOD(EclGetFragmentMetadata);
 NAN_METHOD(EclIsInvalidFragment);
