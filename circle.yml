@@ -8,8 +8,9 @@ machine:
         LD_LIBRARY_PATH: /usr/local/lib
 
 dependencies:
+    override:
+        - npm install --dev
     pre:
-        - npm install -g buffertools
         - sudo apt-get install automake-1.14
 
 test:
