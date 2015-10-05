@@ -1,4 +1,6 @@
 machine:
+    node:
+        version: 4.1
     environment:
         LD_LIBRARY_PATH: /usr/local/lib
 dependencies:
