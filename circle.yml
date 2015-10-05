@@ -6,9 +6,12 @@ machine:
         version: 4.1
     environment:
         LD_LIBRARY_PATH: /usr/local/lib
+
 dependencies:
     pre:
+        - npm install -g buffertools
         - sudo apt-get install automake-1.14
+
 test:
     override:
         - bash run_tests.bash
