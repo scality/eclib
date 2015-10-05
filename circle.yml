@@ -1,0 +1,18 @@
+machine:
+    pre:
+        - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 20
+        - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 20
+    node:
+        version: 4.1
+    environment:
+        LD_LIBRARY_PATH: /usr/local/lib
+
+dependencies:
+#    override:
+#        - npm install --dev
+    pre:
+        - sudo apt-get install automake-1.14
+
+test:
+    override:
+        - npm install buffertools; npm install mocha; mocha --recursive
