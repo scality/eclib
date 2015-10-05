@@ -1,3 +1,6 @@
+machine:
+    environment:
+        LD_LIBRARY_PATH: /usr/loca/lib
 dependencies:
     pre:
         - sudo apt-get install automake-1.14
