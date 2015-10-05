@@ -1,4 +1,6 @@
 dependencies:
     pre:
         - sudo apt-get install automake-1.14
-  
+test:
+  override:
+    - bash run_tests.bash
