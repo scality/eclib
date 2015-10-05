@@ -2,7 +2,7 @@
 
 using namespace v8;
 
-class AsyncReconstructWorker : public NanAsyncWorker {
+class AsyncReconstructWorker : public Nan::AsyncWorker {
 public:
     AsyncReconstructWorker(
         int instance_descriptor_id,
@@ -10,8 +10,8 @@ public:
         int num_fragments,
         int fragment_length,
         int missing_fragment_id,
-        NanCallback *callback):
-            NanAsyncWorker(callback),
+        Nan::Callback *callback):
+            Nan::AsyncWorker(callback),
             _status(-1),
             _instance_descriptor_id(instance_descriptor_id),
             _avail_fragments_ptr(avail_fragments_ptr),
@@ -45,21 +45,22 @@ public:
     }
 
     void HandleOKCallback() {
-        NanScope();
+        Nan::HandleScope scope;
 
         Handle<Value> argv[] = {
-            NanNull(),
-            NanNewBufferHandle(_reconstructed_fragment, _fragment_length)
+            Nan::Null(),
+            Nan::CopyBuffer(_reconstructed_fragment,
+                    _fragment_length).ToLocalChecked()
         };
 
         callback->Call(2, argv);
     }
 
     void HandleErrorCallback() {
-        NanScope();
+        Nan::HandleScope scope;
 
         Handle<Value> argv[] = {
-            NanError("could not reconstruct fragment")
+            Nan::Error("could not reconstruct fragment")
         };
 
         callback->Call(1, argv);
@@ -76,22 +77,22 @@ private:
 };
 
 NAN_METHOD(EclReconstructFragment) {
-    NanScope();
+    Nan::HandleScope scope;
 
-    int instance_descriptor_id = args[0]->NumberValue();
-    int num_fragments = args[2]->NumberValue();
-    int fragment_length = args[3]->NumberValue();
-    int missing_fragment_id = args[4]->NumberValue();
-    Local<Object> avail_fragments = args[1]->ToObject();
+    int instance_descriptor_id = info[0]->NumberValue();
+    int num_fragments = info[2]->NumberValue();
+    int fragment_length = info[3]->NumberValue();
+    int missing_fragment_id = info[4]->NumberValue();
+    Local<Object> avail_fragments = info[1]->ToObject();
     char **avail_fragments_ptr = new char*[num_fragments];
     for (int i = 0; i < num_fragments; i++) {
         avail_fragments_ptr[i] = new char[fragment_length];
         memcpy(avail_fragments_ptr[i], node::Buffer::Data(avail_fragments->Get(i)), fragment_length);
     }
 
-    NanCallback *callback = new NanCallback(args[5].As<Function>());
+    Nan::Callback *callback = new Nan::Callback(info[5].As<Function>());
 
-    NanAsyncQueueWorker(new AsyncReconstructWorker(
+    Nan::AsyncQueueWorker(new AsyncReconstructWorker(
         instance_descriptor_id,
         avail_fragments_ptr,
         num_fragments,
@@ -99,5 +100,5 @@ NAN_METHOD(EclReconstructFragment) {
         missing_fragment_id,
         callback
     ));
-    NanReturnUndefined();
+    return ;
 }

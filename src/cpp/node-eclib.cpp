@@ -11,47 +11,20 @@ using v8::Handle;
 using v8::Object;
 using v8::String;
 
-
-void InitAll(Handle<Object> exports) {
-
-  exports->Set(NanNew<String>("create"),
-    NanNew<FunctionTemplate>(EclCreate)->GetFunction());
-
-  exports->Set(NanNew<String>("destroy"),
-    NanNew<FunctionTemplate>(EclDestroy)->GetFunction());
-
-  exports->Set(NanNew<String>("encode"),
-    NanNew<FunctionTemplate>(EclEncode)->GetFunction());
-
-  exports->Set(NanNew<String>("encodev"),
-    NanNew<FunctionTemplate>(EclEncodeV)->GetFunction());
-
-  exports->Set(NanNew<String>("decode"),
-    NanNew<FunctionTemplate>(EclDecode)->GetFunction());
-
-   exports->Set(NanNew<String>("reconstructFragment"),
-    NanNew<FunctionTemplate>(EclReconstructFragment)->GetFunction());
-
-  exports->Set(NanNew<String>("fragmentsNeeded"),
-    NanNew<FunctionTemplate>(EclFragmentsNeeded)->GetFunction());
-
-  exports->Set(NanNew<String>("getFragmentMetadata"),
-    NanNew<FunctionTemplate>(EclGetFragmentMetadata)->GetFunction());
-
-   exports->Set(NanNew<String>("isInvalidFragment"),
-    NanNew<FunctionTemplate>(EclIsInvalidFragment)->GetFunction());
-
-   exports->Set(NanNew<String>("verifyStripeMetadata"),
-    NanNew<FunctionTemplate>(EclVerifyStripeMetadata)->GetFunction());
-
-  exports->Set(NanNew<String>("getAlignedDataSize"),
-    NanNew<FunctionTemplate>(EclGetAlignedDataSize)->GetFunction());
-
-  exports->Set(NanNew<String>("getMinimumEncodeSize"),
-    NanNew<FunctionTemplate>(EclGetMinimumEncodeSize)->GetFunction());
-
-   exports->Set(NanNew<String>("getFragmentSize"),
-    NanNew<FunctionTemplate>(EclGetFragmentSize)->GetFunction());
+NAN_MODULE_INIT(Init) {
+  NAN_EXPORT(target, EclCreate);
+  NAN_EXPORT(target, EclDestroy);
+  NAN_EXPORT(target, EclEncode);
+  NAN_EXPORT(target, EclEncodeV);
+  NAN_EXPORT(target, EclDecode);
+  NAN_EXPORT(target, EclReconstructFragment);
+  NAN_EXPORT(target, EclFragmentsNeeded);
+  NAN_EXPORT(target, EclGetFragmentMetadata);
+  NAN_EXPORT(target, EclIsInvalidFragment);
+  NAN_EXPORT(target, EclVerifyStripeMetadata);
+  NAN_EXPORT(target, EclGetAlignedDataSize);
+  NAN_EXPORT(target, EclGetMinimumEncodeSize);
+  NAN_EXPORT(target, EclGetFragmentSize);
 }
 
-NODE_MODULE(node_eclib, InitAll)
+NODE_MODULE(node_eclib, Init)
