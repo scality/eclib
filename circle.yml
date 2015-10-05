@@ -5,7 +5,7 @@ machine:
         LD_LIBRARY_PATH: /usr/local/lib
 dependencies:
     pre:
-        - sudo apt-get update -q; sudo apt-get install automake-1.14 g++-5.1
+        - sudo apt-get update -q; sudo apt-get install automake-1.14 g++-5.0
 test:
     override:
         - bash run_tests.bash
