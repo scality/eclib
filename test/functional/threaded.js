@@ -2,20 +2,18 @@
 
 'use strict';
 
-var ECLib = require('../node-eclib.js');
-var enums = require('../eclib-enum.js');
-var ECLibUtil = require('../eclib-util.js');
+var ECLib = require('../../node-eclib.js');
+var enums = require('../../eclib-enum.js');
+var ECLibUtil = require('../../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
 // Number of tests that are done at any given time.
-var done = 0;
+var _done = 0;
 
 function test_one() {
-  process.stdout.write('.');
-
   eclib.encode(ref_buf,
     function(status, encoded_data, encoded_parity, encoded_fragment_length) {
       var k = eclib.opt.k;
@@ -34,29 +32,22 @@ function test_one() {
         fragments[j++] = encoded_parity[i];
       }
 
-      process.stdout.write('.');
-
       eclib.decode(fragments, x + y, encoded_fragment_length, 0,
         function(status, out_data, out_data_length) {
           // If buffers differ, something bad happened.
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
 
           // Node is single threaded so this is safe.
-          done += 1;
-          process.stdout.write('.');
+          _done += 1;
         }
       );
     }
   );
 }
 
-process.stdout.write('threads: ');
-
 var numTests = 4;
 var ref_buf = new Buffer(500000000);
 buffertools.fill(ref_buf, 'z');
-
-process.stdout.write('.');
 
 var eclib = new ECLib({
   "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"],
@@ -66,20 +57,26 @@ var eclib = new ECLib({
 });
 eclib.init();
 
-process.stdout.write('.');
+describe('threaded', function(done) {
 
-function monitorState() {
-  if (done < numTests) {
-    setImmediate(monitorState);
-  } else {
-    console.log(' done');
-  }
-}
-monitorState();
+    this.timeout(300000);
+    it('there shall not be races', function(done) {
 
-var numTests = 4;
-for (var i = 0; i < numTests; i++) {
-  test_one();
-}
+	function monitorState() {
+	    if (_done < numTests) {
+		setImmediate(monitorState);
+	    } else {
+		done();
+	    }
+	}
+	
+	monitorState();
+
+	var numTests = 4;
+	for (var i = 0; i < numTests; i++) {
+	    test_one();
+	}
+    });
+});
 
 //eclib.destroy();

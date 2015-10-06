@@ -51,7 +51,7 @@ NAN_METHOD(EclCreate) {
       int arg0 = info[0]->NumberValue();
       int status = liberasurecode_instance_destroy(arg0);
 
-      if (status <= 0)
+      if (status < 0)
           Nan::ThrowTypeError("Liberasurecode instance destroy failed");
       return ;
     }
