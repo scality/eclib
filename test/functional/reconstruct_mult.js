@@ -1,8 +1,8 @@
 'use strict';
 
-var ECLib = require('../node-eclib.js');
-var enums = require('../eclib-enum.js');
-var ECLibUtil = require('../eclib-util.js');
+var ECLib = require('../../node-eclib.js');
+var enums = require('../../eclib-enum.js');
+var ECLibUtil = require('../../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
@@ -19,12 +19,11 @@ ec.init();
 
 var data = new Buffer("Hello world of Rust ! This is some serious decoding !");
 
-process.stdout.write('reconstruct multiple fragments:');
+describe('reconstruct multiple fragments:', function(done) {
 
+it('shall be OK', function(done) {
 ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength) {
     assert.equal(status, 0);
-
-    process.stdout.write('.');
 
     var allFragments = dataFragments.concat(parityFragments);
     // Lose 3 fragments, 2 of which are data. We should be able to still
@@ -48,14 +47,14 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
         for (idx = 0; idx < missing_frags_indx.length; idx++){
             assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);        	
         }
-        process.stdout.write('.');
 
         ec.decode(newAllFragments, newAllFragments.length, fragmentLength, false, function(status, decoded_data) {
             // check that the decoded data is like the initial one
             assert.equal(Buffer.compare(data, decoded_data), 0);
 
-            process.stdout.write('.');
-            console.log(' done');
+	    done();
         });
     });
+});
+});
 });

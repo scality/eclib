@@ -1,8 +1,8 @@
 'use strict';
 
-var ECLib = require('../node-eclib.js');
-var enums = require('../eclib-enum.js');
-var ECLibUtil = require('../eclib-util.js');
+var ECLib = require('../../node-eclib.js');
+var enums = require('../../eclib-enum.js');
+var ECLibUtil = require('../../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
@@ -26,12 +26,11 @@ ec.init();
 
 var data = new Buffer("Hello world of Rust ! This is some serious decoding !");
 
-process.stdout.write('reconstruct:');
+describe('reconstruct', function(done) {
 
+it('shall be OK', function(done) {
 ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength) {
     assert.equal(status, 0);
-
-    process.stdout.write('.');
 
     var allFragments = dataFragments.concat(parityFragments);
 
@@ -43,14 +42,13 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
     ec.reconstructFragment(allFragments, missing_fragment_id, function(err, missing_fragment) {
         assert.equal(err, null);
         assert.equal(Buffer.compare(original_missed_fragment, missing_fragment), 0);
-        process.stdout.write('.');
+
         // Insert the missing fragment.
         allFragments.splice(2, 0, missing_fragment);
 
         ec.decode(allFragments, allFragments.length, fragmentLength, false, function(status, decoded_data) {
             // check that the decoded data is like the initial one
             assert.equal(Buffer.compare(data, decoded_data), 0);
-            process.stdout.write('.');
 
             // test error callback
             // Lose first missing_fragments_data_loss fragments that don't allow for reconstruction
@@ -60,7 +58,6 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
             allFragments.splice(0, missing_fragments_data_loss);
             ec.reconstructFragment(allFragments, 0, function(err) {
                 assert.notEqual(err, null);
-                process.stdout.write('.');
 
                 function gb(n) {
                     var b = [];
@@ -70,12 +67,13 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
                     return b;
                 }
                 ec.reconstructFragment(gb(dataFragments.length + parityFragments.length), 0, function(err) {
-                    process.stdout.write('.');
                     assert.notEqual(err, null);
                     ec.destroy();
-                    console.log(' done');
+		    done();
                 });
             });
         });
     });
+});
+});
 });

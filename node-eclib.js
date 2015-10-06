@@ -23,7 +23,7 @@ function ECLib(opts) {
 	this.ins_id = null;
 	this.eclibUtil = new ECLibUtil();
 	this.isValidInstance = function() {
-		return (__.isUndefined(this.ins_id));
+		return (!__.isUndefined(this.ins_id));
 	};
 
 	this.resetOptions = function() {
