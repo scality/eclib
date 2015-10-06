@@ -15,4 +15,4 @@ dependencies:
 
 test:
     override:
-        - npm install buffertools; bash run_tests.bash
+        - npm install buffertools; npm install mocha; mocha --recursive

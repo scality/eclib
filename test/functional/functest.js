@@ -2,25 +2,23 @@
 
 'use strict';
 
-var ECLib = require('../node-eclib.js');
-var enums = require('../eclib-enum.js');
-var ECLibUtil = require('../eclib-util.js');
+var ECLib = require('../../node-eclib.js');
+var enums = require('../../eclib-enum.js');
+var ECLibUtil = require('../../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
 // Number of tests that are done at any given time.
-var done = 0;
+var _done = 0;
 
-function test_one(name, opts) {
+function test_one(name, opts, done) {
   var eclib = new ECLib(opts);
 
   eclib.init();
 
   var ref_buf = crypto.randomBytes(10000000);
-
-  process.stdout.write('.');
 
   eclib.encode(ref_buf,
     function(status, encoded_data, encoded_parity, encoded_fragment_length) {
@@ -41,8 +39,6 @@ function test_one(name, opts) {
         fragments[j++] = encoded_parity[i];
       }
 
-      process.stdout.write('.');
-
       eclib.decode(fragments, x + y, encoded_fragment_length, 0,
         function(status, out_data, out_data_length) {
           // If buffers are not equal, something bad must have happened.
@@ -52,8 +48,8 @@ function test_one(name, opts) {
           eclib.destroy();
 
           // Node is single threaded so this is safe to do.
-          done += 1;
-          process.stdout.write('.');
+          _done += 1;
+	  done();
         }
       );
     }
@@ -153,19 +149,26 @@ var tests = [{
   }
 }];
 
-function monitorState() {
-  if (done < tests.length) {
-    setImmediate(monitorState);
-  } else {
-    console.log(' done');
-  }
+function beautifuler(options) {
+    return "k=" + options["k"] + " m=" + options["m"] + " w=" + options["w"] + " hd=" + options["hd"];
 }
-monitorState();
 
-process.stdout.write('algorithms: ');
-tests.forEach(function(test, i) {
-  test_one(test.name, test.options);
-})
+describe('FuncTest', function(done) {
+    function monitorState() {
+	if (_done < tests.length) {
+	    setImmediate(monitorState);
+	} else {
+	    //do nothing
+	}
+    }
+    monitorState();
+    
+    tests.forEach(function(test, i) {
+	it(test.name + " " + beautifuler(test.options), function(done) {
+	    test_one(test.name, test.options, done);
+	});
+    })
+});
 
 // The tests with ISA require an additional library. They are disabled for now because of this.
 

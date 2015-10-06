@@ -2,15 +2,15 @@
 
 'use strict';
 
-var ECLib = require('../node-eclib.js');
-var enums = require('../eclib-enum.js');
-var ECLibUtil = require('../eclib-util.js');
+var ECLib = require('../../node-eclib.js');
+var enums = require('../../eclib-enum.js');
+var ECLibUtil = require('../../eclib-util.js');
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
-function test_one(name, opts) {
+function test_one(name, opts, done) {
   var eclib = new ECLib(opts);
   eclib.init();
 
@@ -20,8 +20,6 @@ function test_one(name, opts) {
   var ref_buf2 = crypto.randomBytes(sz2);
   var ref_buf = buffertools.concat(ref_buf1, ref_buf2);
   var buf_array = [ref_buf1, ref_buf2];
-
-  process.stdout.write('.');
 
   eclib.encodev(2, buf_array, sz1 + sz2,
     function(status, encoded_data, encoded_parity, encoded_fragment_length) {
@@ -40,23 +38,24 @@ function test_one(name, opts) {
         fragments[j++] = encoded_parity[i];
       }
 
-      process.stdout.write('.');
-
       eclib.decode(fragments, x + y, encoded_fragment_length, 0,
         function(status, out_data, out_data_length) {
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
           eclib.destroy();
-          console.log(' done');
+	  done();
         }
       );
     }
   );
 }
 
-process.stdout.write('encodev: ');
-test_one("xor", {
-  "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
-  "k": 3,
-  "m": 3,
-  "hd": 3
+describe('EncodeV', function() {
+    it('buffers should be equal', function(done) {
+	test_one("xor", {
+	    "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
+	    "k": 3,
+	    "m": 3,
+	    "hd": 3
+	}, done);
+    });
 });
