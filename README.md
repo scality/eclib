@@ -1,61 +1,35 @@
-# Node-ECLib
-===================
-This is the node port of required library
-https://bitbucket.org/tsg-/liberasurecode
+# eclib - Bindings for liberasurecode
 
-Here is the main library Website,
-http://jerasure.org
+[![Circle CI][circle]](https://circleci.com/gh/scality/eclib)
+[![npm version][npm version]](https://www.npmjs.com/package/eclib)
 
-Here is the python wrapper of liberasurecode library
-https://bitbucket.org/kmgreen2/pyeclib
+eclib is a set of NodeJS bindings for [liberasurecode][liberasure]
+and its backends.
 
-To understand how the liberasurecode methods works, please go through this
-class,
-https://bitbucket.org/tsg-/liberasurecode/src/e46c434e36566f6f0820923a9a184e27d7b941e8/test/liberasurecode_test.c?at=master
+### Installation
 
-------------
-
-### Setup
-=========
-A simple command will take care of everything for you:
 ```sh
-npm install -g node-gyp # you might need to be root for this command
-npm install
+# We rely on node-gyp to build our binaries
+npm install -g node-gyp
+# Install eclib, you will need admin rights to install the libraries
+npm install eclib --save
 ```
-The install process will need to install libraries and node-gyp, requiring
-sudo usage.
+That's all!
 
-Running the test is done via the usual:
-```sh
-npm test
+### Usage
+```node
+// ES5
+var eclib = require('eclib');
+
+var Eclib = new eclib(opts);
+Eclib.init();
 ```
+See the [API documentation](API.md) for a more detailed explanation.
 
+### License
+eclib is distributed under the terms of the [BSD license](LICENSE).
 
-### Prestudy
-===========
-If you developed addons before, then you probably knew it. If not, it would
-be really helpful to read this:
-[nan-documentation](https://github.com/iojs/nan)
-
-
-### Project structure
-============
-Here are the details
-
-## Js Files
-* eclib-enum.js #
-	This file will contain all the enum values that was introduced in the c project to keep the simillarity among the projects.
-* eclib-util.js #
-	This contain all the util method that was required by the node-eclib.js file
-* node-eclib.js #
-	This file has some commented out code, please go through it. Initially it was a strait forward implementation. Currently the class has only the skeleton of the methods.
-
-## Cpp files
-* node-eclib.cpp # This file expose all the methods to JS interface
-* asyncdecode.cpp # This class holds all the decode methods.(Previous plan was to use NAN's asyn task for decoding)
-* asyncencode.cpp # This class holds all the encode methods. Partially implemented .(Previous plan was to use NAN's asyn task for encoding)
-* asyncreconstruction.cpp # Just a dummy class for exposing fragment reconstruction
-* libmain.cpp # This class will have all the method except those 5 methods. Partially implemented.
-* libutil.cpp # This class holds the util method for the all the classes. Just few methods are implemented here.
-
----------
+[circle]: https://img.shields.io/circleci/project/scality/eclib/master.svg
+[npm]: https://www.npmjs.com/package/eclib
+[npm version]: https://img.shields.io/npm/v/eclib.svg
+[liberasure]: https://bitbucket.org/tsg-/liberasurecode
