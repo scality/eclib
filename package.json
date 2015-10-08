@@ -1,8 +1,8 @@
 {
   "name": "eclib",
-  "version": "v0.0.1",
-  "description": "Native Node.js C++ extension for liberasurecode",
-  "homepage": "http://www.scality.com/",
+  "version": "1.0.0",
+  "description": "A set of NodeJS bindings for liberasurecode and its backends",
+  "homepage": "https://github.com/scality/eclib#readme",
   "author": {
     "name": "Giorgio Regni",
     "email": "giorgio.regni@scality.com",
@@ -10,20 +10,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/scality/node-ECLib.git"
+    "url": "git+ssh://git@@github.com:scality/eclib.git"
   },
   "scripts": {
     "preinstall": "make",
     "install": "node-gyp configure && node-gyp build"
   },
+  "bugs": {
+    "url": "https://github.com/scality/eclib/issues"
+  },
   "main": "index.js",
   "dependencies": {
     "bindings": "~1.2.1",
-    "buffertools": "^2.1.2",
-    "hexdump": "^0.1.0",
-    "hexdump-nodejs": "^0.1.0",
     "nan": "^2.0.9",
     "underscore": "*"
   },
+  "devDependencies": {
+    "buffertools": "^2.1.2",
+    "hexdump": "^0.1.0",
+    "hexdump-nodejs": "^0.1.0"
+  },
+  "license": "BSD-2-Clause",
   "gypfile": true
 }
