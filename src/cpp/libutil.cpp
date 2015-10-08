@@ -22,7 +22,7 @@ ec_args * el_create_ec_args(int k, int m, int w, int hd, ec_checksum_type_t ct){
 
 ec_backend_id_t get_ec_backend_id(int id){
 
-	switch(id){
+    switch(id){
         case 0:
             return EC_BACKEND_NULL;
             break;
@@ -53,7 +53,7 @@ ec_backend_id_t get_ec_backend_id(int id){
 
 ec_checksum_type_t get_ec_checksum_type(int ct){
 
-	// main logics will be implemented here
+    // main logics will be implemented here
 
 
     switch(ct){

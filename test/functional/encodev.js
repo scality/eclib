@@ -42,7 +42,7 @@ function test_one(name, opts, done) {
         function(status, out_data, out_data_length) {
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
           eclib.destroy();
-	  done();
+          done();
         }
       );
     }
@@ -51,11 +51,11 @@ function test_one(name, opts, done) {
 
 describe('EncodeV', function() {
     it('buffers should be equal', function(done) {
-	test_one("xor", {
-	    "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
-	    "k": 3,
-	    "m": 3,
-	    "hd": 3
-	}, done);
+        test_one("xor", {
+            "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
+            "k": 3,
+            "m": 3,
+            "hd": 3
+        }, done);
     });
 });

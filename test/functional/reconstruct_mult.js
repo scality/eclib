@@ -34,25 +34,25 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
     // backup missing fragments
     var orig_missing_frags = [allFragments[missing_frags_indx[0]]];
     for (var idx = 1; idx < missing_frags_indx.length; idx++){
-    	orig_missing_frags.push(allFragments[missing_frags_indx[idx]]);
+        orig_missing_frags.push(allFragments[missing_frags_indx[idx]]);
     }
     // remove missing fragments
     for (idx = 0; idx < missing_frags_indx.length; idx++){
-    	allFragments.splice(missing_frags_indx[idx], 1);
+        allFragments.splice(missing_frags_indx[idx], 1);
     }
 
     ec.reconstruct(allFragments, [0, 5, 1], function(err, newAllFragments) {
         assert.equal(err, null);
         // check reconstructed fragments and original ones
         for (idx = 0; idx < missing_frags_indx.length; idx++){
-            assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);        	
+            assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);
         }
 
         ec.decode(newAllFragments, newAllFragments.length, fragmentLength, false, function(status, decoded_data) {
             // check that the decoded data is like the initial one
             assert.equal(Buffer.compare(data, decoded_data), 0);
 
-	    done();
+            done();
         });
     });
 });

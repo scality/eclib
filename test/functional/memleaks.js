@@ -132,9 +132,9 @@ var _done = false;
 describe('memleaks', function(done) {
     this.timeout(60000);
     it('heap shall not increase by more than x1.5 during this long test', function(done) {
-	do_batches(0, function() {
-	    _done = true;
-	    done();
-	});
+        do_batches(0, function() {
+            _done = true;
+            done();
+        });
     });
 });

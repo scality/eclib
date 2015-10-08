@@ -11,38 +11,38 @@ var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
 function test_one(done) {
-    
+
     eclib.encode(ref_buf, function(status, encoded_data, encoded_parity,
-				   encoded_fragment_length) {
-	
-	var k = eclib.opt.k;
-	var m = eclib.opt.m;
+                                   encoded_fragment_length) {
 
-	var x = k - 1; //available data fragments
-	var y = m; //available parity fragments
-	
-	var fragments = [];
-	var i, j;
-	j = 0;
-	for (i = 0; i < x; i++) {
-	    fragments[j++] = encoded_data[i];
-	}
-	for (i = 0; i < y; i++) {
-	    fragments[j++] = encoded_parity[i];
-	}
-	
-	eclib.decode(fragments, x + y, encoded_fragment_length, 0, 
-		     function(status, out_data, out_data_length) {
+    var k = eclib.opt.k;
+    var m = eclib.opt.m;
 
-			 // Buffers must be equal, or else something bad happened.
-			 assert.equal(buffertools.compare(out_data, ref_buf), 0);
-			 
-			 eclib.destroy(function(resultcode, err){
+    var x = k - 1; //available data fragments
+    var y = m; //available parity fragments
 
-			     assert(resultcode === undefined);
-			     done();
-			 });
-		     });
+    var fragments = [];
+    var i, j;
+    j = 0;
+    for (i = 0; i < x; i++) {
+        fragments[j++] = encoded_data[i];
+    }
+    for (i = 0; i < y; i++) {
+        fragments[j++] = encoded_parity[i];
+    }
+
+    eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+                 function(status, out_data, out_data_length) {
+
+                     // Buffers must be equal, or else something bad happened.
+                     assert.equal(buffertools.compare(out_data, ref_buf), 0);
+
+                     eclib.destroy(function(resultcode, err) {
+
+                         assert(resultcode === undefined);
+                         done();
+                     });
+                 });
     });
 }
 
@@ -61,12 +61,12 @@ var eclib = new ECLib({
 });
 
 var ref_buf = crypto.randomBytes(100000);
-    
+
 describe('DestroyTest', function(done) {
 
     eclib.init();
-    
+
     it('shall destroy nicely', function(done) {
-	test_one(done);
+        test_one(done);
     });
 });

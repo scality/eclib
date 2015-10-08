@@ -6,8 +6,9 @@ using namespace v8;
 
 class AsyncDecodeWorker : public Nan::AsyncWorker {
 public:
-  AsyncDecodeWorker(Nan::Callback *callback, int instance_descriptor_id, char **fragments, int n_frag, int frag_len, int force_metadata_check) :
-    Nan::AsyncWorker(callback),
+  AsyncDecodeWorker(Nan::Callback *callback, int instance_descriptor_id,
+                    char **fragments, int n_frag, int frag_len,
+                    int force_metadata_check) : Nan::AsyncWorker(callback),
     _instance_descriptor_id(instance_descriptor_id),
     _fragments(fragments),
     _n_frag(n_frag),
@@ -24,9 +25,9 @@ public:
 
   void Execute() {
     _status = liberasurecode_decode(_instance_descriptor_id,
-				       _fragments, _n_frag, _frag_len,
-				       _force_metadata_check,
-				       &_out_data, &_out_data_len);
+                                    _fragments, _n_frag, _frag_len,
+                                    _force_metadata_check,
+                                    &_out_data, &_out_data_len);
 
     if (_status != 0) {
       SetErrorMessage("an error occured while decoding");

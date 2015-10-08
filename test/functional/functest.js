@@ -49,7 +49,7 @@ function test_one(name, opts, done) {
 
           // Node is single threaded so this is safe to do.
           _done += 1;
-	  done();
+          done();
         }
       );
     }
@@ -155,18 +155,18 @@ function beautifuler(options) {
 
 describe('FuncTest', function(done) {
     function monitorState() {
-	if (_done < tests.length) {
-	    setImmediate(monitorState);
-	} else {
-	    //do nothing
-	}
+        if (_done < tests.length) {
+            setImmediate(monitorState);
+        } else {
+            //do nothing
+        }
     }
     monitorState();
-    
+
     tests.forEach(function(test, i) {
-	it(test.name + " " + beautifuler(test.options), function(done) {
-	    test_one(test.name, test.options, done);
-	});
+        it(test.name + " " + beautifuler(test.options), function(done) {
+            test_one(test.name, test.options, done);
+        });
     })
 });
 
