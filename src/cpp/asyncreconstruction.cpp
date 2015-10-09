@@ -111,7 +111,8 @@ NAN_METHOD(EclReconstructFragment) {
     for (int i = 0; i < num_fragments; i++) {
         avail_fragments_ptr[i] = new char[fragment_length];
         memcpy(avail_fragments_ptr[i],
-                node::Buffer::Data(avail_fragments->Get(i)), fragment_length);
+                node::Buffer::Data(Nan::Get(avail_fragments, i)
+                    .ToLocalChecked()), fragment_length);
     }
 
     Nan::Callback *callback = new Nan::Callback(info[5].As<Function>());

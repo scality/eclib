@@ -108,7 +108,8 @@ NAN_METHOD(EclDecode) {
     char **fragments = new char*[n_frag];
     for (int i = 0; i < n_frag; i++) {
         fragments[i] = new char[frag_len];
-        memcpy(fragments[i], node::Buffer::Data(fragments_array->Get(i)),
+        memcpy(fragments[i], node::Buffer::Data(Nan::Get(fragments_array, i)
+                    .ToLocalChecked()),
                 frag_len);
     }
 

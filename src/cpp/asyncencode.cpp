@@ -60,13 +60,14 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
             // FIXME: The uint64 to uint32 cast is anything but safe
             Local<Array> encoded_data_array = Nan::New<Array>(_k);
             for (int i = 0; i < _k; i++) {
-                encoded_data_array->Set(i, Nan::NewBuffer(_encoded_data[i],
-                            _encoded_fragment_len).ToLocalChecked());
+                Nan::Set(encoded_data_array, i,
+                        Nan::NewBuffer(_encoded_data[i], _encoded_fragment_len)
+                        .ToLocalChecked());
             }
 
             Local<Array> encoded_parity_array = Nan::New<Array>(_m);
             for (int i = 0; i < _m; i++) {
-                encoded_parity_array->Set(i, Nan::NewBuffer(_encoded_parity[i],
+                Nan::Set(encoded_parity_array, i, Nan::NewBuffer(_encoded_parity[i],
                             _encoded_fragment_len).ToLocalChecked());
             }
 
@@ -160,8 +161,8 @@ NAN_METHOD(EclEncodeV) {
     int n_buf = info[3]->NumberValue();
     int off = 0;
     for (int i = 0; i < n_buf; i++) {
-        char *buf = node::Buffer::Data(buf_array->Get(i));
-        int buf_len = node::Buffer::Length(buf_array->Get(i));
+        char *buf = node::Buffer::Data(Nan::Get(buf_array, i).ToLocalChecked());
+        int buf_len = node::Buffer::Length(Nan::Get(buf_array, i).ToLocalChecked());
         memcpy(orig_data + off, buf, buf_len);
         off += buf_len;
     }
