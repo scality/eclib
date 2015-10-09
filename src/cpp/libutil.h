@@ -22,15 +22,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SCALITY_EC_LIBUTIL_H
+#ifndef ECLIB_LIBUTIL_H
+# define ECLIB_LIBUTIL_H
 
-#define SCALITY_EC_LIBUTIL_H
+# include <liberasurecode/erasurecode.h>
+# include <liberasurecode/erasurecode_helpers.h>
 
-#include <liberasurecode/erasurecode.h>
-#include <liberasurecode/erasurecode_helpers.h>
+ec_backend_id_t     get_ec_backend_id(int id);
+ec_checksum_type_t  get_ec_checksum_type(int ct);
+ec_args             *el_create_ec_args(int k, int m, int w, int hd,
+        ec_checksum_type_t ct);
 
-ec_args * el_create_ec_args(int k, int m, int w, int hd, ec_checksum_type_t ct);
-ec_backend_id_t get_ec_backend_id(int id);
-ec_checksum_type_t get_ec_checksum_type(int ct);
-
-#endif
+#endif /* ECLIB_LIBUTIL_H */

@@ -23,7 +23,6 @@
  */
 
 #include <nan.h>
-
 #include "asyncencode.h"
 
 using namespace v8;
@@ -114,7 +113,8 @@ NAN_METHOD(EclEncode) {
 
     if (info.Length() < 6) {
         char msg[1024];
-        sprintf(msg, "Wrong number of arguments (expected 6, got %d)", info.Length());
+        sprintf(msg, "Wrong number of arguments (expected 6, got %d)",
+                info.Length());
         Nan::ThrowTypeError(msg);
         return ;
     }

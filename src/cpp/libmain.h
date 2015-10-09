@@ -22,10 +22,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef ECLIB_LIBMAIN_H
+# define ECLIB_LIBMAIN_H
+
 #include <nan.h>
 #include <liberasurecode/erasurecode.h>
 #include <liberasurecode/erasurecode_helpers.h>
-
 
 NAN_METHOD(EclCreate);
 NAN_METHOD(EclDestroy);
@@ -36,3 +38,5 @@ NAN_METHOD(EclVerifyStripeMetadata);
 NAN_METHOD(EclGetAlignedDataSize);
 NAN_METHOD(EclGetMinimumEncodeSize);
 NAN_METHOD(EclGetFragmentSize);
+
+#endif /* ECLIB_LIBMAIN_H */

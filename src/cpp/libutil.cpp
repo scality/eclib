@@ -25,27 +25,24 @@
 #include "libutil.h"
 
 // Have to rewrite the method to support more parameters
-ec_args * el_create_ec_args(int k, int m, int w, int hd, ec_checksum_type_t ct){
-
+ec_args             *el_create_ec_args(int k, int m, int w, int hd,
+        ec_checksum_type_t ct) {
     ec_args *result;
-    result = (ec_args*)malloc( sizeof( ec_args ) );
+    result = (ec_args*)malloc(sizeof (ec_args));
 
-    if(!result){
-
+    if (!result) {
         result->k = k;
         result->m = m;
         result->w = w;
         result->hd = hd;
         result->ct = ct;
     }
-
     return result;
 }
 
 
-ec_backend_id_t get_ec_backend_id(int id){
-
-    switch(id){
+ec_backend_id_t     get_ec_backend_id(int id) {
+    switch(id) {
         case 0:
             return EC_BACKEND_NULL;
             break;
@@ -74,12 +71,8 @@ ec_backend_id_t get_ec_backend_id(int id){
 }
 
 
-ec_checksum_type_t get_ec_checksum_type(int ct){
-
-    // main logics will be implemented here
-
-
-    switch(ct){
+ec_checksum_type_t  get_ec_checksum_type(int ct) {
+    switch(ct) {
         case 0:
             return CHKSUM_NONE;
             break;
@@ -96,5 +89,4 @@ ec_checksum_type_t get_ec_checksum_type(int ct){
             return CHKSUM_NONE;
             break;
     }
-
 }
