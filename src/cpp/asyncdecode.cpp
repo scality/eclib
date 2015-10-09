@@ -26,8 +26,6 @@
 
 #include "asyncdecode.h"
 
-using namespace v8;
-
 class AsyncDecodeWorker : public Nan::AsyncWorker {
     public:
         AsyncDecodeWorker(Nan::Callback *callback, int instance_descriptor_id,
@@ -61,10 +59,10 @@ class AsyncDecodeWorker : public Nan::AsyncWorker {
         void HandleOKCallback() {
             Nan::HandleScope scope;
 
-            Local<Value> argv[] = {
-                Nan::New<Number>(_status),
+            v8::Local<v8::Value> argv[] = {
+                Nan::New<v8::Number>(_status),
                 Nan::NewBuffer(_out_data, _out_data_len).ToLocalChecked(),
-                Nan::New<Number>(_out_data_len)
+                Nan::New<v8::Number>(_out_data_len)
             };
             callback->Call(3, argv);
         }
@@ -72,8 +70,8 @@ class AsyncDecodeWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Local<Value> argv[] = {
-                Nan::New<Number>(_status)
+            v8::Local<v8::Value> argv[] = {
+                Nan::New<v8::Number>(_status)
             };
 
             callback->Call(1, argv);
@@ -103,7 +101,8 @@ NAN_METHOD(EclDecode) {
     int n_frag = Nan::To<int>(info[2]).FromJust();
     int frag_len = Nan::To<int>(info[3]).FromJust();
 
-    Local<Object> fragments_array = Nan::To<v8::Object>(info[1]).ToLocalChecked();
+    v8::Local<v8::Object> fragments_array = Nan::To<v8::Object>(info[1])
+        .ToLocalChecked();
 
     char **fragments = new char*[n_frag];
     for (int i = 0; i < n_frag; i++) {
@@ -114,7 +113,7 @@ NAN_METHOD(EclDecode) {
     }
 
     Nan::AsyncQueueWorker(new AsyncDecodeWorker(
-                new Nan::Callback(info[5].As<Function>()),
+                new Nan::Callback(info[5].As<v8::Function>()),
                 Nan::To<int>(info[0]).FromJust(),
                 fragments,
                 n_frag,

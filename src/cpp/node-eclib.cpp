@@ -30,12 +30,6 @@
 #include "asyncdecode.h"
 #include "asyncreconstruction.h"
 
-
-using v8::FunctionTemplate;
-using v8::Handle;
-using v8::Object;
-using v8::String;
-
 NAN_MODULE_INIT(Init) {
   NAN_EXPORT(target, EclCreate);
   NAN_EXPORT(target, EclDestroy);

@@ -25,8 +25,6 @@
 #include <nan.h>
 #include "asyncencode.h"
 
-using namespace v8;
-
 class AsyncEncodeWorker : public Nan::AsyncWorker {
     public:
         AsyncEncodeWorker(Nan::Callback *callback, int instance_descriptor_id,
@@ -58,14 +56,14 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
             Nan::HandleScope scope;
 
             // FIXME: The uint64 to uint32 cast is anything but safe
-            Local<Array> encoded_data_array = Nan::New<Array>(_k);
+            v8::Local<v8::Array> encoded_data_array = Nan::New<v8::Array>(_k);
             for (int i = 0; i < _k; i++) {
                 Nan::Set(encoded_data_array, i,
                         Nan::NewBuffer(_encoded_data[i], _encoded_fragment_len)
                         .ToLocalChecked());
             }
 
-            Local<Array> encoded_parity_array = Nan::New<Array>(_m);
+            v8::Local<v8::Array> encoded_parity_array = Nan::New<v8::Array>(_m);
             for (int i = 0; i < _m; i++) {
                 Nan::Set(encoded_parity_array, i, Nan::NewBuffer(_encoded_parity[i],
                             _encoded_fragment_len).ToLocalChecked());
@@ -73,12 +71,11 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
 
             free(_encoded_data);
             free(_encoded_parity);
-
-            Local<Value> argv[] = {
-                Nan::New<Number>(_status),
+            v8::Local<v8::Value> argv[] = {
+                Nan::New<v8::Number>(_status),
                 encoded_data_array,
                 encoded_parity_array,
-                Nan::New<Number>(_encoded_fragment_len)
+                Nan::New<v8::Number>(_encoded_fragment_len)
             };
 
             callback->Call(4, argv);
@@ -87,8 +84,8 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Local<Value> argv[] = {
-                Nan::New<Number>(_status)
+            v8::Local<v8::Value> argv[] = {
+                Nan::New<v8::Number>(_status)
             };
 
             callback->Call(1, argv);
@@ -127,7 +124,7 @@ NAN_METHOD(EclEncode) {
     char *pass_orig_data = new char[orig_data_size];
     memcpy(pass_orig_data, orig_data, orig_data_size);
 
-    Nan::Callback *callback = new Nan::Callback(info[5].As<Function>());
+    Nan::Callback *callback = new Nan::Callback(info[5].As<v8::Function>());
 
     Nan::AsyncQueueWorker(new AsyncEncodeWorker(
                 callback,
@@ -157,7 +154,7 @@ NAN_METHOD(EclEncodeV) {
     int orig_data_size = Nan::To<int>(info[5]).FromJust();
     char *orig_data = new char[orig_data_size];
 
-    Local<Object>buf_array = Nan::To<v8::Object>(info[4]).ToLocalChecked();
+    v8::Local<v8::Object>buf_array = Nan::To<v8::Object>(info[4]).ToLocalChecked();
     int n_buf = Nan::To<int>(info[3]).FromJust();
     int off = 0;
     for (int i = 0; i < n_buf; i++) {
@@ -167,7 +164,7 @@ NAN_METHOD(EclEncodeV) {
         off += buf_len;
     }
 
-    Nan::Callback *callback = new Nan::Callback(info[6].As<Function>());
+    Nan::Callback *callback = new Nan::Callback(info[6].As<v8::Function>());
 
     Nan::AsyncQueueWorker(new AsyncEncodeWorker(
                 callback,

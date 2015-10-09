@@ -24,8 +24,6 @@
 
 #include "asyncreconstruction.h"
 
-using namespace v8;
-
 class AsyncReconstructWorker : public Nan::AsyncWorker {
     public:
         AsyncReconstructWorker(
@@ -70,7 +68,7 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
         void HandleOKCallback() {
             Nan::HandleScope scope;
 
-            Local<Value> argv[] = {
+            v8::Local<v8::Value> argv[] = {
                 Nan::Null(),
                 Nan::NewBuffer(_reconstructed_fragment, _fragment_length)
                     .ToLocalChecked()
@@ -82,7 +80,7 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Local<Value> argv[] = {
+            v8::Local<v8::Value> argv[] = {
                 Nan::Error("could not reconstruct fragment")
             };
 
@@ -106,7 +104,7 @@ NAN_METHOD(EclReconstructFragment) {
     int num_fragments = Nan::To<int>(info[2]).FromJust();
     int fragment_length = Nan::To<int>(info[3]).FromJust();
     int missing_fragment_id = Nan::To<int>(info[4]).FromJust();
-    Local<Object> avail_fragments = Nan::To<v8::Object>(info[1]).ToLocalChecked();
+    v8::Local<v8::Object> avail_fragments = Nan::To<v8::Object>(info[1]).ToLocalChecked();
     char **avail_fragments_ptr = new char*[num_fragments];
     for (int i = 0; i < num_fragments; i++) {
         avail_fragments_ptr[i] = new char[fragment_length];
@@ -115,7 +113,7 @@ NAN_METHOD(EclReconstructFragment) {
                     .ToLocalChecked()), fragment_length);
     }
 
-    Nan::Callback *callback = new Nan::Callback(info[5].As<Function>());
+    Nan::Callback *callback = new Nan::Callback(info[5].As<v8::Function>());
 
     Nan::AsyncQueueWorker(new AsyncReconstructWorker(
                 instance_descriptor_id,

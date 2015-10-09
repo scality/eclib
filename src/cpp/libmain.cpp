@@ -27,9 +27,6 @@
 #include "libmain.h"
 #include "libutil.h"
 
-using namespace v8;
-using namespace std;
-
 NAN_METHOD(EclCreate) {
     Nan::HandleScope scope;
 
