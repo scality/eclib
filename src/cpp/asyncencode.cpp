@@ -58,13 +58,13 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
             Nan::HandleScope scope;
 
             // FIXME: The uint64 to uint32 cast is anything but safe
-            Handle<Array> encoded_data_array = Nan::New<Array>(_k);
+            Local<Array> encoded_data_array = Nan::New<Array>(_k);
             for (int i = 0; i < _k; i++) {
                 encoded_data_array->Set(i, Nan::NewBuffer(_encoded_data[i],
                             _encoded_fragment_len).ToLocalChecked());
             }
 
-            Handle<Array> encoded_parity_array = Nan::New<Array>(_m);
+            Local<Array> encoded_parity_array = Nan::New<Array>(_m);
             for (int i = 0; i < _m; i++) {
                 encoded_parity_array->Set(i, Nan::NewBuffer(_encoded_parity[i],
                             _encoded_fragment_len).ToLocalChecked());
@@ -72,7 +72,8 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
 
             free(_encoded_data);
             free(_encoded_parity);
-            Handle<Value> argv[] = {
+
+            Local<Value> argv[] = {
                 Nan::New<Number>(_status),
                 encoded_data_array,
                 encoded_parity_array,
@@ -85,7 +86,7 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            Local<Value> argv[] = {
                 Nan::New<Number>(_status)
             };
 

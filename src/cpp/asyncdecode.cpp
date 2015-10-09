@@ -61,7 +61,7 @@ class AsyncDecodeWorker : public Nan::AsyncWorker {
         void HandleOKCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            Local<Value> argv[] = {
                 Nan::New<Number>(_status),
                 Nan::NewBuffer(_out_data, _out_data_len).ToLocalChecked(),
                 Nan::New<Number>(_out_data_len)
@@ -72,7 +72,7 @@ class AsyncDecodeWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            Local<Value> argv[] = {
                 Nan::New<Number>(_status)
             };
 

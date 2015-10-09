@@ -70,7 +70,7 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
         void HandleOKCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            Local<Value> argv[] = {
                 Nan::Null(),
                 Nan::NewBuffer(_reconstructed_fragment, _fragment_length)
                     .ToLocalChecked()
@@ -82,7 +82,7 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            Local<Value> argv[] = {
                 Nan::Error("could not reconstruct fragment")
             };
 
