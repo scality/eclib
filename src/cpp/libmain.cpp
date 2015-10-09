@@ -42,12 +42,12 @@ NAN_METHOD(EclCreate) {
         return ;
     }
 
-    int _id = info[0]->NumberValue();
-    int k = info[1]->NumberValue();
-    int m = info[2]->NumberValue();
-    int w = info[3]->NumberValue();
-    int hd = info[4]->NumberValue();
-    int _ct = info[5]->NumberValue();
+    int _id = Nan::To<int>(info[0]).FromJust();
+    int k = Nan::To<int>(info[1]).FromJust();
+    int m = Nan::To<int>(info[2]).FromJust();
+    int w = Nan::To<int>(info[3]).FromJust();
+    int hd = Nan::To<int>(info[4]).FromJust();
+    int _ct = Nan::To<int>(info[5]).FromJust();
 
     ec_backend_id = get_ec_backend_id(_id);
     ct  = get_ec_checksum_type(_ct);
@@ -72,7 +72,7 @@ NAN_METHOD(EclCreate) {
 NAN_METHOD(EclDestroy) {
     Nan::HandleScope scope;
 
-    int arg0 = info[0]->NumberValue();
+    int arg0 = Nan::To<int>(info[0]).FromJust();
     int status = liberasurecode_instance_destroy(arg0);
 
     if (status < 0)

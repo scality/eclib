@@ -119,10 +119,10 @@ NAN_METHOD(EclEncode) {
         return ;
     }
 
-    int instance_descriptor_id = info[0]->NumberValue();
-    int k = info[1]->NumberValue();
-    int m = info[2]->NumberValue();
-    int orig_data_size = info[4]->NumberValue();
+    int instance_descriptor_id = Nan::To<int>(info[0]).FromJust();
+    int k = Nan::To<int>(info[1]).FromJust();
+    int m = Nan::To<int>(info[2]).FromJust();
+    int orig_data_size = Nan::To<int>(info[4]).FromJust();
     char *orig_data = node::Buffer::Data(info[3]);
     char *pass_orig_data = new char[orig_data_size];
     memcpy(pass_orig_data, orig_data, orig_data_size);
@@ -150,15 +150,15 @@ NAN_METHOD(EclEncodeV) {
         return ;
     }
 
-    int instance_descriptor_id = info[0]->NumberValue();
-    int k = info[1]->NumberValue();
-    int m = info[2]->NumberValue();
+    int instance_descriptor_id = Nan::To<int>(info[0]).FromJust();
+    int k = Nan::To<int>(info[1]).FromJust();
+    int m = Nan::To<int>(info[2]).FromJust();
 
-    int orig_data_size = info[5]->NumberValue();
+    int orig_data_size = Nan::To<int>(info[5]).FromJust();
     char *orig_data = new char[orig_data_size];
 
-    Local<Object>buf_array = info[4]->ToObject();
-    int n_buf = info[3]->NumberValue();
+    Local<Object>buf_array = Nan::To<v8::Object>(info[4]).ToLocalChecked();
+    int n_buf = Nan::To<int>(info[3]).FromJust();
     int off = 0;
     for (int i = 0; i < n_buf; i++) {
         char *buf = node::Buffer::Data(Nan::Get(buf_array, i).ToLocalChecked());

@@ -102,11 +102,11 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
 NAN_METHOD(EclReconstructFragment) {
     Nan::HandleScope scope;
 
-    int instance_descriptor_id = info[0]->NumberValue();
-    int num_fragments = info[2]->NumberValue();
-    int fragment_length = info[3]->NumberValue();
-    int missing_fragment_id = info[4]->NumberValue();
-    Local<Object> avail_fragments = info[1]->ToObject();
+    int instance_descriptor_id = Nan::To<int>(info[0]).FromJust();
+    int num_fragments = Nan::To<int>(info[2]).FromJust();
+    int fragment_length = Nan::To<int>(info[3]).FromJust();
+    int missing_fragment_id = Nan::To<int>(info[4]).FromJust();
+    Local<Object> avail_fragments = Nan::To<v8::Object>(info[1]).ToLocalChecked();
     char **avail_fragments_ptr = new char*[num_fragments];
     for (int i = 0; i < num_fragments; i++) {
         avail_fragments_ptr[i] = new char[fragment_length];

@@ -100,10 +100,10 @@ NAN_METHOD(EclDecode) {
         return ;
     }
 
-    int n_frag = info[2]->NumberValue();
-    int frag_len = info[3]->NumberValue();
+    int n_frag = Nan::To<int>(info[2]).FromJust();
+    int frag_len = Nan::To<int>(info[3]).FromJust();
 
-    Local<Object> fragments_array = info[1]->ToObject();
+    Local<Object> fragments_array = Nan::To<v8::Object>(info[1]).ToLocalChecked();
 
     char **fragments = new char*[n_frag];
     for (int i = 0; i < n_frag; i++) {
@@ -115,11 +115,11 @@ NAN_METHOD(EclDecode) {
 
     Nan::AsyncQueueWorker(new AsyncDecodeWorker(
                 new Nan::Callback(info[5].As<Function>()),
-                info[0]->NumberValue(),
+                Nan::To<int>(info[0]).FromJust(),
                 fragments,
                 n_frag,
                 frag_len,
-                info[4]->NumberValue()
+                Nan::To<int>(info[4]).FromJust()
                 ));
     return ;
 }
