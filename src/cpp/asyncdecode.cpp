@@ -63,13 +63,9 @@ class AsyncDecodeWorker : public Nan::AsyncWorker {
 
             Handle<Value> argv[] = {
                 Nan::New<Number>(_status),
-                Nan::CopyBuffer(_out_data, _out_data_len).ToLocalChecked(),
+                Nan::NewBuffer(_out_data, _out_data_len).ToLocalChecked(),
                 Nan::New<Number>(_out_data_len)
             };
-
-
-            liberasurecode_decode_cleanup(_instance_descriptor_id, _out_data);
-
             callback->Call(3, argv);
         }
 

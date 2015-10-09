@@ -50,7 +50,6 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
                 delete _avail_fragments_ptr[i];
             }
             delete _avail_fragments_ptr;
-            delete _reconstructed_fragment;
         }
 
         void Execute() {
@@ -73,8 +72,8 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
 
             Handle<Value> argv[] = {
                 Nan::Null(),
-                Nan::CopyBuffer(_reconstructed_fragment,
-                        _fragment_length).ToLocalChecked()
+                Nan::NewBuffer(_reconstructed_fragment, _fragment_length)
+                    .ToLocalChecked()
             };
 
             callback->Call(2, argv);
