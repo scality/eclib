@@ -8,11 +8,6 @@ machine:
         LD_LIBRARY_PATH: /usr/local/lib
 
 dependencies:
-#    override:
-#        - npm install --dev
     pre:
         - sudo apt-get install automake-1.14
-
-test:
-    override:
-        - npm install buffertools; npm install mocha; mocha --recursive
+        - npm install mocha
