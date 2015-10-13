@@ -8,10 +8,7 @@
     "email": "giorgio.regni@scality.com",
     "url": "http://www.scality.com/"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@@github.com:scality/eclib.git"
-  },
+  "repository": "scality/eclib",
   "scripts": {
     "preinstall": "make",
     "test": "mocha --recursive",
