@@ -37,6 +37,9 @@ See the [API documentation](API.md) for a more detailed explanation.
 ### License
 eclib is distributed under the terms of the [BSD license](LICENSE).
 
+### Contribute
+If you want to contribute in any way, please read our [guidelines](CONTRIBUTING.md).
+
 [circle]: https://circleci.com/gh/scality/eclib.svg?&style=shield&circle-token=2f7b8c11e6dcb9327f1d5b09633fdf597ec955a2
 [npm]: https://www.npmjs.com/package/eclib
 [npm version]: https://img.shields.io/npm/v/eclib.svg
