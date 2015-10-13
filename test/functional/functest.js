@@ -2,9 +2,9 @@
 
 'use strict';
 
-var ECLib = require('../../node-eclib.js');
-var enums = require('../../eclib-enum.js');
-var ECLibUtil = require('../../eclib-util.js');
+var ECLib = require('../../index');
+var enums = ECLib.enums;
+var ECLibUtil = ECLib.utils;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');

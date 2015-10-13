@@ -2,9 +2,9 @@
 
 'use strict';
 
-var ECLib = require('../../node-eclib.js');
-var enums = require('../../eclib-enum.js');
-var ECLibUtil = require('../../eclib-util.js');
+var eclib = require('../../index');
+var enums = eclib.enums;
+var ECLibUtil = eclib.util;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
@@ -12,11 +12,11 @@ var assert = require('assert');
 
 function test_one(done) {
 
-    eclib.encode(ref_buf, function(status, encoded_data, encoded_parity,
+    Eclib.encode(ref_buf, function(status, encoded_data, encoded_parity,
                                    encoded_fragment_length) {
 
-    var k = eclib.opt.k;
-    var m = eclib.opt.m;
+    var k = Eclib.opt.k;
+    var m = Eclib.opt.m;
 
     var x = k - 1; //available data fragments
     var y = m; //available parity fragments
@@ -31,13 +31,13 @@ function test_one(done) {
         fragments[j++] = encoded_parity[i];
     }
 
-    eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+    Eclib.decode(fragments, x + y, encoded_fragment_length, 0,
                  function(status, out_data, out_data_length) {
 
                      // Buffers must be equal, or else something bad happened.
                      assert.equal(buffertools.compare(out_data, ref_buf), 0);
 
-                     eclib.destroy(function(resultcode, err) {
+                     Eclib.destroy(function(resultcode, err) {
 
                          assert(resultcode === undefined);
                          done();
@@ -53,7 +53,7 @@ function test_one(done) {
 //EC_BACKEND_ISA_L_RS_VAND
 //EC_BACKEND_SHSS
 
-var eclib = new ECLib({
+var Eclib = new eclib({
     "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
     "k": 3,
     "m": 3,
@@ -64,7 +64,7 @@ var ref_buf = crypto.randomBytes(100000);
 
 describe('DestroyTest', function(done) {
 
-    eclib.init();
+    Eclib.init();
 
     it('shall destroy nicely', function(done) {
         test_one(done);

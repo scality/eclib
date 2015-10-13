@@ -1,14 +1,14 @@
 'use strict';
 
-var ECLib = require('../../node-eclib.js');
-var enums = require('../../eclib-enum.js');
-var ECLibUtil = require('../../eclib-util.js');
+var eclib = require('../../index');
+var enums = eclib.enums;
+var ECLibUtil = eclib.util;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
-var ec = new ECLib({
+var ec = new eclib({
   "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
   "k": 3,
   "m": 3,

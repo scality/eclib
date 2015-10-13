@@ -2,9 +2,9 @@
 
 'use strict';
 
-var ECLib = require('../../node-eclib.js');
-var enums = require('../../eclib-enum.js');
-var ECLibUtil = require('../../eclib-util.js');
+var eclib = require('../../index');
+var enums = eclib.enums;
+var ECLibUtil = eclib.util;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
@@ -14,10 +14,10 @@ var assert = require('assert');
 var _done = 0;
 
 function test_one() {
-    eclib.encode(ref_buf,
+    Eclib.encode(ref_buf,
         function(status, encoded_data, encoded_parity, encoded_fragment_length) {
-            var k = eclib.opt.k;
-            var m = eclib.opt.m;
+            var k = Eclib.opt.k;
+            var m = Eclib.opt.m;
 
             var x = k - 1; // available data fragments
             var y = m; // available parity fragments
@@ -32,7 +32,7 @@ function test_one() {
                 fragments[j++] = encoded_parity[i];
             }
 
-            eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+            Eclib.decode(fragments, x + y, encoded_fragment_length, 0,
                 function(status, out_data, out_data_length) {
                     // If buffers differ, something bad happened.
                     assert.equal(buffertools.compare(out_data, ref_buf), 0);
@@ -49,13 +49,13 @@ var numTests = 4;
 var ref_buf = new Buffer(500000000);
 buffertools.fill(ref_buf, 'z');
 
-var eclib = new ECLib({
+var Eclib = new eclib({
     "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"],
     "k": 3,
     "m": 3,
     "hd": 3
 });
-eclib.init();
+Eclib.init();
 
 describe('threaded', function(done) {
     this.timeout(300000);
@@ -77,4 +77,4 @@ describe('threaded', function(done) {
     });
 });
 
-//eclib.destroy();
+//Eclib.destroy();
