@@ -29,7 +29,7 @@ See the [API documentation](API.md) for a more detailed explanation.
 ### License
 eclib is distributed under the terms of the [BSD license](LICENSE).
 
-[circle]: https://img.shields.io/circleci/project/scality/eclib/master.svg
+[circle]: https://circleci.com/gh/scality/eclib.svg?&style=shield
 [npm]: https://www.npmjs.com/package/eclib
 [npm version]: https://img.shields.io/npm/v/eclib.svg
 [liberasure]: https://bitbucket.org/tsg-/liberasurecode
