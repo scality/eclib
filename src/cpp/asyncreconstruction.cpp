@@ -24,8 +24,6 @@
 
 #include "asyncreconstruction.h"
 
-using namespace v8;
-
 class AsyncReconstructWorker : public Nan::AsyncWorker {
     public:
         AsyncReconstructWorker(
@@ -70,7 +68,7 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
         void HandleOKCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            v8::Local<v8::Value> argv[] = {
                 Nan::Null(),
                 Nan::NewBuffer(_reconstructed_fragment, _fragment_length)
                     .ToLocalChecked()
@@ -82,7 +80,7 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
         void HandleErrorCallback() {
             Nan::HandleScope scope;
 
-            Handle<Value> argv[] = {
+            v8::Local<v8::Value> argv[] = {
                 Nan::Error("could not reconstruct fragment")
             };
 
@@ -102,19 +100,20 @@ class AsyncReconstructWorker : public Nan::AsyncWorker {
 NAN_METHOD(EclReconstructFragment) {
     Nan::HandleScope scope;
 
-    int instance_descriptor_id = info[0]->NumberValue();
-    int num_fragments = info[2]->NumberValue();
-    int fragment_length = info[3]->NumberValue();
-    int missing_fragment_id = info[4]->NumberValue();
-    Local<Object> avail_fragments = info[1]->ToObject();
+    int instance_descriptor_id = Nan::To<int>(info[0]).FromJust();
+    int num_fragments = Nan::To<int>(info[2]).FromJust();
+    int fragment_length = Nan::To<int>(info[3]).FromJust();
+    int missing_fragment_id = Nan::To<int>(info[4]).FromJust();
+    v8::Local<v8::Object> avail_fragments = Nan::To<v8::Object>(info[1]).ToLocalChecked();
     char **avail_fragments_ptr = new char*[num_fragments];
     for (int i = 0; i < num_fragments; i++) {
         avail_fragments_ptr[i] = new char[fragment_length];
         memcpy(avail_fragments_ptr[i],
-                node::Buffer::Data(avail_fragments->Get(i)), fragment_length);
+                node::Buffer::Data(Nan::Get(avail_fragments, i)
+                    .ToLocalChecked()), fragment_length);
     }
 
-    Nan::Callback *callback = new Nan::Callback(info[5].As<Function>());
+    Nan::Callback *callback = new Nan::Callback(info[5].As<v8::Function>());
 
     Nan::AsyncQueueWorker(new AsyncReconstructWorker(
                 instance_descriptor_id,
