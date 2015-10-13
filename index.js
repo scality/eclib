@@ -23,8 +23,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-module.exports = {
-    enums : require('./eclib-enum.js'),
-    utils : require('./eclib-util.js'),
-    ECLib : require('./node-eclib.js'),
-};
+module.exports = require('./node-eclib.js');
+module.exports.enums = require('./eclib-enum.js');
+module.exports.util = require('./eclib-util.js');
