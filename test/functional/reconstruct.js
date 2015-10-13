@@ -1,8 +1,8 @@
 'use strict';
 
-var ECLib = require('../../node-eclib.js');
-var enums = require('../../eclib-enum.js');
-var ECLibUtil = require('../../eclib-util.js');
+var eclib = require('../../index');
+var enums = eclib.enums;
+var ECLibUtil = eclib.util;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
@@ -15,20 +15,20 @@ var assert = require('assert');
 //  "hd": 3
 //});
 
-var ec = new ECLib({
+var Eclib = new eclib({
     "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"],
     "k": 10,
     "m": 4,
     "w": 16,
     "hd": 5
 });
-ec.init();
+Eclib.init();
 
 var data = new Buffer("Hello world of Rust ! This is some serious decoding !");
 
 describe('reconstruct', function(done) {
     it('shall be OK', function(done) {
-        ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength) {
+        Eclib.encode(data, function(status, dataFragments, parityFragments, fragmentLength) {
             assert.equal(status, 0);
 
             var allFragments = dataFragments.concat(parityFragments);
@@ -38,14 +38,14 @@ describe('reconstruct', function(done) {
             var original_missed_fragment = allFragments[missing_fragment_id];
             allFragments.splice(missing_fragment_id, 1);
 
-            ec.reconstructFragment(allFragments, missing_fragment_id, function(err, missing_fragment) {
+            Eclib.reconstructFragment(allFragments, missing_fragment_id, function(err, missing_fragment) {
                 assert.equal(err, null);
                 assert.equal(Buffer.compare(original_missed_fragment, missing_fragment), 0);
 
                 // Insert the missing fragment.
                 allFragments.splice(2, 0, missing_fragment);
 
-                ec.decode(allFragments, allFragments.length, fragmentLength, false, function(status, decoded_data) {
+                Eclib.decode(allFragments, allFragments.length, fragmentLength, false, function(status, decoded_data) {
                     // check that the decoded data is like the initial one
                     assert.equal(Buffer.compare(data, decoded_data), 0);
 
@@ -55,7 +55,7 @@ describe('reconstruct', function(done) {
                     var missing_fragments_data_loss = parityFragments.length + 1
 
                     allFragments.splice(0, missing_fragments_data_loss);
-                    ec.reconstructFragment(allFragments, 0, function(err) {
+                    Eclib.reconstructFragment(allFragments, 0, function(err) {
                         assert.notEqual(err, null);
 
                         function gb(n) {
@@ -65,9 +65,9 @@ describe('reconstruct', function(done) {
                             }
                             return b;
                         }
-                        ec.reconstructFragment(gb(dataFragments.length + parityFragments.length), 0, function(err) {
+                        Eclib.reconstructFragment(gb(dataFragments.length + parityFragments.length), 0, function(err) {
                             assert.notEqual(err, null);
-                            ec.destroy();
+                            Eclib.destroy();
                             done();
                         });
                     });

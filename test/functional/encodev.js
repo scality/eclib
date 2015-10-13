@@ -2,17 +2,17 @@
 
 'use strict';
 
-var ECLib = require('../../node-eclib.js');
-var enums = require('../../eclib-enum.js');
-var ECLibUtil = require('../../eclib-util.js');
+var eclib = require('../../index');
+var enums = eclib.enums;
+var ECLibUtil = eclib.util;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
 var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
 function test_one(name, opts, done) {
-  var eclib = new ECLib(opts);
-  eclib.init();
+  var Eclib = new eclib(opts);
+  Eclib.init();
 
   var sz1 = 123434;
   var sz2 = 343434;
@@ -21,10 +21,10 @@ function test_one(name, opts, done) {
   var ref_buf = buffertools.concat(ref_buf1, ref_buf2);
   var buf_array = [ref_buf1, ref_buf2];
 
-  eclib.encodev(2, buf_array, sz1 + sz2,
+  Eclib.encodev(2, buf_array, sz1 + sz2,
     function(status, encoded_data, encoded_parity, encoded_fragment_length) {
-      var k = eclib.opt.k;
-      var m = eclib.opt.m;
+      var k = Eclib.opt.k;
+      var m = Eclib.opt.m;
 
       var x = k - 1; //available data fragments
       var y = m; //available parity fragments
@@ -38,10 +38,10 @@ function test_one(name, opts, done) {
         fragments[j++] = encoded_parity[i];
       }
 
-      eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+      Eclib.decode(fragments, x + y, encoded_fragment_length, 0,
         function(status, out_data, out_data_length) {
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
-          eclib.destroy();
+          Eclib.destroy();
           done();
         }
       );
