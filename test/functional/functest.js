@@ -47,13 +47,12 @@ function test_one(name, opts, done) {
           // Free the ressources allocated for erasure coding.
           eclib.destroy();
 
-          // Node is single threaded so this is safe to do.
-          _done += 1;
-          done();
         }
       );
     }
   );
+  _done += 1;
+  done();
 }
 
 //EC_BACKEND_NULL
