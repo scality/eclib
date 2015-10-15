@@ -48,7 +48,7 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
             assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);
         }
 
-        ec.decode(newAllFragments, newAllFragments.length, fragmentLength, false, function(status, decoded_data) {
+        ec.decode(newAllFragments, false, function(status, decoded_data) {
             // check that the decoded data is like the initial one
             assert.equal(Buffer.compare(data, decoded_data), 0);
 

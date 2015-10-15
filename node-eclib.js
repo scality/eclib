@@ -58,20 +58,20 @@ function ECLib(opts) {
 }
 
 ECLib.prototype = {
-
     init: function(callback) {
         //This will be the  create method of the ECLIB
         var instance_descriptor_id = -1;
         var err = {};
         var o = this.opt;
-        if (this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k, o.m, o.w, o.hd,
-                o.ct)) {
-
-            instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w, o.hd, o.ct);
+        if (this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k,
+                    o.m, o.w, o.hd, o.ct)) {
+            instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w,
+                    o.hd, o.ct);
 
             if (instance_descriptor_id <= 0) {
                 err.errorcode = instance_descriptor_id;
-                err.message = this.eclibUtil.getErrorMessage(instance_descriptor_id);
+                err.message = this.eclibUtil
+                    .getErrorMessage(instance_descriptor_id);
             } else {
                 this.ins_id = instance_descriptor_id;
             }
@@ -86,8 +86,9 @@ ECLib.prototype = {
             return instance_descriptor_id;
         }
 
-        callback.call(this, instance_descriptor_id, err);
+        callback.call(err, this, instance_descriptor_id);
     },
+
     destroy: function(callback) {
 
         var resultcode = enums.ErrorCode.EBACKENDNOTAVAIL;
@@ -118,14 +119,19 @@ ECLib.prototype = {
         addon.EclEncode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
     },
 
-    encodev: function(n_buf, buf_array, total_size, callback) {
+    encodev: function(bufArray, callback) {
         var o = this.opt;
+        var size = bufArray.reduce(function getSize(value, buffer) {
+            return value + buffer.length;
+        }, 0);
 
-        addon.EclEncodeV(this.ins_id, o.k, o.m, n_buf, buf_array, total_size, callback);
+        addon.EclEncodeV(this.ins_id, o.k, o.m, bufArray.length, bufArray,
+                size, callback);
     },
 
-    decode: function(d_data, n_frags, frag_len, force_metadata_check, callback) {
-        addon.EclDecode(this.ins_id, d_data, n_frags, frag_len, force_metadata_check, callback);
+    decode: function(d_data, metadataCheck, callback) {
+        addon.EclDecode(this.ins_id, d_data, d_data.length, d_data[0].length,
+                metadataCheck, callback);
     },
 
     reconstructFragment: function(avail_fragments, missing_fragment_id, callback) {

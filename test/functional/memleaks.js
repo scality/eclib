@@ -41,7 +41,7 @@ function do_one_encode_decode(batch_num, num, __done) {
         fragments[j++] = encoded_parity[i];
       }
 
-      Eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+      Eclib.decode(fragments, 0,
         function(status, out_data, out_data_length) {
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
           __done();

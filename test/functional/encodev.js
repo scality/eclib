@@ -21,8 +21,8 @@ function test_one(name, opts, done) {
   var ref_buf = buffertools.concat(ref_buf1, ref_buf2);
   var buf_array = [ref_buf1, ref_buf2];
 
-  Eclib.encodev(2, buf_array, sz1 + sz2,
-    function(status, encoded_data, encoded_parity, encoded_fragment_length) {
+  Eclib.encodev(buf_array, function encodevTest(status, encoded_data,
+              encoded_parity, encoded_fragment_length) {
       var k = Eclib.opt.k;
       var m = Eclib.opt.m;
 
@@ -38,7 +38,7 @@ function test_one(name, opts, done) {
         fragments[j++] = encoded_parity[i];
       }
 
-      Eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+      Eclib.decode(fragments,  0,
         function(status, out_data, out_data_length) {
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
           Eclib.destroy();

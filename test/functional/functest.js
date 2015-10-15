@@ -39,7 +39,7 @@ function test_one(name, opts, done) {
         fragments[j++] = encoded_parity[i];
       }
 
-      eclib.decode(fragments, x + y, encoded_fragment_length, 0,
+      eclib.decode(fragments, 0,
         function(status, out_data, out_data_length) {
           // If buffers are not equal, something bad must have happened.
           assert.equal(buffertools.compare(out_data, ref_buf), 0);
