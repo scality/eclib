@@ -28,15 +28,26 @@ var ECLibUtil = require("./eclib-util.js");
 var enums = require("./eclib-enum.js");
 var __ = require('underscore');
 
+/**
+ * This represents our interface with the erasure coding layer.
+ * @constructor
+ * @param {Object} [opts] - Contains options used by the library
+ * @param {Number} [opts.bc_id=0] - Backend ID
+ * @param {Number} [opts.k=8] - Number of data fragments
+ * @param {Number} [opts.m=4] - Number of parity fragments
+ * @param {Number} [opts.w=0] - word size (in bits)
+ * @param {Number} [opts.hd=0] - hamming distance (==m for Reed-Solomon)
+ * @param {Number} [opts.ct=0] - checksum type
+ */
 function ECLib(opts) {
     var d_options = {
-        "bc_id": 0, //backend ID
-        "k": 8, //number of data fragments
-        "m": 4, //number of parity fragments
-        "w": 0, //word size, in bits
-        "hd": 0, //hamming distance (=m for Reed-Solomon)
+        "bc_id": 0,
+        "k": 8,
+        "m": 4,
+        "w": 0,
+        "hd": 0,
         "ct": 0
-    }; //fragment checksum type
+    };
 
     this.opt = {};
     __.extend(this.opt, d_options);
@@ -58,8 +69,11 @@ function ECLib(opts) {
 }
 
 ECLib.prototype = {
+    /**
+     * This creates a new instance, using the options set at construction
+     * @param {Function} [callback] - callback(eclib, instanceId, error)
+     */
     init: function(callback) {
-        //This will be the  create method of the ECLIB
         var instance_descriptor_id = -1;
         var err = {};
         var o = this.opt;
@@ -89,6 +103,10 @@ ECLib.prototype = {
         callback.call(err, this, instance_descriptor_id);
     },
 
+    /**
+     * This destroys the current instance.
+     * @param {Function} [callback] - callback(eclib, resultCode, err)
+     */
     destroy: function(callback) {
 
         var resultcode = enums.ErrorCode.EBACKENDNOTAVAIL;
@@ -113,12 +131,24 @@ ECLib.prototype = {
 
     },
 
+    /**
+     * This encodes the data.
+     * @param {Buffer} data - The data to be encoded
+     * @param {Function} callback - callback(status, encodedDataArray,
+     *      encodedParityArray, encodedFragmentLen)
+     */
     encode: function(o_data, callback) {
         var o = this.opt;
 
         addon.EclEncode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
     },
 
+    /**
+     * This encodes the data array.
+     * @param {Buffer[]} bufArray - Buffers to be encoded
+     * @param {Function} callback - callback(status, encodedDataArray,
+     *      encodedParityArray, encodedFragmentLen)
+     */
     encodev: function(bufArray, callback) {
         var o = this.opt;
         var size = bufArray.reduce(function getSize(value, buffer) {
@@ -129,11 +159,23 @@ ECLib.prototype = {
                 size, callback);
     },
 
+    /**
+     * This decodes the fragments array.
+     * @param {Buffer[]} fragmentArray - The fragment array to decode
+     * @param {Boolean} metadataCheck - Checking of the metadata
+     * @param {Function} callback - (err, decodedData)
+     */
     decode: function(d_data, metadataCheck, callback) {
         addon.EclDecode(this.ins_id, d_data, d_data.length, d_data[0].length,
                 metadataCheck, callback);
     },
 
+    /**
+     * Reconstruct a missing fragment.
+     * @param {Buffer[]} availFragments - Fragments available for reconstruction
+     * @param {Number} fragmentId - Missing fragment id
+     * @param {Function} callback - (err, reconstructedFragment)
+     */
     reconstructFragment: function(avail_fragments, missing_fragment_id, callback) {
         if (!avail_fragments.length) {
             callback(new Error('invalid number of available fragments (must be > 0)'), null);
@@ -149,15 +191,21 @@ ECLib.prototype = {
         );
     },
 
+    /**
+     * Reconstruct missing fragments.
+     * @param {Buffer[]} availFragments - Fragments available for reconstruction
+     * @param {Number} fragmentIds - Missing fragment ids
+     * @param {Function} callback - (err, allFragments)
+     */
     reconstruct: function(avail_fragments, missing_fragment_ids, callback) {
         // If we sort the missing indexes, than we can safely insert each
         // recoevered fragment when we have it. Example: we have 10 fragments,
-        // but the 3rd, 6th and 8th are missing. If the `missing_fragment_ids`
+        // but the 3rd, 6th and 8th are missing. If the `fragmentIds`
         // is unsorted, like [8,6,3], then we have the following
-        // `avail_fragments`: [1,2,4,5,7,9,10]. If we first recover the 8th
+        // `availFragments`: [1,2,4,5,7,9,10]. If we first recover the 8th
         // fragment, we don't where to insert it. But if we first recover the
         // 3rd fragment, we know we can insert it at index 3, so that we then
-        // have the `avail_fragments` set to [1,2,3,4,5,7,9,10] when we recover
+        // have the `availFragments` set to [1,2,3,4,5,7,9,10] when we recover
         // the 6th fragment.
         var done = 0;
 
