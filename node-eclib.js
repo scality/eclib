@@ -137,10 +137,10 @@ ECLib.prototype = {
      * @param {Function} callback - callback(status, encodedDataArray,
      *      encodedParityArray, encodedFragmentLen)
      */
-    encode: function(o_data, callback) {
+    encode: function(data, callback) {
         var o = this.opt;
 
-        addon.EclEncode(this.ins_id, o.k, o.m, o_data, o_data.length, callback);
+        addon.EclEncode(this.ins_id, o.k, o.m, data, data.length, callback);
     },
 
     /**
@@ -165,9 +165,9 @@ ECLib.prototype = {
      * @param {Boolean} metadataCheck - Checking of the metadata
      * @param {Function} callback - (err, decodedData)
      */
-    decode: function(d_data, metadataCheck, callback) {
-        addon.EclDecode(this.ins_id, d_data, d_data.length, d_data[0].length,
-                metadataCheck, callback);
+    decode: function(fragmentArray, metadataCheck, callback) {
+        addon.EclDecode(this.ins_id, fragmentArray, fragmentArray.length,
+                fragmentArray[0].length, metadataCheck, callback);
     },
 
     /**
@@ -176,17 +176,17 @@ ECLib.prototype = {
      * @param {Number} fragmentId - Missing fragment id
      * @param {Function} callback - (err, reconstructedFragment)
      */
-    reconstructFragment: function(avail_fragments, missing_fragment_id, callback) {
-        if (!avail_fragments.length) {
+    reconstructFragment: function(availFragments, fragmentId, callback) {
+        if (!availFragments.length) {
             callback(new Error('invalid number of available fragments (must be > 0)'), null);
-            return;
+            return ;
         }
         addon.EclReconstructFragment(
             this.ins_id,
-            avail_fragments,
-            avail_fragments.length,
-            avail_fragments[0].length,
-            missing_fragment_id,
+            availFragments,
+            availFragments.length,
+            availFragments[0].length,
+            fragmentId,
             callback
         );
     },
@@ -197,7 +197,7 @@ ECLib.prototype = {
      * @param {Number} fragmentIds - Missing fragment ids
      * @param {Function} callback - (err, allFragments)
      */
-    reconstruct: function(avail_fragments, missing_fragment_ids, callback) {
+    reconstruct: function(availFragments, fragmentIds, callback) {
         // If we sort the missing indexes, than we can safely insert each
         // recoevered fragment when we have it. Example: we have 10 fragments,
         // but the 3rd, 6th and 8th are missing. If the `fragmentIds`
@@ -209,16 +209,17 @@ ECLib.prototype = {
         // the 6th fragment.
         var done = 0;
 
-        missing_fragment_ids.sort();
+        fragmentIds.sort();
 
         // Recover all missing fragments one by one.
-        missing_fragment_ids.forEach(function reconstructEach(id) {
-            this.reconstructFragment(avail_fragments, id,
+        fragmentIds.forEach(function reconstructEach(id) {
+            this.reconstructFragment(availFragments, id,
                     function recon(err, fragment) {
                         if (err) { callback(err); }
-                        avail_fragments.splice(id, 0, fragment);
-                        if (++done === missing_fragment_ids.length) {
-                            callback(null, avail_fragments);
+                        availFragments.splice(id, 0, fragment);
+                        if (++done === fragmentIds.length) {
+                            callback(null, availFragments);
+                            return ;
                         }
                     });
         }.bind(this));
