@@ -45,7 +45,7 @@ describe('reconstruct', function(done) {
                 // Insert the missing fragment.
                 allFragments.splice(2, 0, missing_fragment);
 
-                Eclib.decode(allFragments, allFragments.length, fragmentLength, false, function(status, decoded_data) {
+                Eclib.decode(allFragments, false, function(status, decoded_data) {
                     // check that the decoded data is like the initial one
                     assert.equal(Buffer.compare(data, decoded_data), 0);
 
