@@ -1,53 +1,62 @@
 TARGET		= build/Release/node-eclib.node
 GF			= gf_complete
-JERASURE	= Jerasure
-LIBERAS		= erasurecode
-
-LIBDIR		= /usr/local/lib
-LIBS		= $(addsuffix .so, $(GF) $(JERASURE) $(LIBERAS))
-DEPS		= $(addprefix $(LIBDIR)/lib, $(LIBS))
-
-LIB_EXT := so
+JERA		= Jerasure
+ERASURE		= erasurecode
+LIB_EXT		:= so
 ifeq ($(shell uname -s), Darwin)
 	LIB_EXT := dylib
 endif
-LIB_GUARD := find /usr 2>/dev/null -name '*.$(LIB_EXT)' | grep
+ECLIB		= $(dir $(abspath $(MAKEFILE_LIST)))
+LIBDIR		= $(ECLIB)libs
+GFPATH		= $(ECLIB)gf_complete
+JERAPATH	= $(ECLIB)Jerasure
+ERASUREPATH	= $(ECLIB)erasurecode
+GFLIB		= $(LIBDIR)/lib/lib$(GF).$(LIB_EXT)
+JERALIB		= $(LIBDIR)/lib/lib$(JERA).$(LIB_EXT)
+ERASURELIB	= $(LIBDIR)/lib/lib$(ERASURE).$(LIB_EXT)
 
-all: $(DEPS)
+all: $(TARGET)
 
-$(GF):
-	$(LIB_GUARD) libgf_complete.$(LIB_EXT) || git clone http://lab.jerasure.org/jerasure/gf-complete.git $@
+$(TARGET): | $(LIBDIR) $(GFLIB) $(JERALIB) $(ERASURELIB)
 
-$(GF)/Makefile: | $(GF)
-	$(LIB_GUARD) libgf_complete.$(LIB_EXT) || ( cd $(GF) && ./autogen.sh && ./configure )
+$(LIBDIR):
+	mkdir $(LIBDIR)
 
-$(LIBDIR)/libgf_complete.so: $(GF)/Makefile
-	$(LIB_GUARD) libgf_complete.$(LIB_EXT) || ( $(MAKE) -C $(GF) && sudo $(MAKE) -C $(GF) install )
+$(GFPATH):
+	git clone http://lab.jerasure.org/jerasure/gf-complete.git $@
 
-$(JERASURE):
-	$(LIB_GUARD) libJerasure.$(LIB_EXT) || git clone http://lab.jerasure.org/jerasure/jerasure.git $@
+$(GFPATH)/Makefile: | $(GFPATH)
+	cd $(GFPATH) && ./autogen.sh && ./configure --prefix=$(LIBDIR)
 
-$(JERASURE)/Makefile: | $(JERASURE)
-	$(LIB_GUARD) libJerasure.$(LIB_EXT) || ( cd $(JERASURE) && autoreconf --force --install -I m4 && ./configure )
+$(GFLIB): | $(GFPATH)/Makefile
+	$(MAKE) -C $(GFPATH) && $(MAKE) -C $(GFPATH) install
 
-$(LIBDIR)/libJerasure.so: $(JERASURE)/Makefile
-	$(LIB_GUARD) libJerasure.$(LIB_EXT) || ( $(MAKE) -C $(JERASURE) && sudo $(MAKE) -C $(JERASURE) install )
+$(JERAPATH):
+	git clone http://lab.jerasure.org/jerasure/jerasure.git $@
 
-$(LIBERAS):
-	$(LIB_GUARD) liberasurecode.$(LIB_EXT) || git clone https://bitbucket.org/tsg-/liberasurecode.git $@
+$(JERAPATH)/Makefile: | $(JERAPATH)
+	cd $(JERAPATH) && autoreconf --force --install \
+		&& ./configure --prefix=$(LIBDIR) \
+		LDFLAGS=-L$(LIBDIR)/lib \
+		CPPFLAGS=-I$(LIBDIR)/include
 
-$(LIBERAS)/Makefile: | $(LIBERAS)
-	$(LIB_GUARD) liberasurecode.$(LIB_EXT) ||  ( cd $(LIBERAS) && ./autogen.sh && ./configure )
+$(JERALIB): | $(JERAPATH)/Makefile
+	$(MAKE) -C $(JERAPATH) && $(MAKE) -C $(JERAPATH) install
 
-$(LIBDIR)/liberasurecode.so: $(LIBERAS)/Makefile
-	$(LIB_GUARD) liberasurecode.$(LIB_EXT) || ( $(MAKE) -C $(LIBERAS) && $(MAKE) -C $(LIBERAS) test \
-		&& sudo $(MAKE) -C $(LIBERAS) install )
+$(ERASUREPATH):
+	git clone https://bitbucket.org/tsg-/liberasurecode.git $@
+
+$(ERASUREPATH)/Makefile: | $(ERASUREPATH)
+	cd $(ERASUREPATH) && ./autogen.sh && ./configure --prefix=$(LIBDIR)
+
+$(ERASURELIB): | $(ERASUREPATH)/Makefile
+	$(MAKE) -C $(ERASUREPATH) && $(MAKE) -C $(ERASUREPATH) install
 
 clean:
 	$(RM) $(TARGET)
 
 distclean: clean
-	$(RM) -r $(GF) $(JERASURE) $(LIBERAS)
+	$(RM) -r $(GFPATH) $(JERASUREPATH) $(ERASUREPATH)
 
 re: distclean all
 

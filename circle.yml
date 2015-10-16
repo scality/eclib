@@ -5,7 +5,7 @@ machine:
     node:
         version: 4.1
     environment:
-        LD_LIBRARY_PATH: /usr/local/lib
+        LD_LIBRARY_PATH: $HOME/eclib/libs/lib
 
 dependencies:
     pre:
