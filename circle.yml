@@ -5,9 +5,14 @@ machine:
     node:
         version: 4.1
     environment:
-        LD_LIBRARY_PATH: /usr/local/lib
+        LD_LIBRARY_PATH: $HOME/eclib/libs/lib
 
 dependencies:
     pre:
         - sudo apt-get install automake-1.14
         - npm install mocha
+    cache_directories:
+        - libs
+        - Jerasure
+        - erasurecode
+        - gf_complete
