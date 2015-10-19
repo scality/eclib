@@ -11,6 +11,7 @@
   "repository": "scality/eclib",
   "scripts": {
     "preinstall": "make",
+    "lint": "./node_modules/.bin/eslint *.js",
     "test": "./node_modules/.bin/mocha --recursive",
     "install": "node-gyp configure && node-gyp build"
   },
