@@ -11,7 +11,7 @@
   "repository": "scality/eclib",
   "scripts": {
     "preinstall": "make",
-    "test": "mocha --recursive",
+    "test": "./node_modules/.bin/mocha --recursive",
     "install": "node-gyp configure && node-gyp build"
   },
   "bugs": {
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "buffertools": "^2.1.2",
+    "mocha": "^2.3.3"
   },
   "license": "BSD-2-Clause",
   "gypfile": true
