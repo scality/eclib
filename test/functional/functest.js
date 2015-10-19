@@ -7,7 +7,6 @@ var enums = ECLib.enums;
 var ECLibUtil = ECLib.utils;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
-var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
 // Number of tests that are done at any given time.

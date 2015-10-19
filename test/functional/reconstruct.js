@@ -5,7 +5,6 @@ var enums = eclib.enums;
 var ECLibUtil = eclib.util;
 var buffertools = require("buffertools");
 var crypto = require('crypto');
-var hexdump = require('hexdump-nodejs');
 var assert = require('assert');
 
 //var ec = new ECLib({
