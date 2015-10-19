@@ -11,8 +11,16 @@ and its backends.
 ```sh
 # We rely on node-gyp to build our binaries
 npm install -g node-gyp
-# Install eclib, you will need admin rights to install the libraries
+
+# Install eclib
 npm install eclib --save
+
+# We link to the libraries we installed earlier
+# On Linux
+LD_LIBRARY_PATH=node_modules/eclib/libs/lib ./your_script
+# On OSX
+DYLD_LIBRARY_PATH=node_modules/eclib/libs/lib ./your_script
+# You may export that environment variable for ease of use.
 ```
 That's all!
 
