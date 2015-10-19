@@ -1,4 +1,4 @@
-/** Copyright (c) 2015, Scality
+/* Copyright (c) 2015, Scality
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,7 @@ ECLib.prototype = {
     /**
      * This creates a new instance, using the options set at construction
      * @param {Function} [callback] - callback(eclib, instanceId, error)
+     * @returns {Number} - Instance id
      */
     init: function(callback) {
         var instance_descriptor_id = -1;
@@ -106,6 +107,7 @@ ECLib.prototype = {
     /**
      * This destroys the current instance.
      * @param {Function} [callback] - callback(eclib, resultCode, err)
+     * @returns {Number} - Result code
      */
     destroy: function(callback) {
 
@@ -215,7 +217,9 @@ ECLib.prototype = {
         fragmentIds.forEach(function reconstructEach(id) {
             this.reconstructFragment(availFragments, id,
                     function recon(err, fragment) {
-                        if (err) { callback(err); }
+                        if (err) {
+                            callback(err);
+                        }
                         availFragments.splice(id, 0, fragment);
                         if (++done === fragmentIds.length) {
                             callback(null, availFragments);
