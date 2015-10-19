@@ -26,7 +26,7 @@ var enums = require("./eclib-enum.js");
 
 function ECLibUtil() {
     this.isInt = function(n) {
-        return typeof n === 'number' && n % 1 == 0;
+        return typeof n === 'number' && n % 1 === 0;
     }
 }
 
@@ -85,7 +85,7 @@ ECLibUtil.prototype.validateInstanceCreateParams = function(ec_backend_id, k, m,
     var retvalue = true;
     var argslength = arguments.length;
 
-    retvalue = (argslength == 6);
+    retvalue = (argslength === 6);
 
     while (retvalue && (argslength > 0)) {
         retvalue = retvalue && this.isInt(arguments[argslength - 1]);
@@ -101,7 +101,7 @@ ECLibUtil.prototype.validateEncodeParams = function(ec_id, orig_data,
     var retvalue = true;
     var argslength = arguments.length;
 
-    retvalue = (argslength == 4);
+    retvalue = (argslength === 4);
     retvalue = retvalue && this.isInt(arguments[0]);
     retvalue = retvalue && this.isInt(arguments[2]);
     retvalue = retvalue && (orig_data !== undefined) && Buffer.isBuffer(orig_data);
