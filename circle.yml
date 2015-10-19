@@ -2,8 +2,6 @@ machine:
     pre:
         - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 20
         - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 20
-    node:
-        version: 4.1
     environment:
         LD_LIBRARY_PATH: $HOME/eclib/libs/lib
 
@@ -16,3 +14,9 @@ dependencies:
         - Jerasure
         - erasurecode
         - gf_complete
+test:
+    override:
+        - nvm use 4.1 && npm install && npm install buffertools && npm test
+        - nvm use 4.0 && npm install && npm install buffertools && npm test
+        - nvm use 0.12 && npm install && npm install buffertools && npm test
+        - nvm use 0.10 && npm install && npm install buffertools && npm test

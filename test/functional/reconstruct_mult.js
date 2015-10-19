@@ -45,12 +45,12 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
         assert.equal(err, null);
         // check reconstructed fragments and original ones
         for (idx = 0; idx < missing_frags_indx.length; idx++){
-            assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);
+            assert.equal(buffertools.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);
         }
 
         ec.decode(newAllFragments, false, function(status, decoded_data) {
             // check that the decoded data is like the initial one
-            assert.equal(Buffer.compare(data, decoded_data), 0);
+            assert.equal(buffertools.compare(data, decoded_data), 0);
 
             done();
         });

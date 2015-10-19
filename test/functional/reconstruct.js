@@ -40,14 +40,14 @@ describe('reconstruct', function(done) {
 
             Eclib.reconstructFragment(allFragments, missing_fragment_id, function(err, missing_fragment) {
                 assert.equal(err, null);
-                assert.equal(Buffer.compare(original_missed_fragment, missing_fragment), 0);
+                assert.equal(buffertools.compare(original_missed_fragment, missing_fragment), 0);
 
                 // Insert the missing fragment.
                 allFragments.splice(2, 0, missing_fragment);
 
                 Eclib.decode(allFragments, false, function(status, decoded_data) {
                     // check that the decoded data is like the initial one
-                    assert.equal(Buffer.compare(data, decoded_data), 0);
+                    assert.equal(buffertools.compare(data, decoded_data), 0);
 
                     // test error callback
                     // Lose first missing_fragments_data_loss fragments that don't allow for reconstruction
