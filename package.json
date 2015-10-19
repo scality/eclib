@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "buffertools": "^2.1.2",
+    "eslint": "^1.7.1",
     "mocha": "^2.3.3"
   },
   "license": "BSD-2-Clause",
