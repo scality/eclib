@@ -32,7 +32,7 @@ var eclib = require('eclib');
 var Eclib = new eclib(opts);
 Eclib.init();
 ```
-See the [API documentation](API.md) for a more detailed explanation.
+See the [API documentation][api] for a more detailed explanation.
 
 ### License
 eclib is distributed under the terms of the [BSD license](LICENSE).
@@ -44,3 +44,4 @@ If you want to contribute in any way, please read our [guidelines](CONTRIBUTING.
 [npm]: https://www.npmjs.com/package/eclib
 [npm version]: https://img.shields.io/npm/v/eclib.svg
 [liberasure]: https://bitbucket.org/tsg-/liberasurecode
+[api]: http://scality.github.io/eclib/
