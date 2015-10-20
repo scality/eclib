@@ -29,7 +29,7 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
     // recover the data.
     var missing_frags_indx = [1, 0, 5];
     // descending ordered
-    missing_frags_indx.sort(function(a, b){return b-a});
+    missing_frags_indx.sort();
     // backup missing fragments
     var orig_missing_frags = [allFragments[missing_frags_indx[0]]];
     for (var idx = 1; idx < missing_frags_indx.length; idx++){
