@@ -13,7 +13,8 @@
     "preinstall": "make",
     "lint": "./node_modules/.bin/eslint *.js",
     "test": "./node_modules/.bin/mocha --recursive",
-    "install": "node-gyp configure && node-gyp build"
+    "install": "node-gyp configure && node-gyp build",
+    "doc": "bash generate-doc.sh"
   },
   "bugs": {
     "url": "https://github.com/scality/eclib/issues"
@@ -27,6 +28,8 @@
   "devDependencies": {
     "buffertools": "^2.1.2",
     "eslint": "^1.7.1",
+    "jsdoc": "^3.3.3",
+    "minami": "^1.1.1",
     "mocha": "^2.3.3"
   },
   "license": "BSD-2-Clause",
