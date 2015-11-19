@@ -24,4 +24,3 @@
  */
 
 module.exports = require('./node-eclib.js');
-module.exports.enums = require('./eclib-enum.js');
