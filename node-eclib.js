@@ -40,31 +40,18 @@ var __ = require('underscore');
  * @param {Number} [opts.ct=0] - checksum type
  */
 function ECLib(opts) {
-    var d_options = {
-        "bc_id": 0,
-        "k": 8,
-        "m": 4,
-        "w": 0,
-        "hd": 0,
-        "ct": 0
+    this.opt = {
+        bc_id: 0,
+        k: 8,
+        m: 4,
+        w: 0,
+        hd: 0,
+        ct: 0
     };
-
-    this.opt = {};
-    __.extend(this.opt, d_options);
-
-    if (__.size(opts) > 0) {
+    if (opts) {
         __.extend(this.opt, opts);
     }
-
     this.ins_id = null;
-    this.isValidInstance = function() {
-        return (!__.isUndefined(this.ins_id));
-    };
-
-    this.resetOptions = function() {
-        this.opt = null;
-        __.extend(this.opt, d_options);
-    };
 }
 
 ECLib.prototype = {
@@ -111,27 +98,19 @@ ECLib.prototype = {
      * @returns {Number} - Result code
      */
     destroy: function(callback) {
-
-        var resultcode = enums.ErrorCode.EBACKENDNOTAVAIL;
-        var err = {};
-
+        var err = null;
         if (this.isValidInstance()) {
-            resultcode = addon.EclDestroy(this.ins_id);
+            var resultcode = addon.EclDestroy(this.ins_id);
             if (resultcode !== 0) {
-                err.errorcode = resultcode;
-                err.message = util.getErrorMessage(resultcode);
+                err = util.getErrorMessage(resultcode);
             }
         } else {
-            err.errorcode = resultcode;
-            err.message = util.getErrorMessage(resultcode);
+            err = util.getErrorMessage(enums.ErrorCode.EBACKENDNOTAVAIL);
         }
-
         if (!callback) {
-            return resultcode;
+            return err;
         }
-
-        callback.call(this, resultcode, err);
-
+        callback.call(err, this);
     },
 
     /**
@@ -181,7 +160,7 @@ ECLib.prototype = {
      */
     reconstructFragment: function(availFragments, fragmentId, callback) {
         if (!availFragments.length) {
-            callback(new Error('invalid number of available fragments (must be > 0)'), null);
+            callback('invalid number of available fragments (must be > 0)');
             return ;
         }
         addon.EclReconstructFragment(
@@ -234,8 +213,19 @@ ECLib.prototype = {
         // TODO: what is this function supposed to do ?
     },
 
-    setOptions: function(opts){
+    setOptions: function(opts) {
         __.extend(this.opt,opts);
+    },
+
+    resetOptions: function() {
+        this.opt = {
+            bc_id: 0,
+            k: 8,
+            m: 4,
+            w: 0,
+            hd: 0,
+            ct: 0
+        };
     }
 }
 
