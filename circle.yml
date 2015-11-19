@@ -5,6 +5,11 @@ machine:
     environment:
         LD_LIBRARY_PATH: $HOME/eclib/libs/lib
 
+general:
+    branches:
+        ignore:
+            - gh-pages
+
 dependencies:
     pre:
         - sudo apt-get install automake-1.14
@@ -13,6 +18,7 @@ dependencies:
         - Jerasure
         - erasurecode
         - gf_complete
+
 test:
     override:
         - npm run lint
