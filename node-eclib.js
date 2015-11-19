@@ -25,7 +25,7 @@
 
 var addon = require('bindings')('Release/node-eclib.node')
 var util = require("./eclib-util");
-var enums = require("./eclib-enum.js");
+var enums = require("./eclib-enum");
 var __ = require('underscore');
 
 /**
@@ -240,4 +240,5 @@ ECLib.prototype = {
 }
 
 module.exports = ECLib;
+module.exports.enums = enums;
 module.exports.util = util;
