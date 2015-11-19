@@ -24,7 +24,7 @@
  */
 
 var addon = require('bindings')('Release/node-eclib.node')
-var ECLibUtil = require("./eclib-util.js");
+var util = require("./eclib-util");
 var enums = require("./eclib-enum.js");
 var __ = require('underscore');
 
@@ -57,7 +57,6 @@ function ECLib(opts) {
     }
 
     this.ins_id = null;
-    this.eclibUtil = new ECLibUtil();
     this.isValidInstance = function() {
         return (!__.isUndefined(this.ins_id));
     };
@@ -78,22 +77,20 @@ ECLib.prototype = {
         var instance_descriptor_id = -1;
         var err = {};
         var o = this.opt;
-        if (this.eclibUtil.validateInstanceCreateParams(o.bc_id, o.k,
-                    o.m, o.w, o.hd, o.ct)) {
+        if (util.validateInstance(this.opt)) {
             instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w,
                     o.hd, o.ct);
 
             if (instance_descriptor_id <= 0) {
                 err.errorcode = instance_descriptor_id;
-                err.message = this.eclibUtil
-                    .getErrorMessage(instance_descriptor_id);
+                err.message = util.getErrorMessage(instance_descriptor_id);
             } else {
                 this.ins_id = instance_descriptor_id;
             }
 
         } else {
             err.errorcode = enums.ErrorCode.EINVALIDPARAMS;
-            err.message = this.eclibUtil.getErrorMessage(err.errorcode);
+            err.message = util.getErrorMessage(err.errorcode);
             instance_descriptor_id = err.errorcode;
         }
 
@@ -102,6 +99,10 @@ ECLib.prototype = {
         }
 
         callback.call(err, this, instance_descriptor_id);
+    },
+
+    isValidInstance: function() {
+        return (!__.isUndefined(this.ins_id));
     },
 
     /**
@@ -118,11 +119,11 @@ ECLib.prototype = {
             resultcode = addon.EclDestroy(this.ins_id);
             if (resultcode !== 0) {
                 err.errorcode = resultcode;
-                err.message = this.eclibUtil.getErrorMessage(resultcode);
+                err.message = util.getErrorMessage(resultcode);
             }
         } else {
             err.errorcode = resultcode;
-            err.message = this.eclibUtil.getErrorMessage(resultcode);
+            err.message = util.getErrorMessage(resultcode);
         }
 
         if (!callback) {
@@ -239,3 +240,4 @@ ECLib.prototype = {
 }
 
 module.exports = ECLib;
+module.exports.util = util;
