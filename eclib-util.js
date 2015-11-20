@@ -1,4 +1,5 @@
-/** Copyright (c) 2015, Scality * All rights reserved.
+/* Copyright (c) 2015, Scality
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,91 +25,44 @@
 
 var enums = require("./eclib-enum.js");
 
-function ECLibUtil() {
-    this.isInt = function(n) {
+module.exports = {
+    getErrorMessage: function(errorcode) {
+        switch (errorcode) {
+            case enums.ErrorCode.EBACKENDNOTSUPP:
+                return "Backend not supported";
+            case enums.ErrorCode.EECMETHODNOTIMPL:
+                return "No method implemented";
+            case enums.ErrorCode.EBACKENDINITERR:
+                return "Backend instance is terminated";
+            case enums.ErrorCode.EBACKENDINUSE:
+                return "Backend instance is in use";
+            case enums.ErrorCode.EBACKENDNOTAVAIL:
+                return "Backend instance not found";
+            case enums.ErrorCode.EBADCHKSUM:
+                return "Fragment integrity check failed";
+            case enums.ErrorCode.EINVALIDPARAMS:
+                return "Invalid arguments";
+            case enums.ErrorCode.EBADHEADER:
+                return "Fragment integrity check failed";
+            case enums.ErrorCode.EINSUFFFRAGS:
+                return "Insufficient number of fragments";
+            default:
+                return "Unknown error";
+        }
+    },
+
+    isInt: function(n) {
         return typeof n === 'number' && n % 1 === 0;
-    }
+    },
+
+    validateInstance: function(opts) {
+        var optArray = Object.keys(opts);
+
+        if (optArray.length !== 6) {
+            return false;
+        }
+        return Object.keys(opts).reduce(function validate(prev, current) {
+            return prev && this.isInt(opts[current]);
+        }.bind(this), true)
+    },
 }
-
-ECLibUtil.prototype.getErrorMessage = function(errorcode) {
-    var errornumber = enums.ErrorCode;
-    var message = null;
-
-    switch (errorcode) {
-        case -errornumber.EBACKENDNOTSUPP:
-            message = "Backend not supported";
-            break;
-
-        case -errornumber.EECMETHODNOTIMPL:
-            message = "No method implemented";
-            break;
-
-        case -errornumber.EBACKENDINITERR:
-            message = "Backend instance is terminated";
-            break;
-
-        case -errornumber.EBACKENDINUSE:
-            message = "Backend instance is in use";
-            break;
-
-        case -errornumber.EBACKENDNOTAVAIL:
-            message = "Backend instance not found";
-            break;
-
-        case -errornumber.EBADCHKSUM:
-            message = "Fragment integrity check failed";
-            break;
-
-        case -errornumber.EINVALIDPARAMS:
-            message = "Invalid arguments";
-            break;
-
-        case -errornumber.EBADHEADER:
-            message = "Fragment integrity check failed";
-            break;
-
-        case -errornumber.EINSUFFFRAGS:
-            message = "Insufficient number of fragments";
-            break;
-
-        default:
-            message = "Unknown error";
-            break;
-    }
-
-    return message;
-};
-
-ECLibUtil.prototype.validateInstanceCreateParams = function(ec_backend_id, k, m,
-    w, hd, ct) {
-
-    var retvalue = true;
-    var argslength = arguments.length;
-
-    retvalue = (argslength === 6);
-
-    while (retvalue && (argslength > 0)) {
-        retvalue = retvalue && this.isInt(arguments[argslength - 1]);
-        argslength--;
-    }
-
-    return retvalue;
-};
-
-ECLibUtil.prototype.validateEncodeParams = function(ec_id, orig_data,
-    deta_length, callback) {
-
-    var retvalue = true;
-    var argslength = arguments.length;
-
-    retvalue = (argslength === 4);
-    retvalue = retvalue && this.isInt(arguments[0]);
-    retvalue = retvalue && this.isInt(arguments[2]);
-    retvalue = retvalue && (orig_data !== undefined) && Buffer.isBuffer(orig_data);
-    // Will check whether the callback is a method or not
-    //retvalue = retvalue && Buffer.isBuffer(orig_data);
-
-    return retvalue;
-};
-
-module.exports = ECLibUtil;
