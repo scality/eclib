@@ -1,6 +1,6 @@
 {
   "name": "eclib",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A set of NodeJS bindings for liberasurecode and its backends",
   "homepage": "https://github.com/scality/eclib#readme",
   "author": {
