@@ -23,7 +23,7 @@ $(LIBDIR):
 	mkdir $(LIBDIR)
 
 $(GFPATH):
-	git clone http://lab.jerasure.org/jerasure/gf-complete.git $@
+	git clone git@github.com:lamphamsy/gf-complete.git $@
 
 $(GFPATH)/Makefile: | $(GFPATH)
 	cd $(GFPATH) && ./autogen.sh && ./configure --prefix=$(LIBDIR)
@@ -32,7 +32,7 @@ $(GFLIB): | $(GFPATH)/Makefile
 	$(MAKE) -C $(GFPATH) && $(MAKE) -C $(GFPATH) install
 
 $(JERAPATH):
-	git clone http://lab.jerasure.org/jerasure/jerasure.git $@
+	git clone git@github.com:lamphamsy/jerasure.git $@
 
 $(JERAPATH)/Makefile: | $(JERAPATH)
 	cd $(JERAPATH) && autoreconf --force --install \
