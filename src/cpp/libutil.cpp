@@ -63,11 +63,11 @@ ec_backend_id_t     get_ec_backend_id(int id) {
 
 ec_checksum_type_t  get_ec_checksum_type(int ct) {
     switch(ct) {
-        case 0:
-            return CHKSUM_NONE;
         case 1:
-            return CHKSUM_CRC32;
+            return CHKSUM_NONE;
         case 2:
+            return CHKSUM_CRC32;
+        case 3:
             return CHKSUM_MD5;
         case 99:
             return CHKSUM_TYPES_MAX;
