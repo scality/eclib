@@ -232,7 +232,11 @@ ECLib.prototype = {
                                 fragment_size) {
         return addon.EclAddFragmentHeader(this.ins_id, fragment,
             fragment_index, object_size, fragment_size, this.opt.ct, 1);
-    }
+    },
+
+    getAlignedDataSize: function(objSize) {
+        return addon.EclGetAlignedDataSize(this.ins_id, objSize);
+    },
 }
 
 module.exports = ECLib;

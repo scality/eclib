@@ -103,8 +103,25 @@ NAN_METHOD(EclVerifyStripeMetadata) {
 
 NAN_METHOD(EclGetAlignedDataSize) {
     Nan::HandleScope scope;
-    info.GetReturnValue()
-        .Set(Nan::New("C++ GetAlignedDataSize ").ToLocalChecked());
+
+    if (info.Length() != 2) {
+        Nan::ThrowTypeError("Wrong number of arguments EclGetAlignedDataSize");
+        return ;
+    }
+
+    ec_backend_id_t be_id;
+    ec_backend_t instance;
+    uint32_t aligned_size;
+
+    int _id = Nan::To<int>(info[0]).FromJust();
+    int64_t obj_size = Nan::To<int64_t>(info[1]).FromJust();
+
+    be_id = get_ec_backend_id(_id);
+    instance = liberasurecode_backend_instance_get_by_desc(be_id);
+
+    aligned_size = get_aligned_data_size(instance, obj_size);
+
+    info.GetReturnValue().Set(aligned_size);
 }
 
 NAN_METHOD(EclGetMinimumEncodeSize) {

@@ -29,8 +29,8 @@
 #include <liberasurecode/erasurecode.h>
 #include <liberasurecode/erasurecode_backend.h>
 #include <liberasurecode/erasurecode_helpers.h>
-#include <liberasurecode/erasurecode_helpers_ext.h>
 extern "C" {
+#include <liberasurecode/erasurecode_helpers_ext.h>
 #include <liberasurecode/erasurecode_postprocessing.h>
 }
 
