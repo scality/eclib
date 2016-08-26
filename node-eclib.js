@@ -226,7 +226,16 @@ ECLib.prototype = {
             hd: 0,
             ct: 0
         };
-    }
+    },
+
+    /**
+     * Get alignement size corresponding to a size
+     * @param {Number} objSize - object size
+     * @return {Number} aligned size
+     */
+    getAlignedDataSize: function(objSize) {
+        return addon.EclGetAlignedDataSize(this.ins_id, objSize);
+    },
 }
 
 module.exports = ECLib;

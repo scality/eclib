@@ -28,6 +28,10 @@
 #include <nan.h>
 #include <liberasurecode/erasurecode.h>
 #include <liberasurecode/erasurecode_helpers.h>
+extern "C" {
+#include <liberasurecode/erasurecode_helpers_ext.h>
+#include <liberasurecode/erasurecode_postprocessing.h>
+}
 
 NAN_METHOD(EclCreate);
 NAN_METHOD(EclDestroy);
