@@ -226,7 +226,15 @@ ECLib.prototype = {
             hd: 0,
             ct: 0
         };
-    }
+    },
+
+    /**
+     * Get fragment's header size
+     * @return {Number} header size
+     */
+    getHeaderSize: function() {
+        return addon.EclGetHeaderSize();
+    },
 }
 
 module.exports = ECLib;
