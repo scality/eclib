@@ -77,6 +77,12 @@ NAN_METHOD(EclDestroy) {
     return ;
 }
 
+NAN_METHOD(EclGetHeaderSize) {
+    Nan::HandleScope scope;
+
+    uint32_t header_size = sizeof(fragment_header_t);
+    info.GetReturnValue().Set(header_size);
+}
 NAN_METHOD(EclFragmentsNeeded) {
     Nan::HandleScope scope;
     info.GetReturnValue()

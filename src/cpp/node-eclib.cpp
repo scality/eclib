@@ -36,6 +36,7 @@ NAN_MODULE_INIT(Init) {
   NAN_EXPORT(target, EclEncode);
   NAN_EXPORT(target, EclEncodeV);
   NAN_EXPORT(target, EclDecode);
+  NAN_EXPORT(target, EclGetHeaderSize);
   NAN_EXPORT(target, EclReconstructFragment);
   NAN_EXPORT(target, EclFragmentsNeeded);
   NAN_EXPORT(target, EclGetFragmentMetadata);

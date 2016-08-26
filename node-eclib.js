@@ -237,6 +237,10 @@ ECLib.prototype = {
     getAlignedDataSize: function(objSize) {
         return addon.EclGetAlignedDataSize(this.ins_id, objSize);
     },
+
+    getHeaderSize: function() {
+        return addon.EclGetHeaderSize();
+    },
 }
 
 module.exports = ECLib;

@@ -36,6 +36,7 @@ extern "C" {
 
 NAN_METHOD(EclCreate);
 NAN_METHOD(EclDestroy);
+NAN_METHOD(EclGetHeaderSize);
 NAN_METHOD(EclFragmentsNeeded);
 NAN_METHOD(EclGetFragmentMetadata);
 NAN_METHOD(EclIsInvalidFragment);
