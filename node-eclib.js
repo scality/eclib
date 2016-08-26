@@ -226,6 +226,12 @@ ECLib.prototype = {
             hd: 0,
             ct: 0
         };
+    },
+
+    addFragmentHeader: function(fragment, fragment_index, object_size,
+                                fragment_size) {
+        return addon.EclAddFragmentHeader(this.ins_id, fragment,
+            fragment_index, object_size, fragment_size, this.opt.ct, 1);
     }
 }
 

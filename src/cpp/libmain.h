@@ -23,11 +23,16 @@
  */
 
 #ifndef ECLIB_LIBMAIN_H
-# define ECLIB_LIBMAIN_H
+#define ECLIB_LIBMAIN_H
 
 #include <nan.h>
 #include <liberasurecode/erasurecode.h>
+#include <liberasurecode/erasurecode_backend.h>
 #include <liberasurecode/erasurecode_helpers.h>
+#include <liberasurecode/erasurecode_helpers_ext.h>
+extern "C" {
+#include <liberasurecode/erasurecode_postprocessing.h>
+}
 
 NAN_METHOD(EclCreate);
 NAN_METHOD(EclDestroy);
@@ -38,5 +43,6 @@ NAN_METHOD(EclVerifyStripeMetadata);
 NAN_METHOD(EclGetAlignedDataSize);
 NAN_METHOD(EclGetMinimumEncodeSize);
 NAN_METHOD(EclGetFragmentSize);
+NAN_METHOD(EclAddFragmentHeader);
 
 #endif /* ECLIB_LIBMAIN_H */

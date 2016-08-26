@@ -117,3 +117,36 @@ NAN_METHOD(EclGetFragmentSize) {
     Nan::HandleScope scope;
     info.GetReturnValue().Set(Nan::New("C++ GetFragmentSize").ToLocalChecked());
 }
+
+NAN_METHOD(EclAddFragmentHeader) {
+    Nan::HandleScope scope;
+
+    if (info.Length() != 7) {
+        Nan::ThrowTypeError("Wrong number of arguments EclAddFragmentHeader");
+        return ;
+    }
+
+    ec_backend_id_t be_id;
+    ec_checksum_type_t ct;
+    ec_backend_t instance;
+
+    int _id = Nan::To<int>(info[0]).FromJust();
+    char *frag = node::Buffer::Data(info[1]);
+    int frag_idx = Nan::To<int>(info[2]).FromJust();
+    int64_t obj_size = Nan::To<int64_t>(info[3]).FromJust();
+    int frag_size = Nan::To<int>(info[4]).FromJust();
+    int _ct = Nan::To<int>(info[5]).FromJust();
+    int add_cs = Nan::To<int>(info[6]).FromJust();
+
+    be_id = get_ec_backend_id(_id);
+    ct  = get_ec_checksum_type(_ct);
+
+    instance = liberasurecode_backend_instance_get_by_desc(be_id);
+
+    init_fragment_header(frag);
+    add_fragment_metadata(instance, frag, frag_idx, obj_size, frag_size, ct,
+                            add_cs);
+
+    info.GetReturnValue().Set(Nan::NewBuffer(frag,
+        frag_size + header_size).ToLocalChecked());
+}
