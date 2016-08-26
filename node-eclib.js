@@ -226,7 +226,21 @@ ECLib.prototype = {
             hd: 0,
             ct: 0
         };
-    }
+    },
+
+    /**
+     * Add header to a fragment
+     * @param {Buffer} fragment - fragment for adding header
+     * @param {Number} fragment_index - index of fragment
+     * @param {Number} object_size - object size (without alignment)
+     * @param {Number} fragment_size - object size (without header)
+     * @return {undefined}
+     */
+    addFragmentHeader: function(fragment, fragment_index, object_size,
+                                fragment_size) {
+        return addon.EclAddFragmentHeader(this.ins_id, fragment,
+            fragment_index, object_size, fragment_size, this.opt.ct, 1);
+    },
 }
 
 module.exports = ECLib;

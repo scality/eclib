@@ -44,6 +44,7 @@ NAN_MODULE_INIT(Init) {
   NAN_EXPORT(target, EclGetAlignedDataSize);
   NAN_EXPORT(target, EclGetMinimumEncodeSize);
   NAN_EXPORT(target, EclGetFragmentSize);
+  NAN_EXPORT(target, EclAddFragmentHeader);
 }
 
 NODE_MODULE(node_eclib, Init)
