@@ -169,7 +169,4 @@ NAN_METHOD(EclAddFragmentHeader) {
     init_fragment_header(frag);
     add_fragment_metadata(instance, frag, frag_idx, obj_size, frag_size, ct,
                             add_cs);
-
-    info.GetReturnValue().Set(Nan::NewBuffer(frag,
-        frag_size + header_size).ToLocalChecked());
 }
