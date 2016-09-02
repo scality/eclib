@@ -28,17 +28,22 @@
 class AsyncEncodeWorker : public Nan::AsyncWorker {
     public:
         AsyncEncodeWorker(Nan::Callback *callback, int instance_descriptor_id,
-                int k, int m, char *orig_data, int orig_data_size) :
+                int k, int m, v8::Local<v8::Object> &orig_data,
+                int orig_data_size, int persistent_flag) :
             Nan::AsyncWorker(callback),
             _instance_descriptor_id(instance_descriptor_id),
             _k(k),
             _m(m),
-            _orig_data(orig_data),
-            _orig_data_size(orig_data_size) {}
+            _orig_data_size(orig_data_size),
+            _persistent_flag(persistent_flag) {
+                if (_persistent_flag == 1) {
+                    // make sure orig_data isn't GC'ed
+                    SaveToPersistent("orig_data", orig_data);
+                }
+                _orig_data = node::Buffer::Data(orig_data);
+            }
 
-        ~AsyncEncodeWorker() {
-            delete _orig_data;
-        }
+        ~AsyncEncodeWorker() {}
 
         void Execute() {
             _status = liberasurecode_encode(_instance_descriptor_id,
@@ -98,6 +103,7 @@ class AsyncEncodeWorker : public Nan::AsyncWorker {
         int _m;
         char *_orig_data;
         int _orig_data_size;
+        int _persistent_flag;
         // Output data.
         int _status;
         char **_encoded_data;
@@ -119,10 +125,10 @@ NAN_METHOD(EclEncode) {
     int instance_descriptor_id = Nan::To<int>(info[0]).FromJust();
     int k = Nan::To<int>(info[1]).FromJust();
     int m = Nan::To<int>(info[2]).FromJust();
+    int persistent_flag = 1;
     int orig_data_size = Nan::To<int>(info[4]).FromJust();
-    char *orig_data = node::Buffer::Data(info[3]);
-    char *pass_orig_data = new char[orig_data_size];
-    memcpy(pass_orig_data, orig_data, orig_data_size);
+    v8::Local<v8::Object> orig_data =
+        Nan::To<v8::Object>(info[3]).ToLocalChecked();
 
     Nan::Callback *callback = new Nan::Callback(info[5].As<v8::Function>());
 
@@ -131,8 +137,9 @@ NAN_METHOD(EclEncode) {
                 instance_descriptor_id,
                 k,
                 m,
-                pass_orig_data,
-                orig_data_size
+                orig_data,
+                orig_data_size,
+                persistent_flag
                 ));
     return ;
 }
@@ -153,6 +160,7 @@ NAN_METHOD(EclEncodeV) {
 
     int orig_data_size = Nan::To<int>(info[5]).FromJust();
     char *orig_data = new char[orig_data_size];
+    int persistent_flag = 0;
 
     v8::Local<v8::Object>buf_array = Nan::To<v8::Object>(info[4]).ToLocalChecked();
     int n_buf = Nan::To<int>(info[3]).FromJust();
@@ -163,6 +171,8 @@ NAN_METHOD(EclEncodeV) {
         memcpy(orig_data + off, buf, buf_len);
         off += buf_len;
     }
+    v8::Local<v8::Object> ref_orig_data =
+        Nan::NewBuffer(orig_data, orig_data_size).ToLocalChecked();
 
     Nan::Callback *callback = new Nan::Callback(info[6].As<v8::Function>());
 
@@ -171,8 +181,9 @@ NAN_METHOD(EclEncodeV) {
                 instance_descriptor_id,
                 k,
                 m,
-                orig_data,
-                orig_data_size
+                ref_orig_data,
+                orig_data_size,
+                persistent_flag
                 ));
-    return ;
+    return;
 }
