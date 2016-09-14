@@ -41,8 +41,6 @@ ec_args             *el_create_ec_args(int k, int m, int w, int hd,
 
 ec_backend_id_t     get_ec_backend_id(int id) {
     switch(id) {
-        case 0:
-            return EC_BACKEND_NULL;
         case 1:
             return EC_BACKEND_JERASURE_RS_VAND;
         case 2:
@@ -63,11 +61,9 @@ ec_backend_id_t     get_ec_backend_id(int id) {
 
 ec_checksum_type_t  get_ec_checksum_type(int ct) {
     switch(ct) {
-        case 0:
-            return CHKSUM_NONE;
-        case 1:
-            return CHKSUM_CRC32;
         case 2:
+            return CHKSUM_CRC32;
+        case 3:
             return CHKSUM_MD5;
         case 99:
             return CHKSUM_TYPES_MAX;
