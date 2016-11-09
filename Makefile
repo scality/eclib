@@ -56,7 +56,7 @@ clean:
 	$(RM) $(TARGET)
 
 distclean: clean
-	$(RM) -r $(GFPATH) $(JERASUREPATH) $(ERASUREPATH)
+	$(RM) -r $(GFPATH) $(JERAPATH) $(ERASUREPATH)
 
 re: distclean all
 
