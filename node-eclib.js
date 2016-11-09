@@ -62,30 +62,38 @@ ECLib.prototype = {
      */
     init: function(callback) {
         var instance_descriptor_id = -1;
-        var err = {};
+        var err = null;
         var o = this.opt;
         if (util.validateInstance(this.opt)) {
             instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w,
                     o.hd, o.ct);
 
             if (instance_descriptor_id <= 0) {
-                err.errorcode = instance_descriptor_id;
-                err.message = util.getErrorMessage(instance_descriptor_id);
+                err = {
+                    errorcode: instance_descriptor_id,
+                    message: util.getErrorMessage(instance_descriptor_id),
+                };
             } else {
                 this.ins_id = instance_descriptor_id;
             }
 
         } else {
-            err.errorcode = enums.ErrorCode.EINVALIDPARAMS;
-            err.message = util.getErrorMessage(err.errorcode);
+            err = {
+                errorcode: enums.ErrorCode.EINVALIDPARAMS,
+                message: util.getErrorMessage(enums.ErrorCode.EINVALIDPARAMS),
+            };
             instance_descriptor_id = err.errorcode;
         }
 
         if (!callback) {
+            if (instance_descriptor_id < 0) {
+                throw err.message;
+                return;
+            }
             return instance_descriptor_id;
         }
 
-        callback.call(err, this, instance_descriptor_id);
+        return callback(err, instance_descriptor_id);
     },
 
     isValidInstance: function() {
@@ -108,9 +116,12 @@ ECLib.prototype = {
             err = util.getErrorMessage(enums.ErrorCode.EBACKENDNOTAVAIL);
         }
         if (!callback) {
-            return err;
+            if (err) {
+                throw err;
+            }
+            return;
         }
-        callback.call(err, this);
+        return callback(err);
     },
 
     /**

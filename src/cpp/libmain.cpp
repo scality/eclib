@@ -58,11 +58,6 @@ NAN_METHOD(EclCreate) {
 
     int desc = liberasurecode_instance_create(ec_backend_id, &ec_args);
 
-    if (desc <= 0) {
-        Nan::ThrowTypeError("Liberasurecode initialization failed");
-        return ;
-    }
-
     info.GetReturnValue().Set(Nan::New(desc));
 }
 
@@ -72,9 +67,7 @@ NAN_METHOD(EclDestroy) {
     int arg0 = Nan::To<int>(info[0]).FromJust();
     int status = liberasurecode_instance_destroy(arg0);
 
-    if (status < 0)
-        Nan::ThrowTypeError("Liberasurecode instance destroy failed");
-    return ;
+    info.GetReturnValue().Set(Nan::New(status));
 }
 
 NAN_METHOD(EclFragmentsNeeded) {
