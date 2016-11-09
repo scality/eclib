@@ -82,10 +82,14 @@ ECLib.prototype = {
         }
 
         if (!callback) {
+            if (instance_descriptor_id < 0) {
+                throw err.message;
+                return;
+            }
             return instance_descriptor_id;
         }
 
-        callback.call(err, this, instance_descriptor_id);
+        return callback(err, instance_descriptor_id);
     },
 
     isValidInstance: function() {
@@ -108,9 +112,13 @@ ECLib.prototype = {
             err = util.getErrorMessage(enums.ErrorCode.EBACKENDNOTAVAIL);
         }
         if (!callback) {
+            if (err) {
+                throw err;
+                return;
+            }
             return err;
         }
-        callback.call(err, this);
+        return callback(err);
     },
 
     /**
