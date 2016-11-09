@@ -42,14 +42,14 @@ module.exports = {
     },
 
     ErrorCode: {
-        "EBACKENDNOTSUPP": 200,
-        "EECMETHODNOTIMPL": 201,
-        "EBACKENDINITERR": 202,
-        "EBACKENDINUSE": 203,
-        "EBACKENDNOTAVAIL": 204,
-        "EBADCHKSUM": 205,
-        "EINVALIDPARAMS": 206,
-        "EBADHEADER": 207,
-        "EINSUFFFRAGS": 208
+        "EBACKENDNOTSUPP": -200,
+        "EECMETHODNOTIMPL": -201,
+        "EBACKENDINITERR": -202,
+        "EBACKENDINUSE": -203,
+        "EBACKENDNOTAVAIL": -204,
+        "EBADCHKSUM": -205,
+        "EINVALIDPARAMS": -206,
+        "EBADHEADER": -207,
+        "EINSUFFFRAGS": -208
     }
 };
