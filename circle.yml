@@ -13,6 +13,10 @@ general:
 dependencies:
     pre:
         - sudo apt-get install automake-1.14
+        - sudo apt-get install yasm
+        - sudo add-apt-repository ppa:dns/gnu -y
+        - sudo apt-get update -q
+        - sudo apt-get install --only-upgrade autoconf
     cache_directories:
         - libs
         - Jerasure
