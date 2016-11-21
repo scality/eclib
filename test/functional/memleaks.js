@@ -16,8 +16,25 @@ const ECLibUtil = eclib.util;
 const crypto = require('crypto');
 const assert = require('assert');
 
-function do_one_encode_decode(batch_num, num, __done) {
-  // const ref_buf = crypto.randomBytes(1000000);
+function shuffle(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var randIndex = Math.floor(Math.random() * i);
+        var randIndexVal = array[randIndex];
+        array[randIndex] = array[i];
+        array[i] = randIndexVal;
+    }
+    return array;
+}
+
+function getRandIdx(len, nb) {
+    var array = [];
+    for (var idx = 0; idx < len; idx++) {
+        array.push(idx);
+    }
+    return shuffle(array).slice(0, nb);
+}
+
+function do_one_encode_decode_repair(batch_num, num, __done) {
   const ref_buf = Buffer.alloc(1000000, 'z');
 
   Eclib.encode(ref_buf,
@@ -25,23 +42,36 @@ function do_one_encode_decode(batch_num, num, __done) {
       const k = Eclib.opt.k;
       const m = Eclib.opt.m;
 
-      const x = k - 1; // available data fragments
-      const y = m; // available parity fragments
-
+      const lost_frags_idx = getRandIdx(k + m, m);
       const fragments = [];
       let i, j;
       j = 0;
-      for (i = 0; i < x; i++) {
-        fragments[j++] = encoded_data[i];
+      for (i = 0; i < k; i++) {
+        if (lost_frags_idx.indexOf(i) === -1) {
+          fragments[j++] = encoded_data[i];
+        }
       }
-      for (i = 0; i < y; i++) {
-        fragments[j++] = encoded_parity[i];
+      for (i = 0; i < m; i++) {
+        if (lost_frags_idx.indexOf(i + k) === -1) {
+          fragments[j++] = encoded_parity[i];
+        }
       }
 
       Eclib.decode(fragments, 0,
         function(status, out_data, out_data_length) {
           assert.equal(Buffer.compare(out_data, ref_buf), 0);
-          __done();
+          Eclib.reconstruct(fragments, lost_frags_idx, function(err, all_frags) {
+            lost_frags_idx.forEach(function(idx) {
+                if (idx < k) {
+                    assert.equal(Buffer.compare(encoded_data[idx],
+                        all_frags[idx]), 0);
+                } else {
+                    assert.equal(Buffer.compare(encoded_parity[idx - k],
+                        all_frags[idx]), 0);
+                }
+            });
+            __done();
+          });
         }
       );
     }
@@ -56,7 +86,7 @@ function do_one_batch(num, __done) {
 
   let i;
   for (i = 0; i < COUNT; i++) {
-    do_one_encode_decode(num, i, function() {
+    do_one_encode_decode_repair(num, i, function() {
       num_steps_done++;
     });
   }
@@ -111,9 +141,9 @@ function getHeapUsage() {
 
 // Monitor heap usage to make sure there are no mem leaks
 function monitorHeapUsage(initialHeapUsage) {
-  // We'll allow memory to increase a bit (1.5) but if it increases more, we'll consider
+  // We'll allow memory to increase a bit (1.7) but if it increases more, we'll consider
   // that to be a memory leak.
-  assert.equal(getHeapUsage() <= initialHeapUsage * 1.5, true,
+  assert.equal(getHeapUsage() <= initialHeapUsage * 1.7, true,
     'heap usage has increased too much, it looks like there is a memory leak');
 
   // If the batches are not done yet done, we'll continue monitoring.
@@ -129,7 +159,7 @@ monitorHeapUsage(getHeapUsage());
 
 describe('memleaks', function(done) {
     this.timeout(60000);
-    it('heap shall not increase by more than x1.5 during this long test', function(done) {
+    it('heap shall not increase by more than x1.7 during this long test', function(done) {
         do_batches(0, function() {
             _done = true;
             done();
