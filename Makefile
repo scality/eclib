@@ -44,7 +44,7 @@ $(JERALIB): | $(JERAPATH)/Makefile
 	$(MAKE) -C $(JERAPATH) && $(MAKE) -C $(JERAPATH) install
 
 $(ERASUREPATH):
-	git clone https://bitbucket.org/tsg-/liberasurecode.git $@
+	git clone https://github.com/openstack/liberasurecode.git $@
 
 $(ERASUREPATH)/Makefile: | $(ERASUREPATH)
 	cd $(ERASUREPATH) && ./autogen.sh && ./configure --prefix=$(LIBDIR)
