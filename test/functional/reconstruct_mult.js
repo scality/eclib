@@ -16,7 +16,8 @@ var ec = new eclib({
 
 ec.init();
 
-var data = new Buffer("Hello world of Rust ! This is some serious decoding !");
+var dataSize = 1024 * 1024;
+var data = crypto.randomBytes(dataSize);
 
 describe('reconstruct multiple fragments:', function(done) {
 
@@ -28,8 +29,10 @@ ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength)
     // Lose 3 fragments, 2 of which are data. We should be able to still
     // recover the data.
     var missing_frags_indx = [1, 0, 5];
-    // descending ordered
-    missing_frags_indx.sort();
+    // decreasing ordered
+    missing_frags_indx.sort(function(a, b){
+        return (b - a);
+    });
     // backup missing fragments
     var orig_missing_frags = [allFragments[missing_frags_indx[0]]];
     for (var idx = 1; idx < missing_frags_indx.length; idx++){
