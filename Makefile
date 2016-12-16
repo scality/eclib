@@ -4,8 +4,10 @@ JERA		= Jerasure
 ISAL		= isal
 ERASURE		= erasurecode
 LIB_EXT		:= so
+TGT_OS    := linux
 ifeq ($(shell uname -s), Darwin)
 	LIB_EXT := dylib
+	TGT_OS  := darwin
 endif
 ECLIB		= $(dir $(abspath $(MAKEFILE_LIST)))
 LIBDIR		= $(ECLIB)libs
@@ -33,7 +35,8 @@ $(ISALPATH)/Makefile: | $(ISALPATH)
 		LDFLAGS=-L$(LIBDIR)/lib \
 		&& ./configure --prefix=$(LIBDIR) \
 		LDFLAGS=-L$(LIBDIR)/lib \
-		CPPFLAGS=-I$(LIBDIR)/include
+		CPPFLAGS=-I$(LIBDIR)/include \
+		--target=$(TGT_OS)
 
 $(ISALLIB): | $(ISALPATH)/Makefile
 	$(MAKE) -C $(ISALPATH) && $(MAKE) -C $(ISALPATH) install
