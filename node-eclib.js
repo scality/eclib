@@ -23,10 +23,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var addon = require('bindings')('Release/node-eclib.node')
-var util = require("./eclib-util");
-var enums = require("./eclib-enum");
-var __ = require('underscore');
+'use strict';  // eslint-disable-line strict
+
+const addon = require('./build/Release/node-eclib.node');
+const util = require('./eclib-util');
+const enums = require('./eclib-enum');
 
 /**
  * This represents our interface with the erasure coding layer.
@@ -49,7 +50,7 @@ function ECLib(opts) {
         ct: 0
     };
     if (opts) {
-        __.extend(this.opt, opts);
+        Object.assign(this.opt, opts);
     }
     this.ins_id = null;
 }
@@ -61,9 +62,9 @@ ECLib.prototype = {
      * @returns {Number} - Instance id
      */
     init: function(callback) {
-        var instance_descriptor_id = -1;
-        var err = null;
-        var o = this.opt;
+        const o = this.opt;
+        let instance_descriptor_id = -1;
+        let err = null;
         if (util.validateInstance(this.opt)) {
             instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w,
                     o.hd, o.ct);
@@ -97,7 +98,7 @@ ECLib.prototype = {
     },
 
     isValidInstance: function() {
-        return (!__.isUndefined(this.ins_id));
+        return  !!this.ins_id;
     },
 
     /**
@@ -106,9 +107,9 @@ ECLib.prototype = {
      * @returns {Number} - Result code
      */
     destroy: function(callback) {
-        var err = null;
+        let err = null;
         if (this.isValidInstance()) {
-            var resultcode = addon.EclDestroy(this.ins_id);
+            const resultcode = addon.EclDestroy(this.ins_id);
             if (resultcode !== 0) {
                 err = util.getErrorMessage(resultcode);
             }
@@ -131,7 +132,7 @@ ECLib.prototype = {
      *      encodedParityArray, encodedFragmentLen)
      */
     encode: function(data, callback) {
-        var o = this.opt;
+        const o = this.opt;
 
         addon.EclEncode(this.ins_id, o.k, o.m, data, data.length, callback);
     },
@@ -143,8 +144,8 @@ ECLib.prototype = {
      *      encodedParityArray, encodedFragmentLen)
      */
     encodev: function(bufArray, callback) {
-        var o = this.opt;
-        var size = bufArray.reduce(function getSize(value, buffer) {
+        const o = this.opt;
+        const size = bufArray.reduce(function getSize(value, buffer) {
             return value + buffer.length;
         }, 0);
 
@@ -200,14 +201,14 @@ ECLib.prototype = {
         // 3rd fragment, we know we can insert it at index 3, so that we then
         // have the `availFragments` set to [1,2,3,4,5,7,9,10] when we recover
         // the 6th fragment.
-        var done = 0;
+        let done = 0;
 
         fragmentIds.sort(function(a, b) {
             return (a - b);
         });
-        var len = fragmentIds.length;
-        var recFrags = new Array(len);
-        var error;
+        const len = fragmentIds.length;
+        const recFrags = new Array(len);
+        let error;
         // Recover all missing fragments one by one.
         fragmentIds.forEach(function reconstructEach(id, index) {
             this.reconstructFragment(availFragments, id,
