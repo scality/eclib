@@ -202,17 +202,29 @@ ECLib.prototype = {
         // the 6th fragment.
         var done = 0;
 
-        fragmentIds.sort();
-
+        fragmentIds.sort(function(a, b) {
+            return (a - b);
+        });
+        var len = fragmentIds.length;
+        var recFrags = new Array(len);
+        var error;
         // Recover all missing fragments one by one.
-        fragmentIds.forEach(function reconstructEach(id) {
+        fragmentIds.forEach(function reconstructEach(id, index) {
             this.reconstructFragment(availFragments, id,
                     function recon(err, fragment) {
                         if (err) {
-                            callback(err);
+                            error = err;
+                            return;
                         }
-                        availFragments.splice(id, 0, fragment);
-                        if (++done === fragmentIds.length) {
+                        recFrags[index] = fragment;
+                        if (++done === len) {
+                            if (error) {
+                                callback(error);
+                                return;
+                            }
+                            fragmentIds.forEach(function(fragIdx, idx) {
+                                availFragments.splice(fragIdx, 0, recFrags[idx]);
+                            });
                             callback(null, availFragments);
                             return ;
                         }
