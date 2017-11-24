@@ -23,7 +23,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var enums = require("./eclib-enum.js");
+const enums = require("./eclib-enum.js");
 
 module.exports = {
     getErrorMessage: function(errorcode) {
@@ -56,7 +56,7 @@ module.exports = {
     },
 
     validateInstance: function(opts) {
-        var optArray = Object.keys(opts);
+        const optArray = Object.keys(opts);
 
         if (optArray.length !== 6) {
             return false;
