@@ -16,14 +16,30 @@
         "<(module_root_dir)/libs/include",
         "<!(node -e \"require('nan')\")"
       ],
+      'variables': {
+        'LIBDIR': '<(module_root_dir)/libs/lib',
+      },
       "conditions": [
-        ['OS=="mac"', {
-          "libraries": [ "<(module_root_dir)/libs/lib/liberasurecode.dylib" ]
+        ['OS == "mac"', {
+          'xcode_settings': {
+            'GCC_OPTIMIZATION_LEVEL': '3',  # -O3
+            'OTHER_CFLAGS': [
+              '-fno-operator-names',
+            ],
+          },
+          "libraries": [ "<(LIBDIR)/liberasurecode.dylib" ]
         }],
-        ['OS=="linux"', {
-          "libraries": [ "<(module_root_dir)/libs/lib/liberasurecode.so" ]
-        }]
-      ]
+        ['OS == "linux"', {
+          'cflags': [
+            '-O3',
+            '-fno-operator-names',
+          ],
+          'ldflags': [
+            '-Wl,-rpath -Wl,<(LIBDIR)',
+          ],
+          "libraries": [ "<(LIBDIR)/liberasurecode.so" ]
+        }],
+      ],
     }
   ]
 }
