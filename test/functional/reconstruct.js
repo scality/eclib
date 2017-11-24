@@ -65,8 +65,7 @@ describe('reconstruct', function(done) {
                         }
                         Eclib.reconstructFragment(gb(dataFragments.length + parityFragments.length), 0, function(err) {
                             assert.notEqual(err, null);
-                            Eclib.destroy();
-                            done();
+                            Eclib.destroy(done);
                         });
                     });
                 });
