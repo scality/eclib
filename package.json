@@ -24,16 +24,15 @@
   },
   "main": "index.js",
   "dependencies": {
-    "bindings": "^1.2.1",
-    "nan": "^2.1.0",
-    "underscore": "*"
+    "eslint": "2.13.1",
+    "eslint-config-airbnb": "6.2.0",
+    "eslint-config-scality": "scality/Guidelines",
+    "nan": "^2.8.0"
   },
   "devDependencies": {
-    "buffertools": "^2.1.2",
-    "eslint": "^1.7.1",
     "jsdoc": "^3.3.3",
     "minami": "^1.1.1",
-    "mocha": "^2.3.3"
+    "mocha": "^4.0.1"
   },
   "license": "BSD-2-Clause",
   "keywords": [
