@@ -10,28 +10,26 @@
 
 'use strict';
 
-var eclib = require('../../index');
-var enums = eclib.enums;
-var ECLibUtil = eclib.util;
-var buffertools = require("buffertools");
-var crypto = require('crypto');
-var assert = require('assert');
+const eclib = require('../../index');
+const enums = eclib.enums;
+const ECLibUtil = eclib.util;
+const crypto = require('crypto');
+const assert = require('assert');
 
 function do_one_encode_decode(batch_num, num, __done) {
-  // var ref_buf = crypto.randomBytes(1000000);
-  var ref_buf = new Buffer(1000000);
-  buffertools.fill(ref_buf, 'z');
+  // const ref_buf = crypto.randomBytes(1000000);
+  const ref_buf = Buffer.alloc(1000000, 'z');
 
   Eclib.encode(ref_buf,
     function(status, encoded_data, encoded_parity, encoded_fragment_length) {
-      var k = Eclib.opt.k;
-      var m = Eclib.opt.m;
+      const k = Eclib.opt.k;
+      const m = Eclib.opt.m;
 
-      var x = k - 1; // available data fragments
-      var y = m; // available parity fragments
+      const x = k - 1; // available data fragments
+      const y = m; // available parity fragments
 
-      var fragments = [];
-      var i, j;
+      const fragments = [];
+      let i, j;
       j = 0;
       for (i = 0; i < x; i++) {
         fragments[j++] = encoded_data[i];
@@ -42,7 +40,7 @@ function do_one_encode_decode(batch_num, num, __done) {
 
       Eclib.decode(fragments, 0,
         function(status, out_data, out_data_length) {
-          assert.equal(buffertools.compare(out_data, ref_buf), 0);
+          assert.equal(Buffer.compare(out_data, ref_buf), 0);
           __done();
         }
       );
@@ -54,9 +52,9 @@ function do_one_encode_decode(batch_num, num, __done) {
 //
 // When this batch is done, the next one will be triggered.
 function do_one_batch(num, __done) {
-  var num_steps_done = 0;
+  let num_steps_done = 0;
 
-  var i;
+  let i;
   for (i = 0; i < COUNT; i++) {
     do_one_encode_decode(num, i, function() {
       num_steps_done++;
@@ -90,11 +88,14 @@ function do_batches(num, __done) {
 }
 
 // Number of encodes/decodes per batch
-var COUNT = 100;
+const COUNT = 100;
 // Number of batches
-var N_BATCHES = 20;
+const N_BATCHES = 20;
 
-var Eclib = new eclib({
+// Do all batches, starting with the 1st batch.
+let _done = false;
+
+const Eclib = new eclib({
   "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_CAUCHY"],
   "k": 10,
   "m": 4,
@@ -125,8 +126,6 @@ function monitorHeapUsage(initialHeapUsage) {
 
 monitorHeapUsage(getHeapUsage());
 
-// Do all batches, starting with the 1st batch.
-var _done = false;
 
 describe('memleaks', function(done) {
     this.timeout(60000);
