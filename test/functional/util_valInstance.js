@@ -1,11 +1,11 @@
 'use strict';
 
-var eclib = require('../../index');
-var enums = eclib.enums;
-var util = eclib.util;
-var assert = require('assert');
+const eclib = require('../../index');
+const enums = eclib.enums;
+const util = eclib.util;
+const assert = require('assert');
 
-var Eclib = new eclib({
+const Eclib = new eclib({
     bc_id: enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"],
     k: 10,
     m: 4,
