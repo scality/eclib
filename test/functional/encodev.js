@@ -39,8 +39,7 @@ function test_one(name, opts, done) {
       Eclib.decode(fragments,  0,
         function(status, out_data, out_data_length) {
           assert.equal(Buffer.compare(out_data, ref_buf), 0);
-          Eclib.destroy();
-          done();
+          Eclib.destroy(done);
         }
       );
     }

@@ -8,9 +8,6 @@ const ECLibUtil = ECLib.utils;
 const crypto = require('crypto');
 const assert = require('assert');
 
-// Number of tests that are done at any given time.
-let _done = 0;
-
 function test_one(name, opts, done) {
   const eclib = new ECLib(opts);
 
@@ -43,14 +40,11 @@ function test_one(name, opts, done) {
           assert.equal(Buffer.compare(out_data, ref_buf), 0);
 
           // Free the ressources allocated for erasure coding.
-          eclib.destroy();
-
+          eclib.destroy(done);
         }
       );
     }
   );
-  _done += 1;
-  done();
 }
 
 //EC_BACKEND_NULL
@@ -160,15 +154,6 @@ function beautifuler(options) {
 }
 
 describe('FuncTest', function(done) {
-    function monitorState() {
-        if (_done < tests.length) {
-            setImmediate(monitorState);
-        } else {
-            //do nothing
-        }
-    }
-    monitorState();
-
     tests.forEach(function(test, i) {
         it(test.name + " " + beautifuler(test.options), function(done) {
             test_one(test.name, test.options, done);
