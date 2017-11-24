@@ -145,6 +145,15 @@ var tests = [{
     "w": 8,
     "hd": 11
   }
+}, {
+  name: "isal_48",
+  options: {
+    "bc_id": enums.BackendId["EC_BACKEND_ISA_L_RS_VAND"],
+    "k": 4,
+    "m": 8,
+    "w": 8,
+    "hd": 9
+  }
 }];
 
 function beautifuler(options) {
@@ -167,9 +176,3 @@ describe('FuncTest', function(done) {
         });
     })
 });
-
-// The tests with ISA require an additional library. They are disabled for now because of this.
-
-// test_one("isa_l", {"bc_id": enums.BackendId["EC_BACKEND_ISA_L_RS_VAND"], "k": 10, "m": 4, "w": 8, "hd": 5});
-// test_one("isa_l_44", {"bc_id": enums.BackendId["EC_BACKEND_ISA_L_RS_VAND"], "k": 4, "m": 4, "w": 8, "hd": 5});
-// test_one("isa_l_1010", {"bc_id": enums.BackendId["EC_BACKEND_ISA_L_RS_VAND"], "k": 10, "m": 10, "w": 8, "hd": 11});
