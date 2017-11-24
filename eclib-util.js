@@ -23,46 +23,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const enums = require("./eclib-enum.js");
+const enums = require('./eclib-enum.js');
 
 module.exports = {
-    getErrorMessage: function(errorcode) {
+    getErrorMessage: errorcode => {
         switch (errorcode) {
-            case enums.ErrorCode.EBACKENDNOTSUPP:
-                return "Backend not supported";
-            case enums.ErrorCode.EECMETHODNOTIMPL:
-                return "No method implemented";
-            case enums.ErrorCode.EBACKENDINITERR:
-                return "Backend instance is terminated";
-            case enums.ErrorCode.EBACKENDINUSE:
-                return "Backend instance is in use";
-            case enums.ErrorCode.EBACKENDNOTAVAIL:
-                return "Backend instance not found";
-            case enums.ErrorCode.EBADCHKSUM:
-                return "Fragment integrity check failed";
-            case enums.ErrorCode.EINVALIDPARAMS:
-                return "Invalid arguments";
-            case enums.ErrorCode.EBADHEADER:
-                return "Fragment integrity check failed";
-            case enums.ErrorCode.EINSUFFFRAGS:
-                return "Insufficient number of fragments";
-            default:
-                return "Unknown error";
+        case enums.ErrorCode.EBACKENDNOTSUPP:
+            return 'Backend not supported';
+        case enums.ErrorCode.EECMETHODNOTIMPL:
+            return 'No method implemented';
+        case enums.ErrorCode.EBACKENDINITERR:
+            return 'Backend instance is terminated';
+        case enums.ErrorCode.EBACKENDINUSE:
+            return 'Backend instance is in use';
+        case enums.ErrorCode.EBACKENDNOTAVAIL:
+            return 'Backend instance not found';
+        case enums.ErrorCode.EBADCHKSUM:
+            return 'Fragment integrity check failed';
+        case enums.ErrorCode.EINVALIDPARAMS:
+            return 'Invalid arguments';
+        case enums.ErrorCode.EBADHEADER:
+            return 'Fragment integrity check failed';
+        case enums.ErrorCode.EINSUFFFRAGS:
+            return 'Insufficient number of fragments';
+        default:
+            return 'Unknown error';
         }
     },
 
-    isInt: function(n) {
-        return typeof n === 'number' && n % 1 === 0;
-    },
+    isInt: n => typeof n === 'number' && n % 1 === 0,
 
-    validateInstance: function(opts) {
+    validateInstance: opts => {
         const optArray = Object.keys(opts);
 
         if (optArray.length !== 6) {
             return false;
         }
-        return Object.keys(opts).reduce(function validate(prev, current) {
-            return prev && this.isInt(opts[current]);
-        }.bind(this), true)
+        return optArray.every(current =>
+            (typeof opts[current] === 'number' && opts[current] % 1 === 0));
     },
-}
+};

@@ -31,85 +31,88 @@ const enums = require('./eclib-enum');
 
 /**
  * This represents our interface with the erasure coding layer.
- * @constructor
- * @param {Object} [opts] - Contains options used by the library
- * @param {Number} [opts.bc_id=0] - Backend ID
- * @param {Number} [opts.k=8] - Number of data fragments
- * @param {Number} [opts.m=4] - Number of parity fragments
- * @param {Number} [opts.w=0] - word size (in bits)
- * @param {Number} [opts.hd=0] - hamming distance (==m for Reed-Solomon)
- * @param {Number} [opts.ct=0] - checksum type
  */
-function ECLib(opts) {
-    this.opt = {
-        bc_id: 0,
-        k: 8,
-        m: 4,
-        w: 0,
-        hd: 0,
-        ct: 0
-    };
-    if (opts) {
-        Object.assign(this.opt, opts);
+class ECLib {
+    /**
+     * ECLib constructor
+     * @constructor
+     * @param {Object} [opts] - Contains options used by the library
+     * @param {Number} [opts.bc_id=0] - Backend ID
+     * @param {Number} [opts.k=8] - Number of data fragments
+     * @param {Number} [opts.m=4] - Number of parity fragments
+     * @param {Number} [opts.w=0] - word size (in bits)
+     * @param {Number} [opts.hd=0] - hamming distance (==m for Reed-Solomon)
+     * @param {Number} [opts.ct=0] - checksum type
+     */
+    constructor(opts) {
+        this.opt = {
+            bc_id: 0,                                   // eslint-disable-line
+            k: 8,
+            m: 4,
+            w: 0,
+            hd: 0,
+            ct: 0,
+        };
+        if (opts) {
+            Object.assign(this.opt, opts);
+        }
+        this.instanceID = null;
     }
-    this.ins_id = null;
-}
 
-ECLib.prototype = {
     /**
      * This creates a new instance, using the options set at construction
      * @param {Function} [callback] - callback(eclib, instanceId, error)
      * @returns {Number} - Instance id
      */
-    init: function(callback) {
+    init(callback) {
         const o = this.opt;
-        let instance_descriptor_id = -1;
+        let instDescID = -1;
         let err = null;
         if (util.validateInstance(this.opt)) {
-            instance_descriptor_id = addon.EclCreate(o.bc_id, o.k, o.m, o.w,
+            // eslint-disable-next-line
+            instDescID = addon.EclCreate(o.bc_id, o.k, o.m, o.w,
                     o.hd, o.ct);
 
-            if (instance_descriptor_id <= 0) {
+            if (instDescID <= 0) {
                 err = {
-                    errorcode: instance_descriptor_id,
-                    message: util.getErrorMessage(instance_descriptor_id),
+                    errorcode: instDescID,
+                    message: util.getErrorMessage(instDescID),
                 };
             } else {
-                this.ins_id = instance_descriptor_id;
+                this.instanceID = instDescID;
             }
-
         } else {
             err = {
                 errorcode: enums.ErrorCode.EINVALIDPARAMS,
                 message: util.getErrorMessage(enums.ErrorCode.EINVALIDPARAMS),
             };
-            instance_descriptor_id = err.errorcode;
+            instDescID = err.errorcode;
         }
 
         if (!callback) {
-            if (instance_descriptor_id < 0) {
+            if (instDescID < 0) {
                 throw err.message;
-                return;
             }
-            return instance_descriptor_id;
+            return instDescID;
         }
 
-        return callback(err, instance_descriptor_id);
-    },
+        return callback(err, instDescID);
+    }
 
-    isValidInstance: function() {
-        return  !!this.ins_id;
-    },
+    isValidInstance() {
+        return !!this.instanceID;
+    }
 
     /**
      * This destroys the current instance.
      * @param {Function} [callback] - callback(eclib, resultCode, err)
      * @returns {Number} - Result code
      */
-    destroy: function(callback) {
+    destroy(callback) {
         let err = null;
         if (this.isValidInstance()) {
-            const resultcode = addon.EclDestroy(this.ins_id);
+            // eslint-disable-next-line
+            const resultcode = addon.EclDestroy(this.instanceID);
             if (resultcode !== 0) {
                 err = util.getErrorMessage(resultcode);
             }
@@ -120,78 +123,86 @@ ECLib.prototype = {
             if (err) {
                 throw err;
             }
-            return;
+            return undefined;
         }
         return callback(err);
-    },
+    }
 
     /**
      * This encodes the data.
      * @param {Buffer} data - The data to be encoded
      * @param {Function} callback - callback(status, encodedDataArray,
      *      encodedParityArray, encodedFragmentLen)
+     * @returns {undefined}
      */
-    encode: function(data, callback) {
+    encode(data, callback) {
         const o = this.opt;
 
-        addon.EclEncode(this.ins_id, o.k, o.m, data, data.length, callback);
-    },
+        // eslint-disable-next-line
+        addon.EclEncode(this.instanceID, o.k, o.m, data, data.length, callback);
+    }
 
     /**
      * This encodes the data array.
      * @param {Buffer[]} bufArray - Buffers to be encoded
      * @param {Function} callback - callback(status, encodedDataArray,
      *      encodedParityArray, encodedFragmentLen)
+     * @returns {undefined}
      */
-    encodev: function(bufArray, callback) {
+    encodev(bufArray, callback) {
         const o = this.opt;
-        const size = bufArray.reduce(function getSize(value, buffer) {
-            return value + buffer.length;
-        }, 0);
+        const size =
+            bufArray.reduce((value, buffer) => value + buffer.length, 0);
 
-        addon.EclEncodeV(this.ins_id, o.k, o.m, bufArray.length, bufArray,
+        // eslint-disable-next-line
+        addon.EclEncodeV(this.instanceID, o.k, o.m, bufArray.length, bufArray,
                 size, callback);
-    },
+    }
 
     /**
      * This decodes the fragments array.
      * @param {Buffer[]} fragmentArray - The fragment array to decode
      * @param {Boolean} metadataCheck - Checking of the metadata
      * @param {Function} callback - (err, decodedData)
+     * @returns {undefined}
      */
-    decode: function(fragmentArray, metadataCheck, callback) {
-        addon.EclDecode(this.ins_id, fragmentArray, fragmentArray.length,
+    decode(fragmentArray, metadataCheck, callback) {
+        // eslint-disable-next-line
+        addon.EclDecode(this.instanceID, fragmentArray, fragmentArray.length,
                 fragmentArray[0].length, metadataCheck, callback);
-    },
+    }
 
     /**
      * Reconstruct a missing fragment.
      * @param {Buffer[]} availFragments - Fragments available for reconstruction
      * @param {Number} fragmentId - Missing fragment id
      * @param {Function} callback - (err, reconstructedFragment)
+     * @returns {undefined}
      */
-    reconstructFragment: function(availFragments, fragmentId, callback) {
+    reconstructFragment(availFragments, fragmentId, callback) {
         if (!availFragments.length) {
             callback('invalid number of available fragments (must be > 0)');
-            return ;
+            return;
         }
+        // eslint-disable-next-line
         addon.EclReconstructFragment(
-            this.ins_id,
+            this.instanceID,
             availFragments,
             availFragments.length,
             availFragments[0].length,
             fragmentId,
             callback
         );
-    },
+    }
 
     /**
      * Reconstruct missing fragments.
      * @param {Buffer[]} availFragments - Fragments available for reconstruction
      * @param {Number} fragmentIds - Missing fragment ids
      * @param {Function} callback - (err, allFragments)
+     * @returns {undefined}
      */
-    reconstruct: function(availFragments, fragmentIds, callback) {
+    reconstruct(availFragments, fragmentIds, callback) {
         // If we sort the missing indexes, than we can safely insert each
         // recoevered fragment when we have it. Example: we have 10 fragments,
         // but the 3rd, 6th and 8th are missing. If the `fragmentIds`
@@ -203,52 +214,50 @@ ECLib.prototype = {
         // the 6th fragment.
         let done = 0;
 
-        fragmentIds.sort(function(a, b) {
-            return (a - b);
-        });
+        fragmentIds.sort((a, b) => (a - b));
         const len = fragmentIds.length;
         const recFrags = new Array(len);
         let error;
         // Recover all missing fragments one by one.
-        fragmentIds.forEach(function reconstructEach(id, index) {
-            this.reconstructFragment(availFragments, id,
-                    function recon(err, fragment) {
-                        if (err) {
-                            error = err;
-                            return;
-                        }
-                        recFrags[index] = fragment;
-                        if (++done === len) {
-                            if (error) {
-                                callback(error);
-                                return;
-                            }
-                            fragmentIds.forEach(function(fragIdx, idx) {
-                                availFragments.splice(fragIdx, 0, recFrags[idx]);
-                            });
-                            callback(null, availFragments);
-                            return ;
-                        }
+        fragmentIds.forEach((id, index) => {
+            this.reconstructFragment(availFragments, id, (err, fragment) => {
+                if (err) {
+                    error = err;
+                    return;
+                }
+                recFrags[index] = fragment;
+                if (++done === len) {
+                    if (error) {
+                        callback(error);
+                        return;
+                    }
+                    fragmentIds.forEach((fragIdx, idx) => {
+                        availFragments.splice(fragIdx, 0, recFrags[idx]);
                     });
-        }.bind(this));
-    },
+                    callback(null, availFragments);
+                    return;
+                }
+            });
+        });
+    }
 
-    getFragmentMetadata: function(fragment, fragment_metadata, callback) {
+    // eslint-disable-next-line
+    getFragmentMetadata(fragment, fragment_metadata, callback) {
         // TODO: what is this function supposed to do ?
-    },
+    }
 
-    setOptions: function(opts) {
-        __.extend(this.opt,opts);
-    },
+    setOptions(opts) {
+        Object.assigns(this.opt, opts);
+    }
 
-    resetOptions: function() {
+    resetOptions() {
         this.opt = {
-            bc_id: 0,
+            bc_id: 0,                               // eslint-disable-line
             k: 8,
             m: 4,
             w: 0,
             hd: 0,
-            ct: 0
+            ct: 0,
         };
     }
 }
