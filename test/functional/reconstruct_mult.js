@@ -6,57 +6,122 @@ const ECLibUtil = eclib.util;
 const crypto = require('crypto');
 const assert = require('assert');
 
+const k = 10;
+const m = 4;
+
 const ec = new eclib({
-  "bc_id": enums.BackendId["EC_BACKEND_FLAT_XOR_HD"],
-  "k": 3,
-  "m": 3,
-  "hd": 3
+    "bc_id": enums.BackendId["EC_BACKEND_JERASURE_RS_VAND"],
+    "k": k,
+    "m": m,
+    "w": 8,
+    "hd": m + 1,
 });
 
-ec.init();
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const randIndex = Math.floor(Math.random() * i);
+        const randIndexVal = array[randIndex];
+        array[randIndex] = array[i];
+        array[i] = randIndexVal;
+    }
+    return array;
+}
 
-const dataSize = 1024 * 1024;
-const data = crypto.randomBytes(dataSize);
+function getRandIdx(len, nb) {
+    const array = [];
+    for (let idx = 0; idx < len; idx++) {
+        array.push(idx);
+    }
+    return shuffle(array).slice(0, nb);
+}
+
+function genRandFragIndices(dataFragments, parityFragments) {
+    // Lose m fragments
+    const lostFragIndices = getRandIdx(k + m, m);
+    const lostFragments = {};
+    const availFragments = [];
+    // data fragments
+    for (let idx = 0; idx < k; idx++) {
+        if (lostFragIndices.indexOf(idx) === -1) {
+            availFragments.push(dataFragments[idx]);
+        } else {
+            lostFragments[idx] = dataFragments[idx];
+        }
+    }
+    // parity fragments
+    for (let idx = k; idx < k + m; idx++) {
+        if (lostFragIndices.indexOf(idx) === -1) {
+            availFragments.push(parityFragments[idx - k]);
+        } else {
+            lostFragments[idx] = parityFragments[idx - k];
+        }
+    }
+
+    return {
+        lostIndices: lostFragIndices,
+        lostFrags: lostFragments,
+        availFrags: availFragments,
+    }
+}
+
+function checkReconstructMulFrags(callback) {
+    const data = crypto.randomBytes(1024);
+
+    ec.encode(data,
+        (status, dataFragments, parityFragments, fragmentLength) => {
+            assert.equal(status, 0);
+
+            const indices = genRandFragIndices(dataFragments, parityFragments);
+
+            ec.reconstruct(indices.availFrags, indices.lostIndices,
+                (err, newAllFragments) => {
+                    assert.equal(err, null);
+                    // check reconstructed fragments and original ones
+                    indices.lostIndices.forEach(function(idx) {
+                        assert.equal(Buffer.compare(indices.lostFrags[idx],
+                            newAllFragments[idx]), 0);
+                    });
+
+                    ec.decode(newAllFragments, false, (status, decoded) => {
+                        // check that the decoded data is like the initial one
+                        assert.equal(Buffer.compare(data, decoded), 0);
+                        callback();
+                    });
+                });
+        });
+}
+
+function run(func, nb, threadsNb, callback) {
+    let count = 0;
+    let done = 0;
+
+    function cb() {
+        done++;
+        if (done === nb) {
+            return callback();
+        }
+        if (count < nb) {
+            count++;
+            func(cb);
+        }
+    }
+
+    for (let idx = 0; idx < threadsNb; idx++) {
+        count++;
+        process.nextTick(() => {
+            func(cb);
+        });
+    }
+}
 
 describe('reconstruct multiple fragments:', function(done) {
+    before('init eclib', done => ec.init(done));
 
-it('shall be OK', function(done) {
-ec.encode(data, function(status, dataFragments, parityFragments, fragmentLength) {
-    assert.equal(status, 0);
-
-    const allFragments = dataFragments.concat(parityFragments);
-    // Lose 3 fragments, 2 of which are data. We should be able to still
-    // recover the data.
-    const missing_frags_indx = [1, 0, 5];
-    // decreasing ordered
-    missing_frags_indx.sort(function(a, b){
-        return (b - a);
+    it('shall be OK', function(done) {
+        const nb = 100;
+        const threadsNb = 16;
+        run(checkReconstructMulFrags, nb, threadsNb, done);
     });
-    // backup missing fragments
-    const orig_missing_frags = [allFragments[missing_frags_indx[0]]];
-    let idx;
-    for (idx = 1; idx < missing_frags_indx.length; idx++){
-        orig_missing_frags.push(allFragments[missing_frags_indx[idx]]);
-    }
-    // remove missing fragments
-    for (idx = 0; idx < missing_frags_indx.length; idx++){
-        allFragments.splice(missing_frags_indx[idx], 1);
-    }
 
-    ec.reconstruct(allFragments, [0, 5, 1], function(err, newAllFragments) {
-        assert.equal(err, null);
-        // check reconstructed fragments and original ones
-        for (idx = 0; idx < missing_frags_indx.length; idx++){
-            assert.equal(Buffer.compare(orig_missing_frags[idx], newAllFragments[missing_frags_indx[idx]]), 0);
-        }
-
-        ec.decode(newAllFragments, false, function(status, decoded_data) {
-            // check that the decoded data is like the initial one
-            assert.equal(Buffer.compare(data, decoded_data), 0);
-
-            done();
-        });
-    });
-});
-});
+    after('destroy eclib', done => ec.destroy(done));
 });
