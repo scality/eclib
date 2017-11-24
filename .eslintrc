@@ -1,8 +1,1 @@
-env:
-  node: true
-rules:
-  brace-style: 2
-  curly: 2
-  eqeqeq: [2, 'smart']
-  indent: [2, 4, {'SwitchCase': 1}]
-  valid-jsdoc: [2, requireReturn: false]
+{ "extends": "scality" }
